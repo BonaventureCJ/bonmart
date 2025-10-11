@@ -1,5 +1,5 @@
 "use client"
-import Image from "next/image";
+//import Image from "next/image";
 import { useState, useEffect } from "react";
 // Removed Image from 'next/image' if we don't need it elsewhere, but kept for general use below
 import { Globe, ShoppingBag, Loader2 } from "lucide-react"; // Using Lucide icons for a professional look
@@ -88,7 +88,7 @@ export default function Home() {
               </h2>
               {/* Call to action/status message */}
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-md">
-                We're crafting something special just for you. Our new online store is under construction and will be live soon!
+                We are crafting something special just for you. Our new online store is under construction and will be live soon!
               </p>
 
               {/* Professional loading indicator with animation */}
@@ -113,7 +113,7 @@ export default function Home() {
                 aria-label="Visit BonaventureCJ's portfolio website (opens in a new tab)"
               >
                 <Globe className="w-4 h-4" aria-hidden="true" />
-                BonaventureCJ's Portfolio
+                BonaventureCJ&apos;s Portfolio
               </a>
               {/* You can add more footer links here */}
               <a

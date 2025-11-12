@@ -1,56 +1,41 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import ThemeProvider from "@/components/ThemeProvider";
+//import ThemeProvider from "../components/ThemeProvider";
+import Footer from "@/components/Footer";
+//import Footer from "../components/Footer";
+import Header from "@/components/Header";
+//import Header from "../components/Header";
+import "@/styles/globals.css"; // ensure Tailwind is imported
+//import "./styles/globals.css"; // ensure Tailwind is imported
 
 export const metadata: Metadata = {
   title: "BonMart - Coming Soon",
-  description:
-    "BonMart: Bonzer Shopping Experiences. Our new online store is under construction and will be available soon.",
+  description: "BonMart: Bonzer Shopping Experiences. Our new online store is under construction.",
+  keywords: ["BonMart", "e-commerce", "shopping", "coming soon", "online store"],
+  openGraph: {
+    title: "BonMart - Coming Soon",
+    description: "Our new online store is under construction.",
+    siteName: "BonMart",
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    // `suppressHydrationWarning` prevents React hydration mismatch
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        {/* Inline script runs before React and Tailwind to prevent FOUC */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  const storedTheme = localStorage.getItem('theme');
-                  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
-                } catch (_) {}
-              })();
-            `,
-          }}
-        />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased transition-colors duration-500 ease-in-out`}
-      >
-        {children}
+    <html lang="en">
+      <body className="antialiased">
+        {/* ThemeProvider is a client component that hydrates theme from localStorage / prefers-color-scheme */}
+        <ThemeProvider>
+          <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-100 smooth-theme-transition">
+            <div className="grid grid-rows-[auto_1fr_auto] min-h-screen items-center justify-items-center p-4 sm:p-8">
+              <Header />
+              <main className="row-start-2 w-full flex items-center justify-center">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </div>
+        </ThemeProvider>
       </body>
     </html>
   );

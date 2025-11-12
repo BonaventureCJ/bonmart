@@ -1,16 +1,23 @@
+import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  reactStrictMode: true, // recommended for Next.js projects
 
-  // Add the following configuration block:
+  // Webpack configuration to add path alias
+  webpack: (config) => {
+    config.resolve.alias["@"] = path.resolve(__dirname, "src");
+    return config;
+  },
+
+  // Keep your existing experimental Turbopack SVG loader
   experimental: {
     turbo: {
       rules: {
-        // This rule tells Turbopack to use @svgr/webpack for all .svg files
         '*.svg': {
           loaders: ['@svgr/webpack'],
-          as: '*.js', // Treats the output as a JS module/component
+          as: '*.js', // Treat output as a JS module/component
         },
       },
     },

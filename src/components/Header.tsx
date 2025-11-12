@@ -26,19 +26,18 @@ const Header = () => {
   return (
     <header className="w-full max-w-7xl flex justify-between items-center p-4">
       <div className="flex items-center gap-2">
-        {/* Use the imported SVG component here */}
         <BonMartLogo
-          className="w-10 h-10 text-brand" // Apply Tailwind classes directly
+          className="w-10 h-10 text-brand"
           aria-label="BonMart Logo"
         />
-        {/* Update the text color to use the `text-brand` utility */}
         <p className="text-xl font-bold text-brand">BonMart</p>
       </div>
-      {/* Dark mode toggle button */}
+      {/* Updated Dark mode toggle button */}
       <button
         onClick={toggleDarkMode}
         aria-label={`Switch to ${isDarkMode ? 'light' : 'dark'} mode`}
-        className="p-2 rounded-md bg-white dark:bg-neutral-bg-dark hover:bg-gray-100 dark:hover:bg-gray-800 shadow-sm"
+        className="p-2 rounded-md shadow-sm transition-colors duration-[var(--duration-long)] ease-[var(--transition-ease-in-out)]
+                   bg-surface-light text-text-light hover:bg-gray-100 dark:bg-neutral-bg-dark dark:text-text-dark dark:hover:bg-gray-800"
       >
         {isDarkMode ? '☀️ Light' : '🌙 Dark'}
       </button>

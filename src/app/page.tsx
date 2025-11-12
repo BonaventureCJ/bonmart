@@ -1,11 +1,10 @@
-// src/app/page.tsx
-//import Hero from "@/components/Hero";
-import Hero from "../components/Hero";
+import Hero from "@/components/Hero";
+import PageContainer from "@/components/PageContainer";
 
-export default function Page() {
+export default function Home() {
   return (
-    <div className="w-full max-w-7xl">
+    <PageContainer>
       <Hero />
-    </div>
+    </PageContainer>
   );
 }

@@ -1,0 +1,17 @@
+{
+    "liveSassCompile.settings.forceBaseDirectory": "",
+    "liveSassCompile.settings.formats": [
+        {
+            "format": "expanded",
+            "extensionName": ".css",
+            "savePath": "/src",
+            "savePathReplacementPairs": null
+        }
+    ],
+    "liveSassCompile.settings.autoprefix": [],
+    "files.associations": {
+        "*.css": "css"
+    },
+    "css.validate": false,
+    "tailwindCSS.experimental.configFile": "./src/styles/globals.css"
+}

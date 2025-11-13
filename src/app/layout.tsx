@@ -1,8 +1,8 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import ThemeProvider from "@/components/ThemeProvider";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import ThemeProvider from "@/providers/ThemeProvider";
+import Footer from "@/components/layout/Footer";
+import Header from "@/components/layout/Header";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {

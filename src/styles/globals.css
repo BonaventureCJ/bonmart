@@ -15,9 +15,20 @@
   --color-surface-dark: #0a0a0a;
   --color-text-dark: #ededed;
 
+  /* Variables for a two-color focus ring */
+  --color-focus-ring-outer: #ffffff;
+  --color-focus-ring-inner: var(--color-brand-primary);
+  
+  --color-focus-ring-outer-dark: #171717;
+  --color-focus-ring-inner-dark: var(--color-brand-primary-light);
+
+  /* Variables for interactive states */
+  --color-toggle-hover-light: #f3f4f6;
+  --color-toggle-hover-dark: #374151;
+
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-  --duration-long: 500ms;
+  --duration-long: 300ms;
 }
 
 /* 3. Configure custom variants for dark mode. */
@@ -30,6 +41,9 @@
   --foreground: var(--color-text-light);
   --brand-color: var(--color-brand-primary);
   --neutral-color: var(--color-neutral-text-light);
+  --toggle-hover-bg: var(--color-toggle-hover-light);
+  --focus-ring-outer: var(--color-focus-ring-outer);
+  --focus-ring-inner: var(--color-focus-ring-inner);
 }
 
 html.dark {
@@ -38,6 +52,9 @@ html.dark {
   --foreground: var(--color-text-dark);
   --brand-color: var(--color-brand-primary-light);
   --neutral-color: var(--color-neutral-text-dark);
+  --toggle-hover-bg: var(--color-toggle-hover-dark);
+  --focus-ring-outer: var(--color-focus-ring-outer-dark);
+  --focus-ring-inner: var(--color-focus-ring-inner-dark);
 }
 
 /* 5. Define global base styles using the custom properties. */
@@ -64,6 +81,16 @@ body {
   color: var(--color-neutral-text-dark);
 }
 
-@utility ring-brand {
-  --tw-ring-color: var(--brand-color);
+/* Custom utility for synchronized transitions */
+@utility sync-transition {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-timing-function: var(--transition-ease-in-out);
+  transition-duration: var(--duration-long);
+}
+
+/* NEW: Custom utility for a two-color focus ring using box-shadow */
+@utility focus-ring-dual {
+  outline: 2px solid transparent; /* Required for some browser compatibility */
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--focus-ring-outer), 0 0 0 4px var(--focus-ring-inner);
 }

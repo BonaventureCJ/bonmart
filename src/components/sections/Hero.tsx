@@ -33,7 +33,7 @@ export default function Hero() {
                 We are crafting something special just for you. Our new online store is under construction and will be live soon!
             </p>
             <p className="text-lg text-neutral-text-light dark:text-neutral-text-dark mb-8 max-w-md">
-                Because we use a CI/CD pipeline, you'll see changes and new features added on a rolling basis!
+                Because we use a CI/CD pipeline, you&apos;ll see changes and new features added on a rolling basis!
             </p>
 
             <div className="flex items-center gap-3 p-3 bg-surface-light dark:bg-neutral-bg-dark rounded-lg shadow-xl">

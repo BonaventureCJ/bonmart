@@ -1,6 +1,5 @@
 // src/components/Header.tsx
 import BonMartLogo from "@/assets/icons/bonmart-logo.svg";
-import { ThemeSwitcher } from "../common/ThemeSwitcher/ThemeSwitcher";
 
 const Header = () => {
   return (

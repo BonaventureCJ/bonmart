@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun, Monitor, MoonStar } from 'lucide-react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme, type Theme } from '@/store/themeSlice';
@@ -18,7 +18,7 @@ const themeLabels: Record<Theme, string> = {
 // Icons for each theme option.
 const themeIcons: Record<Theme, React.ReactNode> = {
     light: <Sun className="size-5" aria-hidden="true" />,
-    dark: <MoonStar className="size-5" aria-hidden="true" />, // Use MoonStar for dark theme
+    dark: <Moon className="size-5" aria-hidden="true" />, // Reverted to simple Moon
     system: <Monitor className="size-5" aria-hidden="true" />,
 };
 

@@ -1,6 +1,7 @@
 // src/components/Footer.tsx
 import { Globe } from "lucide-react";
 import Link from "next/link";
+import { ThemeToggleButton } from "@/components/common/ThemeToggleButton/ThemeToggleButton";
 
 export default function Footer() {
     const currentYear = new Date().getFullYear();
@@ -24,10 +25,13 @@ export default function Footer() {
                 </Link>
             </div>
 
-            <div className="text-sm text-gray-500 dark:text-gray-400 smooth-theme-transition">
-                <p>
-                    &copy; {currentYear} <span className="font-semibold">Bonaventure C.J. Ugwu</span>. All rights reserved.
-                </p>
+            <div className="flex items-center gap-4">
+                <ThemeToggleButton />
+                <div className="text-sm text-gray-500 dark:text-gray-400 smooth-theme-transition">
+                    <p>
+                        &copy; {currentYear} <span className="font-semibold">Bonaventure C.J. Ugwu</span>. All rights reserved.
+                    </p>
+                </div>
             </div>
         </footer>
     );

@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
-import ThemeProvider from "@/providers/ThemeProvider";
+import { ReduxProvider } from "@/store/ReduxProvider";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import "@/styles/globals.css";
@@ -11,14 +11,15 @@ export const metadata: Metadata = {
 };
 
 // Immediately applies the theme to prevent FOUC, based on stored preference or system setting.
+// This script is now simplified, as the ReduxProvider handles the localStorage logic.
 const setInitialTheme = `
   (function() {
-    const stored = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const isDark = (stored === "dark") || (!stored && prefersDark);
+    const storedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = storedTheme === "dark" || (storedTheme === null && prefersDark);
     if (isDark) {
       document.documentElement.classList.add("dark");
-    } else if (stored === "light") {
+    } else {
       document.documentElement.classList.remove("dark");
     }
   })();
@@ -26,7 +27,7 @@ const setInitialTheme = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="sync-transition">
       <head>
         {/*
           Script to set initial theme based on localStorage to prevent FOUC.
@@ -35,9 +36,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
       </head>
       <body className="antialiased">
-        <ThemeProvider>
+        <ReduxProvider>
           {/* Main container where the theme transition will be applied universally */}
-          <div className="min-h-screen bg-surface-light text-text-light dark:bg-surface-dark dark:text-text-dark transition-colors duration-[var(--duration-long)] ease-[var(--transition-ease-in-out)] font-sans">
+          <div className="min-h-screen bg-surface-light text-text-light dark:bg-surface-dark dark:text-text-dark font-sans">
             {/* Inner container for the grid layout */}
             <div className="grid grid-rows-[auto_1fr_auto] min-h-screen items-center justify-items-center p-4 sm:p-8">
               <Header />
@@ -47,7 +48,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Footer />
             </div>
           </div>
-        </ThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -32,7 +32,8 @@
 }
 
 /* 3. Configure custom variants for dark mode. */
-@custom-variant dark (&:where(.dark, .dark *));
+/* Define the custom dark variant using the `html.dark` class */
+@custom-variant dark (&:where(html.dark, html.dark *));
 
 /* 4. Implement theming using standard CSS custom properties. */
 :root {

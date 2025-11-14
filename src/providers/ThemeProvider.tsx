@@ -1,4 +1,4 @@
-// src\providers\ThemeProvider.tsx
+/* // src\providers\ThemeProvider.tsx
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -41,3 +41,4 @@ export function useTheme() {
   if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
   return ctx;
 }
+ */

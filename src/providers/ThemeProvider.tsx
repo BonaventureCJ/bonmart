@@ -1,4 +1,4 @@
-// src/components/ThemeProvider.tsx
+// src\providers\ThemeProvider.tsx
 "use client";
 
 import React, { createContext, useContext, useEffect, useState } from "react";
@@ -10,41 +10,28 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-/**
- * ThemeProvider hydrates theme preference from localStorage or system preference.
- * It prevents FOUC by holding off rendering children until theme is determined.
- */
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [isDark, setIsDark] = useState<boolean | null>(null);
+  const [isDark, setIsDark] = useState<boolean>(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
+    // Check localStorage first
     const stored = localStorage.getItem("theme");
-    if (stored === "dark" || stored === "light") {
-      const v = stored === "dark";
-      setIsDark(v);
-      document.documentElement.classList.toggle("dark", v);
+    if (stored !== null) {
+      setIsDark(stored === "dark");
       return;
     }
 
-    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // Otherwise, check system preference
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setIsDark(prefersDark);
-    document.documentElement.classList.toggle("dark", prefersDark);
   }, []);
 
   const toggle = () => {
-    // set to the opposite; if null treat as light -> true
-    const next = !(isDark ?? false);
+    const next = !isDark;
     setIsDark(next);
     localStorage.setItem("theme", next ? "dark" : "light");
     document.documentElement.classList.toggle("dark", next);
   };
-
-  // Prevent FOUC
-  if (isDark === null) {
-    return <div className="min-h-screen bg-gray-50 dark:bg-gray-900 smooth-theme-transition" aria-hidden="true" />;
-  }
 
   return <ThemeContext.Provider value={{ isDark, toggle }}>{children}</ThemeContext.Provider>;
 }

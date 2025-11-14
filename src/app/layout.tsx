@@ -10,9 +10,30 @@ export const metadata: Metadata = {
   description: "BonMart online store: under construction. Coming soon.",
 };
 
+// Immediately applies the theme to prevent FOUC, based on stored preference or system setting.
+const setInitialTheme = `
+  (function() {
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = (stored === "dark") || (!stored && prefersDark);
+    if (isDark) {
+      document.documentElement.classList.add("dark");
+    } else if (stored === "light") {
+      document.documentElement.classList.remove("dark");
+    }
+  })();
+`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/*
+          Script to set initial theme based on localStorage to prevent FOUC.
+          This runs before React hydrates the page.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
+      </head>
       <body className="antialiased">
         <ThemeProvider>
           {/* Main container where the theme transition will be applied universally */}

@@ -75,8 +75,8 @@ export const ThemeSwitcher = () => {
                     onClick={() => handleThemeChange(theme)}
                     className={clsx(
                         'relative z-0 flex size-8 items-center justify-center rounded-full sync-transition',
-                        // Apply a scale to the background of the button
-                        'text-neutral-color hover:bg-white/50 dark:hover:bg-neutral-bg-dark/50',
+                        // Hover state for light and dark mode, using custom CSS properties
+                        'hover:bg-[var(--color-toggle-hover-light)] dark:hover:bg-[var(--color-toggle-hover-dark)]',
                         // Active state classes to style the icon and use the pseudo-element
                         activeTheme === theme && 'text-surface-light dark:text-text-dark active-bg-scale',
                         activeTheme !== theme && 'text-neutral-color'

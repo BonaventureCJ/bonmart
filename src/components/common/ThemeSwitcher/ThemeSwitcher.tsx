@@ -10,58 +10,84 @@ const THEMES: Theme[] = ['light', 'dark', 'system'];
 
 // Accessible labels for each theme option.
 const themeLabels: Record<Theme, string> = {
-  light: 'Light Theme',
-  dark: 'Dark Theme',
-  system: 'System Theme',
+    light: 'Light Theme',
+    dark: 'Dark Theme',
+    system: 'System Theme',
 };
 
 // Icons for each theme option.
 const themeIcons: Record<Theme, React.ReactNode> = {
-  light: <Sun className="size-5" aria-hidden="true" />,
-  dark: <Moon className="size-5" aria-hidden="true" />,
-  system: <Monitor className="size-5" aria-hidden="true" />,
+    light: <Sun className="size-5" aria-hidden="true" />,
+    dark: <Moon className="size-5" aria-hidden="true" />,
+    system: <Monitor className="size-5" aria-hidden="true" />,
 };
 
 export const ThemeSwitcher = () => {
-  const dispatch = useAppDispatch();
-  const activeTheme = useAppSelector((state) => state.theme.theme);
-  const [mounted, setMounted] = useState(false);
+    const dispatch = useAppDispatch();
+    const activeTheme = useAppSelector((state) => state.theme.theme);
+    const [mounted, setMounted] = useState(false);
 
-  // Set mounted to true once the component is hydrated on the client.
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+    // Set mounted to true once the component is hydrated on the client.
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-  const handleThemeChange = (theme: Theme) => {
-    dispatch(setTheme(theme));
-  };
+    const handleThemeChange = (theme: Theme) => {
+        dispatch(setTheme(theme));
+    };
 
-  // Render a placeholder or nothing on the server.
-  if (!mounted) {
-    return <div className="flex rounded-full bg-toggle-hover-bg p-1" role="radiogroup" aria-label="Theme Switcher" />;
-  }
+    // Render a placeholder or nothing on the server.
+    if (!mounted) {
+        return (
+            <div className="flex rounded-full bg-toggle-hover-bg p-1" role="radiogroup" aria-label="Theme Switcher">
+                {/* Render a basic button placeholder for consistent server-side rendering */}
+                {THEMES.map((theme) => (
+                    <button
+                        key={theme}
+                        type="button"
+                        className="flex size-8 items-center justify-center rounded-full"
+                        disabled
+                        aria-hidden="true"
+                    />
+                ))}
+            </div>
+        );
+    }
 
-  // Render the interactive UI only on the client.
-  return (
-    <div className="flex rounded-full bg-toggle-hover-bg p-1 sync-transition focus-ring-dual" role="radiogroup" aria-label="Theme Switcher">
-      {THEMES.map((theme) => (
-        <button
-          key={theme}
-          type="button"
-          onClick={() => handleThemeChange(theme)}
-          className={clsx(
-            'flex size-8 items-center justify-center rounded-full sync-transition',
-            activeTheme === theme
-              ? 'bg-brand-color text-surface-light dark:text-text-dark' // Corrected dark mode text color for consistency
-              : 'text-neutral-color hover:bg-white/50 dark:hover:bg-neutral-bg-dark/50'
-          )}
-          aria-pressed={activeTheme === theme}
-          aria-label={themeLabels[theme]}
-          data-theme={theme}
+    // Render the interactive UI only on the client.
+    return (
+        <div
+            className={clsx(
+                'flex rounded-full p-1',
+                'bg-toggle-hover-bg focus-within:focus-ring-dual',
+            )}
+            role="radiogroup"
+            aria-label="Theme Switcher"
+            aria-describedby="theme-switcher-description"
         >
-          {themeIcons[theme]}
-        </button>
-      ))}
-    </div>
-  );
+            <span id="theme-switcher-description" className="sr-only">
+                Choose a theme for the website.
+            </span>
+            {THEMES.map((theme) => (
+                <button
+                    key={theme}
+                    type="button"
+                    onClick={() => handleThemeChange(theme)}
+                    className={clsx(
+                        'relative z-0 flex size-8 items-center justify-center rounded-full sync-transition',
+                        // Apply a scale to the background of the button
+                        'text-neutral-color hover:bg-white/50 dark:hover:bg-neutral-bg-dark/50',
+                        // Active state classes to style the icon and use the pseudo-element
+                        activeTheme === theme && 'text-surface-light dark:text-text-dark active-bg-scale',
+                        activeTheme !== theme && 'text-neutral-color'
+                    )}
+                    aria-pressed={activeTheme === theme}
+                    aria-label={themeLabels[theme]}
+                    data-theme={theme}
+                >
+                    <span className="relative z-10">{themeIcons[theme]}</span>
+                </button>
+            ))}
+        </div>
+    );
 };

@@ -2,14 +2,14 @@
 
 import { Provider } from 'react-redux';
 import { store } from './store';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { useAppSelector } from './hooks';
 
 // Helper component to apply theme logic.
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useAppSelector((state) => state.theme);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const applyTheme = () => {
       const root = document.documentElement;
       const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -42,7 +42,7 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
 
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
-  }, [theme]);
+  }, [theme]); // Re-run effect only when the theme state changes
 
   return <>{children}</>;
 };

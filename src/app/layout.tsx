@@ -1,4 +1,4 @@
-// src/app/layout.tsx
+// src/app/layout.tsx (RootLayout)
 import type { Metadata } from "next";
 import { ReduxProvider } from "@/store/ReduxProvider";
 import Footer from "@/components/layout/Footer";
@@ -27,7 +27,7 @@ const setInitialTheme = `
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="sync-transition">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/*
           Script to set initial theme based on localStorage to prevent FOUC.

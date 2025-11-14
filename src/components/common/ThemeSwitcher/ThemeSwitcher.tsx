@@ -1,6 +1,6 @@
 'use client';
 
-import { Moon, Sun, Monitor } from 'lucide-react';
+import { Moon, Sun, Monitor, MoonStar } from 'lucide-react';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme, type Theme } from '@/store/themeSlice';
@@ -18,7 +18,7 @@ const themeLabels: Record<Theme, string> = {
 // Icons for each theme option.
 const themeIcons: Record<Theme, React.ReactNode> = {
     light: <Sun className="size-5" aria-hidden="true" />,
-    dark: <Moon className="size-5" aria-hidden="true" />,
+    dark: <MoonStar className="size-5" aria-hidden="true" />, // Use MoonStar for dark theme
     system: <Monitor className="size-5" aria-hidden="true" />,
 };
 
@@ -75,10 +75,8 @@ export const ThemeSwitcher = () => {
                     onClick={() => handleThemeChange(theme)}
                     className={clsx(
                         'relative z-0 flex size-8 items-center justify-center rounded-full sync-transition',
-                        // Hover state for light and dark mode, using custom CSS properties
                         'hover:bg-[var(--color-toggle-hover-light)] dark:hover:bg-[var(--color-toggle-hover-dark)]',
-                        // Active state classes to style the icon and use the pseudo-element
-                        activeTheme === theme && 'text-surface-light dark:text-text-dark active-bg-scale',
+                        activeTheme === theme && 'text-brand',
                         activeTheme !== theme && 'text-neutral-color'
                     )}
                     aria-pressed={activeTheme === theme}

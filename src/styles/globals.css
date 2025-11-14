@@ -89,28 +89,3 @@ body {
   outline-offset: 2px;
   box-shadow: 0 0 0 2px var(--focus-ring-outer), 0 0 0 4px var(--focus-ring-inner);
 }
-
-/* Custom utility for active theme button effect */
-/* Add a pseudo-element for scaling the background without affecting the icon */
-@utility active-bg-scale {
-  position: relative;
-  overflow: hidden;
-
-  /* The pseudo-element for the scaled background */
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* Cover the entire button area */
-    border-radius: inherit;
-    /* Inherit the button's rounded corners */
-    background-color: var(--brand-color);
-    transform: scale(0);
-    transition: transform var(--duration-long) var(--transition-ease-in-out);
-  }
-
-  /* When the button is active, scale the pseudo-element */
-  &:where([aria-pressed="true"], [aria-pressed="true"] *)::before {
-    transform: scale(1.1);
-  }
-}

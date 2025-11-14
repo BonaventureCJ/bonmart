@@ -1,6 +1,6 @@
 // src/app/layout.tsx (RootLayout)
 import type { Metadata } from "next";
-import { ReduxProvider } from "@/store/ReduxProvider";
+import { ReduxProvider } from "@/providers/ReduxProvider";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import "@/styles/globals.css";

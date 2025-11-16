@@ -6,24 +6,21 @@
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
 
-  --color-neutral-text-light: #1f2937;
-  --color-neutral-text-dark: #e5e7eb;
-
+  --color-neutral-text-light: #4b5563;
+  --color-neutral-text-dark: #d1d5db;
   --color-neutral-bg-dark: #1f2937;
+
   --color-surface-light: #ffffff;
-  --color-text-light: #171717;
   --color-surface-dark: #0a0a0a;
+  --color-text-light: #171717;
   --color-text-dark: #ededed;
 
-  /* Single variable for the focus ring color */
   --color-focus-ring: var(--color-brand-primary);
   --color-focus-ring-dark: var(--color-brand-primary-light);
 
-  /* Variables for interactive states */
   --color-toggle-hover-light: #f3f4f6;
   --color-toggle-hover-dark: #374151;
 
-  /* New variables for the background of the toggle wrapper */
   --color-toggle-bg-light: #e5e7eb;
   --color-toggle-bg-dark: #2d3748;
 
@@ -45,6 +42,7 @@
   --toggle-hover-bg: var(--color-toggle-hover-light);
   --toggle-bg: var(--color-toggle-bg-light);
   --focus-ring: var(--color-focus-ring);
+  --footer-border: var(--color-neutral-text-light);
 }
 
 html.dark {
@@ -56,9 +54,10 @@ html.dark {
   --toggle-hover-bg: var(--color-toggle-hover-dark);
   --toggle-bg: var(--color-toggle-bg-dark);
   --focus-ring: var(--color-focus-ring-dark);
+  --footer-border: var(--color-neutral-text-dark);
 }
 
-/* 5. Global base styles using the custom properties. */
+/* Global base styles using the custom properties. */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -74,22 +73,21 @@ body {
   background-color: var(--color-neutral-bg-dark);
 }
 
-@utility text-neutral-text-light {
-  color: var(--color-neutral-text-light);
+@utility text-neutral {
+  color: var(--neutral-color);
 }
 
-@utility text-neutral-text-dark {
-  color: var(--color-neutral-text-dark);
+@utility border-footer {
+  border-color: var(--footer-border);
 }
 
-/* Custom utility for a single-color focus ring using box-shadow */
 @utility focus-ring {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--focus-ring);
+  &:focus-visible {
+    outline: 0;
+    box-shadow: 0 0 0 2px var(--focus-ring);
+  }
 }
 
-/* Utility for the toggle background */
 @utility bg-toggle-bg {
   background-color: var(--toggle-bg);
 }

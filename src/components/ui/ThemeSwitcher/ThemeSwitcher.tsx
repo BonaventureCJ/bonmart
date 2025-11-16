@@ -7,7 +7,8 @@ import { setTheme, type Theme } from '@/store/themeSlice';
 import { useState, useEffect, useRef } from 'react';
 import { Icon, type IconName } from '@/components/ui/Icon';
 
-const THEMES: Theme[] = ['light', 'dark', 'system'];
+// Re-order the themes array to change the display order.
+const THEMES: Theme[] = ['system', 'light', 'dark'];
 
 // Accessible labels for each theme option.
 const themeLabels: Record<Theme, string> = {
@@ -127,7 +128,7 @@ export const ThemeSwitcher = () => {
 
                         <Icon
                             name={themeIcons[theme]}
-                            className="size-6"
+                            className="size-5"
                             aria-hidden="true"
                         />
                     </button>

@@ -1,6 +1,6 @@
 import { Globe } from 'lucide-react';
 import Link from 'next/link';
-import { ThemeSwitcher } from '@/components/common/ThemeSwitcher/ThemeSwitcher';
+import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();

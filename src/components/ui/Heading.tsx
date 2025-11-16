@@ -49,8 +49,10 @@ export const Heading = React.memo(function Heading({
     as,
     id,
 }: HeadingProps) {
-    if (level < 1 || level > 6) {
-        throw new Error(`Heading: invalid "level" value ${level}. Must be 1–6.`);
+    if (process.env.NODE_ENV !== 'production' && (level < 1 || level > 6)) {
+        console.error(`Heading: invalid "level" value ${level}. Must be 1–6.`);
+        // Fallback to level 1 for production to prevent a crash
+        level = 1;
     }
 
     const semanticTag = `h${level}`;

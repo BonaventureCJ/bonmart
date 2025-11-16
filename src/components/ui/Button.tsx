@@ -2,13 +2,13 @@
 'use client';
 
 import { forwardRef } from "react";
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, ReactNode, ElementType } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Icon, type IconName } from "./Icon";
+import type React from "react";
 
-export interface ButtonProps
-    extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled'> {
+type CommonProps = {
     children?: ReactNode;
     variant?: "primary" | "secondary" | "ghost" | "danger";
     size?: "sm" | "md" | "lg";
@@ -18,10 +18,21 @@ export interface ButtonProps
     fullWidth?: boolean;
     loading?: boolean;
     disabled?: boolean;
-    // Next.js Link compatibility
-    href?: string;
-    as?: React.ElementType;
-}
+    className?: string;
+    disableFocusRing?: boolean;
+};
+
+type ButtonAsButton = CommonProps & {
+    href?: undefined;
+    as?: 'button';
+} & ButtonHTMLAttributes<HTMLButtonElement>;
+
+type ButtonAsLink<T extends ElementType = typeof Link> = CommonProps & {
+    href: string;
+    as?: T;
+} & React.ComponentPropsWithoutRef<T>;
+
+export type ButtonProps = ButtonAsButton | ButtonAsLink;
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     (
@@ -34,16 +45,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             loading = false,
             disabled = false,
             ariaLabel,
-            type = "button",
             fullWidth = false,
-            href,
-            as,
+            disableFocusRing = false,
             className,
             ...props
         },
         ref
     ) => {
-        // Accessibility check for icon-only buttons
         if (process.env.NODE_ENV !== 'production') {
             if (!children && !ariaLabel) {
                 console.warn(
@@ -55,17 +63,21 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         const isDisabled = disabled || loading;
 
         const baseStyles =
-            "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer whitespace-nowrap select-none disabled:cursor-not-allowed";
+            clsx(
+                "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap select-none",
+                !disableFocusRing && "focus-ring",
+                "disabled:cursor-not-allowed"
+            );
 
         const variantStyles = {
             primary:
-                "bg-brand-color text-white hover:bg-brand-color/90 focus:ring-brand-color disabled:bg-brand-color/40 disabled:text-white/60",
+                "bg-brand-color text-white hover:bg-brand-color/90 disabled:bg-brand-color/40 disabled:text-white/60",
             secondary:
-                "bg-toggle-bg text-foreground hover:bg-toggle-hover-bg focus:ring-brand-color disabled:bg-toggle-bg/50 disabled:text-foreground/40",
+                "bg-toggle-bg text-foreground hover:bg-toggle-hover-bg disabled:bg-toggle-bg/50 disabled:text-foreground/40",
             ghost:
-                "bg-transparent text-foreground hover:bg-toggle-hover-bg focus:ring-brand-color disabled:text-foreground/40",
+                "bg-transparent text-foreground hover:bg-toggle-hover-bg disabled:text-foreground/40",
             danger:
-                "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-400 disabled:text-white/60",
+                "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-400 disabled:text-white/60",
         };
 
         const sizeStyles = {
@@ -80,48 +92,12 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             sizeStyles[size],
             iconPlacement === "right" && children && "flex-row-reverse",
             fullWidth && "w-full",
+            isDisabled && (props as ButtonAsLink).href ? 'pointer-events-none' : '',
             className
         );
 
-        // Render as Link if href is provided
-        if (href && !isDisabled) {
-            const LinkComponent = as || Link;
-            return (
-                <LinkComponent
-                    href={href}
-                    className={combinedStyles}
-                    aria-label={children ? undefined : ariaLabel}
-                    aria-disabled={isDisabled}
-                    {...props}
-                >
-                    {loading && (
-                        <Icon
-                            name="loader"
-                            className="animate-spin"
-                            label="Loading"
-                        />
-                    )}
-                    {!loading && icon && (
-                        <Icon name={icon} className="w-[1em] h-[1em]" />
-                    )}
-                    {children}
-                </LinkComponent>
-            );
-        }
-
-        // Standard button render
-        return (
-            <button
-                ref={ref}
-                className={combinedStyles}
-                disabled={isDisabled}
-                aria-disabled={isDisabled}
-                aria-busy={loading || undefined}
-                aria-label={children ? undefined : ariaLabel}
-                type={type}
-                {...props}
-            >
-                {/* Loading spinner */}
+        const content = (
+            <>
                 {loading && (
                     <Icon
                         name="loader"
@@ -129,14 +105,44 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         label="Loading"
                     />
                 )}
-
-                {/* Icon when not loading */}
                 {!loading && icon && (
                     <Icon name={icon} className="w-[1em] h-[1em]" />
                 )}
-
-                {/* Text content */}
                 {children}
+            </>
+        );
+
+        if (props.href) {
+            const { href, as, ...linkProps } = props as ButtonAsLink;
+            const LinkComponent = as || Link;
+            return (
+                <LinkComponent
+                    href={href}
+                    className={combinedStyles}
+                    aria-label={children ? undefined : ariaLabel}
+                    aria-disabled={isDisabled}
+                    tabIndex={isDisabled ? -1 : undefined}
+                    {...linkProps}
+                >
+                    {content}
+                </LinkComponent>
+            );
+        }
+
+        const { type = 'button', ...buttonProps } = props as ButtonAsButton;
+
+        return (
+            <button
+                ref={ref as React.ForwardedRef<HTMLButtonElement>}
+                className={combinedStyles}
+                disabled={isDisabled}
+                aria-disabled={isDisabled}
+                aria-busy={loading || undefined}
+                aria-label={children ? undefined : ariaLabel}
+                type={type}
+                {...buttonProps}
+            >
+                {content}
             </button>
         );
     }

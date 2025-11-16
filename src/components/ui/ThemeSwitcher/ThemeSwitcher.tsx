@@ -1,10 +1,11 @@
+// src/components/ui/ThemeSwitcher/ThemeSwitcher.tsx
 'use client';
 
-import { Moon, Sun, Monitor } from 'lucide-react';
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme, type Theme } from '@/store/themeSlice';
 import { useState, useEffect, useRef } from 'react';
+import { Icon, type IconName } from '@/components/ui/Icon';
 
 const THEMES: Theme[] = ['light', 'dark', 'system'];
 
@@ -15,11 +16,11 @@ const themeLabels: Record<Theme, string> = {
     system: 'System Theme',
 };
 
-// Icons for each theme option.
-const themeIcons: Record<Theme, React.ReactNode> = {
-    light: <Sun className="size-5" aria-hidden="true" />,
-    dark: <Moon className="size-5" aria-hidden="true" />,
-    system: <Monitor className="size-5" aria-hidden="true" />,
+// Use the IconName type for the icon names.
+const themeIcons: Record<Theme, IconName> = {
+    light: 'sun',
+    dark: 'moon',
+    system: 'monitor',
 };
 
 export const ThemeSwitcher = () => {
@@ -102,6 +103,7 @@ export const ThemeSwitcher = () => {
             </span>
             {THEMES.map((theme) => {
                 const isSelected = activeTheme === theme;
+                //NB: the native button component is used here instead of the reusable Button component because the logic for themeSwitcher button is significantly different from others
                 return (
                     <button
                         key={theme}
@@ -122,7 +124,12 @@ export const ThemeSwitcher = () => {
                         data-theme={theme}
                         tabIndex={isSelected ? 0 : -1}
                     >
-                        <span className="relative z-10">{themeIcons[theme]}</span>
+
+                        <Icon
+                            name={themeIcons[theme]}
+                            className="size-6"
+                            aria-hidden="true"
+                        />
                     </button>
                 );
             })}

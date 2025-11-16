@@ -1,5 +1,6 @@
 // src/components/ui/icons.ts
 import {
+    //NOT YET IN USE
     ArrowRight,
     Menu,
     Home,
@@ -16,10 +17,14 @@ import {
     Minus,
     Check,
     AlertCircle,
+    //Theme Icons
+    Sun,
+    Moon,
+    Monitor,
 } from "lucide-react";
 
-// TODO: Remove all these and import only the icons the application actually uses
 export const appIcons = {
+    //NOT YET IN USE
     arrowRight: ArrowRight,
     menu: Menu,
     home: Home,
@@ -36,12 +41,15 @@ export const appIcons = {
     minus: Minus,
     check: Check,
     alertCircle: AlertCircle,
+    //Theme Icons
+    sun: Sun,
+    moon: Moon,
+    monitor: Monitor,
 } as const;
 
-// Strongly-typed icon name union
 export type IconName = keyof typeof appIcons;
 
-// Runtime validation for icon names
 export const isValidIconName = (name: string): name is IconName => {
     return name in appIcons;
 };
+

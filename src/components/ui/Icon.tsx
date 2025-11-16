@@ -4,7 +4,8 @@ import type { LucideProps } from "lucide-react";
 import { clsx } from "clsx";
 import { appIcons, type IconName, isValidIconName } from "./icons";
 
-export interface IconProps extends Omit<LucideProps, 'ref'> {
+// Create a combined props type that ensures 'ref' is handled correctly by forwardRef.
+export interface IconProps extends LucideProps {
     name: IconName;
     label?: string;
     className?: string;
@@ -13,9 +14,13 @@ export interface IconProps extends Omit<LucideProps, 'ref'> {
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
     ({ name, label, className, ...props }, ref) => {
         // Error boundary for missing icons
-        if (!isValidIconName(name)) {
-            console.error(`Icon "${name}" not found in appIcons. Available icons: ${Object.keys(appIcons).join(', ')}`);
-            return null;
+        if (process.env.NODE_ENV !== 'production') {
+            if (!isValidIconName(name)) {
+                console.error(
+                    `Icon "${name}" not found in appIcons. Available icons: ${Object.keys(appIcons).join(', ')}`
+                );
+                return null;
+            }
         }
 
         const LucideIcon = appIcons[name];
@@ -30,6 +35,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
                 aria-hidden={label ? undefined : true}
                 aria-label={label}
                 role={label ? "img" : "none"}
+                // `focusable="false"` is redundant if `aria-hidden` is present but IS kept for older browser support.
                 focusable="false"
                 {...props}
             />

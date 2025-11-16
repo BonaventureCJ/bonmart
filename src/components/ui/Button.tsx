@@ -2,7 +2,7 @@
 'use client';
 
 import { forwardRef } from "react";
-import type { ButtonHTMLAttributes, ReactNode, ElementType } from "react";
+import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
 import { Icon, type IconName } from "./Icon";
@@ -30,12 +30,12 @@ type ButtonAsButton = CommonProps & {
 type ButtonAsLink<T extends ElementType = typeof Link> = CommonProps & {
     href: string;
     as?: T;
-} & React.ComponentPropsWithoutRef<T>;
+} & ComponentPropsWithoutRef<T>;
 
-export type ButtonProps = ButtonAsButton | ButtonAsLink;
+type ButtonProps<T extends ElementType> = ButtonAsButton | ButtonAsLink<T>;
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    (
+const ButtonComponent = forwardRef(
+    <T extends ElementType>(
         {
             children,
             variant = "primary",
@@ -49,8 +49,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             disableFocusRing = false,
             className,
             ...props
-        },
-        ref
+        }: ButtonProps<T>,
+        ref: React.ForwardedRef<any>
     ) => {
         if (process.env.NODE_ENV !== 'production') {
             if (!children && !ariaLabel) {
@@ -62,12 +62,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         const isDisabled = disabled || loading;
 
-        const baseStyles =
-            clsx(
-                "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap select-none",
-                !disableFocusRing && "focus-ring",
-                "disabled:cursor-not-allowed"
-            );
+        const baseStyles = clsx(
+            "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap select-none",
+            !disableFocusRing && "focus-ring",
+            isDisabled && "disabled:cursor-not-allowed"
+        );
 
         const variantStyles = {
             primary:
@@ -77,7 +76,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             ghost:
                 "bg-transparent text-foreground hover:bg-toggle-hover-bg disabled:text-foreground/40",
             danger:
-                "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-400 disabled:text-white/60",
+                "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-700/60 disabled:text-white/60",
         };
 
         const sizeStyles = {
@@ -92,7 +91,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             sizeStyles[size],
             iconPlacement === "right" && children && "flex-row-reverse",
             fullWidth && "w-full",
-            isDisabled && (props as ButtonAsLink).href ? 'pointer-events-none' : '',
+            (props as ButtonAsLink<T>).href && isDisabled ? 'pointer-events-none' : '',
             className
         );
 
@@ -112,8 +111,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             </>
         );
 
-        if (props.href) {
-            const { href, as, ...linkProps } = props as ButtonAsLink;
+        if ((props as ButtonAsLink<T>).href) {
+            const { href, as, ...linkProps } = props as ButtonAsLink<T>;
             const LinkComponent = as || Link;
             return (
                 <LinkComponent
@@ -123,6 +122,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     aria-disabled={isDisabled}
                     tabIndex={isDisabled ? -1 : undefined}
                     {...linkProps}
+                    ref={ref}
                 >
                     {content}
                 </LinkComponent>
@@ -133,7 +133,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
         return (
             <button
-                ref={ref as React.ForwardedRef<HTMLButtonElement>}
+                ref={ref}
                 className={combinedStyles}
                 disabled={isDisabled}
                 aria-disabled={isDisabled}
@@ -148,4 +148,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     }
 );
 
-Button.displayName = "Button";
+ButtonComponent.displayName = "Button";
+
+export const Button = ButtonComponent as <T extends ElementType = 'button'>(
+    props: ButtonProps<T> & { ref?: React.Ref<any> }
+) => React.ReactElement | null;

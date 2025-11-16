@@ -22,17 +22,30 @@ type CommonProps = {
     disableFocusRing?: boolean;
 };
 
+// Define the correct ref type for the polymorphic component.
+type PolymorphicRef<T extends ElementType> = React.ComponentPropsWithRef<T>['ref'];
+
+// Props for a button (renders as <button>)
 type ButtonAsButton = CommonProps & {
     href?: undefined;
     as?: 'button';
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
+// Props for a link (renders as <a> or Next.js <Link>)
 type ButtonAsLink<T extends ElementType = typeof Link> = CommonProps & {
     href: string;
     as?: T;
 } & ComponentPropsWithoutRef<T>;
 
+// Combined props type with `ElementType` generic
 type ButtonProps<T extends ElementType> = ButtonAsButton | ButtonAsLink<T>;
+
+// Type the component using an intersection of the props and ref types.
+// This is the correct pattern for polymorphic components with forwardRef.
+type ButtonComponentType = <T extends ElementType = 'button'>(
+    props: ButtonProps<T> & { ref?: PolymorphicRef<T> }
+) => React.ReactElement | null;
+
 
 const ButtonComponent = forwardRef(
     <T extends ElementType>(
@@ -50,7 +63,7 @@ const ButtonComponent = forwardRef(
             className,
             ...props
         }: ButtonProps<T>,
-        ref: React.ForwardedRef<any>
+        ref: PolymorphicRef<T>
     ) => {
         if (process.env.NODE_ENV !== 'production') {
             if (!children && !ariaLabel) {
@@ -111,7 +124,7 @@ const ButtonComponent = forwardRef(
             </>
         );
 
-        if ((props as ButtonAsLink<T>).href) {
+        if ("href" in props) {
             const { href, as, ...linkProps } = props as ButtonAsLink<T>;
             const LinkComponent = as || Link;
             return (
@@ -150,6 +163,4 @@ const ButtonComponent = forwardRef(
 
 ButtonComponent.displayName = "Button";
 
-export const Button = ButtonComponent as <T extends ElementType = 'button'>(
-    props: ButtonProps<T> & { ref?: React.Ref<any> }
-) => React.ReactElement | null;
+export const Button = ButtonComponent as ButtonComponentType;

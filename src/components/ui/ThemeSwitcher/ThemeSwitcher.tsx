@@ -1,3 +1,4 @@
+// src/components/ui/ThemeSwitcher/ThemeSwitcher.tsx
 'use client';
 
 import clsx from 'clsx';
@@ -6,6 +7,7 @@ import { setTheme, type Theme } from '@/store/themeSlice';
 import { useState, useEffect, useRef } from 'react';
 import { ThemeButton } from './ThemeButton';
 import type React from 'react';
+import type { IconName } from '@/components/ui/Icon';
 
 const THEMES: Theme[] = ['system', 'light', 'dark'];
 
@@ -17,7 +19,7 @@ const themeLabels: Record<Theme, string> = {
 };
 
 // Use the IconName type for the icon names.
-const themeIcons: Record<Theme, string> = {
+const themeIcons: Record<Theme, IconName> = {
     light: 'sun',
     dark: 'moon',
     system: 'monitor',
@@ -119,7 +121,7 @@ export const ThemeSwitcher = () => {
                         }}
                         theme={theme}
                         isSelected={isSelected}
-                        iconName={themeIcons[theme] as any} // Cast needed for icon type compatibility
+                        iconName={themeIcons[theme]}
                         label={themeLabels[theme]}
                         onClick={() => handleThemeChange(theme)}
                     />

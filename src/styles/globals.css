@@ -1,7 +1,7 @@
 /* src/app/globals.css */
 @import "tailwindcss";
 
-/* 2. Centralize design tokens with the @theme directive. */
+/* Centralize design tokens with the @theme directive. */
 @theme {
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
@@ -15,27 +15,27 @@
   --color-surface-dark: #0a0a0a;
   --color-text-dark: #ededed;
 
-  /* Variables for a two-color focus ring */
-  --color-focus-ring-outer: #ffffff;
-  --color-focus-ring-inner: var(--color-brand-primary);
-
-  --color-focus-ring-outer-dark: #171717;
-  --color-focus-ring-inner-dark: var(--color-brand-primary-light);
+  /* Single variable for the focus ring color */
+  --color-focus-ring: var(--color-brand-primary);
+  --color-focus-ring-dark: var(--color-brand-primary-light);
 
   /* Variables for interactive states */
   --color-toggle-hover-light: #f3f4f6;
   --color-toggle-hover-dark: #374151;
+
+  /* New variables for the background of the toggle wrapper */
+  --color-toggle-bg-light: #e5e7eb;
+  --color-toggle-bg-dark: #2d3748;
 
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
 }
 
-/* 3. Configure custom variants for dark mode. */
-/* Define the custom dark variant using the `html.dark` class */
+/* Configure custom variants for dark mode. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
-/* 4. Implement theming using standard CSS custom properties. */
+/* Implement theming using standard CSS custom properties. */
 :root {
   color-scheme: light;
   --background: var(--color-surface-light);
@@ -43,8 +43,8 @@
   --brand-color: var(--color-brand-primary);
   --neutral-color: var(--color-neutral-text-light);
   --toggle-hover-bg: var(--color-toggle-hover-light);
-  --focus-ring-outer: var(--color-focus-ring-outer);
-  --focus-ring-inner: var(--color-focus-ring-inner);
+  --toggle-bg: var(--color-toggle-bg-light);
+  --focus-ring: var(--color-focus-ring);
 }
 
 html.dark {
@@ -54,18 +54,18 @@ html.dark {
   --brand-color: var(--color-brand-primary-light);
   --neutral-color: var(--color-neutral-text-dark);
   --toggle-hover-bg: var(--color-toggle-hover-dark);
-  --focus-ring-outer: var(--color-focus-ring-outer-dark);
-  --focus-ring-inner: var(--color-focus-ring-inner-dark);
+  --toggle-bg: var(--color-toggle-bg-dark);
+  --focus-ring: var(--color-focus-ring-dark);
 }
 
-/* 5. Define global base styles using the custom properties. */
+/* 5. Global base styles using the custom properties. */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family-sans);
 }
 
-/* 6. Define reusable custom utility classes. */
+/* Reusable custom utility classes. */
 @utility text-brand {
   color: var(--brand-color);
 }
@@ -82,10 +82,14 @@ body {
   color: var(--color-neutral-text-dark);
 }
 
-/* Custom utility for a two-color focus ring using box-shadow */
-@utility focus-ring-dual {
+/* Custom utility for a single-color focus ring using box-shadow */
+@utility focus-ring {
   outline: 2px solid transparent;
-  /* Required for some browser compatibility */
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--focus-ring-outer), 0 0 0 4px var(--focus-ring-inner);
+  box-shadow: 0 0 0 2px var(--focus-ring);
+}
+
+/* Utility for the toggle background */
+@utility bg-toggle-bg {
+  background-color: var(--toggle-bg);
 }

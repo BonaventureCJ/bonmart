@@ -1,10 +1,10 @@
-// src/components/Hero.tsx
+// src/components/hero.tsx
 "use client";
 
 import BonMartCartLogo from "@/assets/icons/bonmart-cart-logo.svg";
 import { Loader2 } from "lucide-react";
 
-export default function Hero() {
+export function Hero() {
     // Respect reduced motion system preference for animations.
     const prefersReducedMotion =
         typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -1,13 +1,13 @@
-// src/components/ui/ThemeSwitcher/ThemeSwitcher.tsx
+// src/components/ui/theme-switcher/theme-switcher.tsx
 'use client';
 
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme, type Theme } from '@/store/themeSlice';
 import { useState, useEffect, useRef } from 'react';
-import { ThemeButton } from './ThemeButton';
+import { ThemeButton } from './theme-button';
 import type React from 'react';
-import type { IconName } from '@/components/ui/Icon';
+import type { IconName } from '@/components/ui/icon/icon';
 
 const THEMES: Theme[] = ['system', 'light', 'dark'];
 

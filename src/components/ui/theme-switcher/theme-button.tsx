@@ -1,7 +1,7 @@
-// src/components/ui/ThemeSwitcher/ThemeButton.tsx
+// src/components/ui/theme-switcher/theme-button.tsx
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
-import { Icon, type IconName } from '@/components/ui/Icon';
+import { Icon, type IconName } from '@/components/ui/icon/icon';
 import type { Theme } from '@/store/themeSlice';
 
 type ThemeButtonProps = {

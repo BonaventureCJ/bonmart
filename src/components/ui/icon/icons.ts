@@ -1,4 +1,4 @@
-// src/components/ui/icons.ts
+// src/components/ui/icon/icons.ts
 import {
   // Common icons
   ArrowRight,

@@ -1,11 +1,11 @@
-// src/components/ui/Button.tsx
+// src/components/ui/button/button.tsx
 'use client';
 
 import { forwardRef } from "react";
 import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
 import Link from "next/link";
 import { clsx } from "clsx";
-import { Icon, type IconName } from "./Icon";
+import { Icon, type IconName } from "../icon/icon";
 import type React from "react";
 
 type CommonProps = {

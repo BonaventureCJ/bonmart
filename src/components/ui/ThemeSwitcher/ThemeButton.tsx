@@ -1,6 +1,4 @@
 // src/components/ui/ThemeSwitcher/ThemeButton.tsx
-'use client';
-
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { Icon, type IconName } from '@/components/ui/Icon';
@@ -26,6 +24,7 @@ export const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(
                     'relative z-0 flex size-8 items-center justify-center rounded-full sync-transition',
                     'hover:bg-[var(--color-toggle-hover-light)] dark:hover:bg-[var(--color-toggle-hover-dark)]',
                     'focus:focus-ring',
+                    'cursor-pointer',
                     isSelected && 'text-brand',
                     !isSelected && 'text-neutral-color',
                     className

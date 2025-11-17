@@ -1,4 +1,4 @@
-// src/components/ui/Icon.tsx
+// src/components/ui/icon/icon.tsx
 import { forwardRef } from "react";
 import type { LucideProps } from "lucide-react";
 import { clsx } from "clsx";

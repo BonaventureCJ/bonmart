@@ -1,4 +1,4 @@
-import PageContainer from "@/components/layout/PageContainer";
+import PageContainer from "@/components/layout/page-container";
 
 export default function About() {
     return (

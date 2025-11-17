@@ -1,18 +1,18 @@
-// src/components/layout/Footer.tsx
+// src/components/shared/footer.tsx
 import Link from 'next/link';
 import { clsx } from 'clsx';
-import { Icon } from '@/components/ui/Icon';
-import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher/ThemeSwitcher';
+import { Icon } from '@/components/ui/icon/icon';
+import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';
 
 /**
  * Renders the responsive and accessible footer component for the application.
  */
-export default function Footer() {
+export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer
-      className="w-full border-t border-footer bg-[var(--background)] p-6 md:p-8"
+      className="w-full border-t border-footer p-6 md:p-8"
       role="contentinfo"
     >
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 md:flex-row md:justify-between lg:gap-8">

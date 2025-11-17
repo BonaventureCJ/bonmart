@@ -1,7 +1,7 @@
 // src/components/Hero.tsx
 "use client";
 
-import BonMartLogo from "@/assets/icons/bonmart-logo.svg";
+import BonMartCartLogo from "@/assets/icons/bonmart-cart-logo.svg";
 import { Loader2 } from "lucide-react";
 
 export default function Hero() {
@@ -17,7 +17,7 @@ export default function Hero() {
             className="flex flex-col items-center text-center gap-8 p-4 sm:p-8"
         >
             <div className={`mb-4 ${prefersReducedMotion ? "" : "animate-bounce"}`} aria-hidden={prefersReducedMotion}>
-                <BonMartLogo className="w-[100px] h-[100px] text-brand" />
+                <BonMartCartLogo className="w-[100px] h-[100px] text-brand" />
             </div>
 
             <h1 id="hero-title" className="text-5xl md:text-6xl font-extrabold mb-4">

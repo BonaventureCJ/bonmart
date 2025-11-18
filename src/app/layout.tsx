@@ -1,4 +1,4 @@
-// src/app/layout.tsx (RootLayout)
+// src/app/layout.tsx
 import type { Metadata } from "next";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import { Footer } from "@/components/shared/footer";
@@ -6,12 +6,11 @@ import { Header } from "@/components/shared/header";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {
-  title: "BonMart - Bonzer Shopping Experiences",
+  title: "BonMart - Bonzer & Green",
   description: "BonMart online store: under construction. Coming soon.",
 };
 
 // Immediately applies the theme to prevent FOUC, based on stored preference or system setting.
-// This script is now simplified, as the ReduxProvider handles the localStorage logic.
 const setInitialTheme = `
   (function() {
     const storedTheme = localStorage.getItem("theme");

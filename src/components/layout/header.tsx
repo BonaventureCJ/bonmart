@@ -2,7 +2,7 @@
 import type { FC } from 'react';
 import clsx from 'clsx';
 import { Brand } from '@/components/branding/brand';
-import { Button } from '@/components/ui/button/button';
+import { UtilityNav } from '@/components/navigation/utility-nav'; // Corrected import path based on best practices
 
 export const Header: FC = () => {
     return (
@@ -15,10 +15,7 @@ export const Header: FC = () => {
         >
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 md:px-6">
                 <Brand />
-                <div className="flex items-center gap-4">
-                    <Button variant="primary">Login</Button>
-                    <Button variant="secondary">Sign Up</Button>
-                </div>
+                <UtilityNav /> {/* Render the component */}
             </div>
         </header>
     );

@@ -1,8 +1,8 @@
 // src/app/layout.tsx
 import type { Metadata } from "next";
 import { ReduxProvider } from "@/providers/ReduxProvider";
-import { Footer } from "@/components/shared/footer";
-import { Header } from "@/components/shared/header";
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header";
 import "@/styles/globals.css";
 
 export const metadata: Metadata = {

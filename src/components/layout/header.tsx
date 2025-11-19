@@ -1,4 +1,4 @@
-// src/components/shared/header.tsx
+// src/components/layout/header.tsx
 import type { FC } from 'react';
 import clsx from 'clsx';
 import { Brand } from '@/components/branding/brand';

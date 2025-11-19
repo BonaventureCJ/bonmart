@@ -47,7 +47,7 @@ export const UtilityNav = () => {
 
   return (
     <nav aria-label="Utility navigation">
-      <ul className="flex items-center space-x-2">
+      <ul className="flex items-center space-x-1">
         {utilityNavItems.map((item) => {
           const isActive = pathname === item.href;
 

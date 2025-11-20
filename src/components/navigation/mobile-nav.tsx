@@ -3,17 +3,29 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { clsx } from 'clsx';
-import { mainNavLinks } from './links';
+import { useEffect } from 'react';
+import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
+import { mainNavLinks } from './links';
 
+/**
+ * Mobile navigation component that displays a full-screen, slide-in menu on small devices.
+ * It is positioned below the fixed header to avoid overlap.
+ * @returns {JSX.Element} The MobileNav component.
+ */
 export const MobileNav = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
+  const isMobileMenuOpen = useAppSelector(
+    (state) => state.navigation.isMobileMenuOpen,
+  );
   const pathname = usePathname();
 
   // Close the menu if the route changes
+  useEffect(() => {
+    dispatch(closeMobileMenu());
+  }, [pathname, dispatch]);
+
   const handleLinkClick = () => {
     dispatch(closeMobileMenu());
   };
@@ -21,19 +33,21 @@ export const MobileNav = () => {
   return (
     <div
       className={clsx(
-        'fixed inset-0 z-40 transform bg-background transition-transform duration-300 md:hidden',
+        'fixed inset-y-0 right-0 z-50 w-full transform bg-background transition-transform duration-300 md:hidden',
+        'overflow-y-auto mt-16', // Use mt-16 here instead of pt-16
         {
-          'translate-x-0': isOpen,
-          'translate-x-full': !isOpen,
+          'translate-x-0': isMobileMenuOpen,
+          'translate-x-full': !isMobileMenuOpen,
         },
       )}
       role="dialog"
-      aria-modal={isOpen}
+      aria-modal={isMobileMenuOpen}
       id="mobile-menu"
+      tabIndex={isMobileMenuOpen ? 0 : -1}
     >
-      <div className="flex h-full flex-col p-4 pt-16">
+      <div className="flex h-full flex-col px-4 pb-4">
         <nav aria-label="Main mobile navigation">
-          <ul className="flex flex-col space-y-4">
+          <ul className="flex flex-col space-y-2">
             {mainNavLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
@@ -42,14 +56,17 @@ export const MobileNav = () => {
                     href={link.href}
                     onClick={handleLinkClick}
                     className={clsx(
-                      'block py-2 text-2xl font-bold transition-colors duration-long focus-ring',
+                      'block rounded-md px-2 py-3 text-2xl font-bold transition-colors duration-long',
+                      'focus-ring',
                       'hover:text-brand-color',
                       {
                         'text-brand-color': isActive,
                         'text-foreground': !isActive,
                       },
                     )}
-                    aria-current={isActive ? 'page' : undefined}
+                    aria-current={
+                      isActive ? 'page' : undefined
+                    }
                   >
                     {link.label}
                   </Link>
@@ -62,5 +79,3 @@ export const MobileNav = () => {
     </div>
   );
 };
-
-

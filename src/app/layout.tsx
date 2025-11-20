@@ -1,4 +1,4 @@
-// src/app/layout.tsx
+// src/app/layout.tsx (RootLayout)
 import type { Metadata } from 'next';
 import { ReduxProvider } from '@/providers/ReduxProvider';
 import { Footer } from '@/components/layout/footer';
@@ -39,10 +39,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReduxProvider>
           {/* Main container where the theme transition will be applied universally */}
           <div className="min-h-screen bg-surface-light text-text-light dark:bg-surface-dark dark:text-text-dark font-sans">
-            {/* Inner container for the grid layout */}
-            <div className="grid grid-rows-[auto_1fr_auto] min-h-screen items-center justify-items-center p-4 sm:p-8">
+            <div className="grid grid-rows-[auto_1fr_auto] min-h-screen">
               <Header />
-              <main className="row-start-2 w-full flex items-center justify-center">
+              <main className="w-full flex items-center justify-center p-4 sm:p-8">
                 {children}
               </main>
               <Footer />
@@ -54,4 +53,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-

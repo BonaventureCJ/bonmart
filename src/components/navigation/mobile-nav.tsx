@@ -46,7 +46,7 @@ export const MobileNav = () => {
       id="mobile-menu"
       tabIndex={isMobileMenuOpen ? 0 : -1}
     >
-      <div className="flex h-full flex-col px-4 pb-4">
+      <div className="flex h-full flex-col px-4 pb-4 pt-4"> {/* Added pt-4 here */}
         <nav aria-label="Main mobile navigation">
           <ul className="flex flex-col space-y-2">
             {mainNavLinks.map((link) => {

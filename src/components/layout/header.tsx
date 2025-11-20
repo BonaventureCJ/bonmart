@@ -10,7 +10,7 @@ export const Header: FC = () => {
     return (
         <header
             className={clsx(
-                'sticky top-0 z-[60] w-full', // Increased z-index to a higher value
+                'sticky top-0 z-60 w-full', // Increased z-index
                 'bg-background',
                 'border-b border-b-footer',
             )}

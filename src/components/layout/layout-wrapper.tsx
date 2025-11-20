@@ -9,7 +9,7 @@ import { Footer } from '@/components/layout/footer';
 import { clsx } from 'clsx';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { useAppDispatch } from '@/store/hooks';
-import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height'; // Import the new hook
+import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
 
 type LayoutWrapperProps = {
     children: ReactNode;
@@ -26,17 +26,31 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     );
     const dispatch = useAppDispatch();
 
-    // Use the custom hook to set the viewport height variable
     useMobileMenuHeight();
+
+    const handleOverlayClick = () => {
+        dispatch(closeMobileMenu());
+    };
 
     return (
         <>
             <Header />
+            {isMobileMenuOpen && (
+                <div
+                    className={clsx(
+                        'fixed inset-0 z-40 md:hidden',
+                        'bg-[var(--overlay-bg)] transition-opacity duration-300',
+                    )}
+                    aria-hidden="true"
+                    onClick={handleOverlayClick}
+                />
+            )}
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[auto_1fr_auto]',
                     {
-                        // Removed pointer-events-none as there is no overlay.
+                        'pointer-events-none md:pointer-events-auto':
+                            isMobileMenuOpen,
                     },
                 )}
                 aria-hidden={isMobileMenuOpen}

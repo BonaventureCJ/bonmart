@@ -50,6 +50,7 @@
   --toggle-bg-active: var(--color-toggle-bg-active-light);
   --focus-ring: var(--color-focus-ring);
   --footer-border: var(--color-neutral-text-light);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
 }
 
 html.dark {
@@ -63,6 +64,7 @@ html.dark {
   --toggle-bg-active: var(--color-toggle-bg-active-dark);
   --focus-ring: var(--color-focus-ring-dark);
   --footer-border: var(--color-neutral-text-dark);
+  --overlay-bg: rgba(0, 0, 0, 0.7);
 }
 
 /* Global base styles using the custom properties. */
@@ -102,4 +104,9 @@ body {
 
 @utility bg-toggle-bg-active {
   background-color: var(--toggle-bg-active);
+}
+
+/* Add the bg-background custom utility class */
+@utility bg-background {
+  background-color: var(--background);
 }

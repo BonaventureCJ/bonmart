@@ -10,8 +10,7 @@ import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { mainNavLinks } from './links';
 
 /**
- * Mobile navigation component that displays a full-screen, slide-in menu on small devices.
- * It is positioned below the fixed header to avoid overlap.
+ * Mobile navigation component that displays a 3/4 width, slide-in menu on small devices.
  * @returns {JSX.Element} The MobileNav component.
  */
 export const MobileNav = () => {
@@ -33,11 +32,13 @@ export const MobileNav = () => {
   return (
     <div
       className={clsx(
-        'fixed inset-y-0 right-0 z-50 w-full transform bg-background transition-transform duration-300 md:hidden',
-        'overflow-y-auto mt-16', // Use mt-16 here instead of pt-16
+        'fixed left-0 z-50 w-3/4 transform transition-transform duration-300 md:hidden',
+        'bg-background',
+        'top-16 overflow-y-auto',
+        'h-[calc(var(--vh)-4rem)]', // Use the custom --vh variable
         {
           'translate-x-0': isMobileMenuOpen,
-          'translate-x-full': !isMobileMenuOpen,
+          '-translate-x-full': !isMobileMenuOpen,
         },
       )}
       role="dialog"

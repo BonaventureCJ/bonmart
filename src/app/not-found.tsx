@@ -2,7 +2,7 @@ import Link from 'next/link';
 // PLACEHOLDER PAGE
 export default function NotFound() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen text-center bg-[var(--background)] p-6">
+    <div className="flex flex-col items-center justify-center text-center bg-[var(--background)] p-6">
       <div className="p-8 space-y-4 max-w-lg">
         <h1 className="text-6xl font-bold text-[var(--foreground)] dark:text-[var(--foreground)]">
           404

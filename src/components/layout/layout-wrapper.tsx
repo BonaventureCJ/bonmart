@@ -9,6 +9,7 @@ import { Footer } from '@/components/layout/footer';
 import { clsx } from 'clsx';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { useAppDispatch } from '@/store/hooks';
+import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height'; // Import the new hook
 
 type LayoutWrapperProps = {
     children: ReactNode;
@@ -16,7 +17,6 @@ type LayoutWrapperProps = {
 
 /**
  * A client component that wraps the main content and handles mobile navigation state.
- * It also renders a semi-transparent overlay when the mobile menu is open.
  * @param {LayoutWrapperProps} props The component props.
  * @returns {JSX.Element} The LayoutWrapper component.
  */
@@ -26,30 +26,17 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     );
     const dispatch = useAppDispatch();
 
-    const handleOverlayClick = () => {
-        dispatch(closeMobileMenu());
-    };
+    // Use the custom hook to set the viewport height variable
+    useMobileMenuHeight();
 
     return (
         <>
             <Header />
-            {isMobileMenuOpen && (
-                <div
-                    className={clsx(
-                        'fixed bottom-0 left-0 right-0 z-40 md:hidden',
-                        'bg-black/50 transition-opacity duration-300',
-                        'top-16', // Position the overlay just below the fixed header
-                    )}
-                    aria-hidden="true"
-                    onClick={handleOverlayClick}
-                />
-            )}
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[auto_1fr_auto]',
                     {
-                        'pointer-events-none md:pointer-events-auto':
-                            isMobileMenuOpen,
+                        // Removed pointer-events-none as there is no overlay.
                     },
                 )}
                 aria-hidden={isMobileMenuOpen}

@@ -24,20 +24,25 @@ export const MenuToggle: FC = () => {
         type="button"
         className={clsx(
           'flex items-center justify-center rounded-full p-2',
-          'bg-toggle-bg focus-ring',
+          'focus-ring',
           'transition-colors duration-long',
-          'hover:bg-toggle-hover-bg',
+          'hover:bg-toggle-bg',
+          {
+            'bg-toggle-bg-active': isOpen, // Apply this class when the menu is open
+          },
         )}
       >
         <Icon
           name={isOpen ? 'close' : 'menu'}
           label={isOpen ? 'Close menu' : 'Open menu'}
-          className="h-6 w-6 text-neutral"
+          className={clsx('h-6 w-6', {
+            'text-primary': isOpen, // Change icon color when menu is active
+            'text-neutral': !isOpen, // Default icon color
+          })}
         />
         <span className="sr-only">{isOpen ? 'Close mobile menu' : 'Open mobile menu'}</span>
       </button>
     </div>
   );
 };
-
 

@@ -24,6 +24,12 @@
   --color-toggle-bg-light: #e5e7eb;
   --color-toggle-bg-dark: #2d3748;
 
+  /* Add theme variables for active toggle background */
+  --color-toggle-bg-active-light: #d1d5db;
+  /* A darker gray for the active state in light mode */
+  --color-toggle-bg-active-dark: #4b5563;
+  /* A lighter gray for the active state in dark mode */
+
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
@@ -41,6 +47,7 @@
   --neutral-color: var(--color-neutral-text-light);
   --toggle-hover-bg: var(--color-toggle-hover-light);
   --toggle-bg: var(--color-toggle-bg-light);
+  --toggle-bg-active: var(--color-toggle-bg-active-light);
   --focus-ring: var(--color-focus-ring);
   --footer-border: var(--color-neutral-text-light);
 }
@@ -53,6 +60,7 @@ html.dark {
   --neutral-color: var(--color-neutral-text-dark);
   --toggle-hover-bg: var(--color-toggle-hover-dark);
   --toggle-bg: var(--color-toggle-bg-dark);
+  --toggle-bg-active: var(--color-toggle-bg-active-dark);
   --focus-ring: var(--color-focus-ring-dark);
   --footer-border: var(--color-neutral-text-dark);
 }
@@ -90,4 +98,8 @@ body {
 
 @utility bg-toggle-bg {
   background-color: var(--toggle-bg);
+}
+
+@utility bg-toggle-bg-active {
+  background-color: var(--toggle-bg-active);
 }

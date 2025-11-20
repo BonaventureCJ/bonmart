@@ -57,11 +57,13 @@ export const MobileNav = () => {
                     href={link.href}
                     onClick={handleLinkClick}
                     className={clsx(
-                      'block rounded-md px-2 py-3 text-2xl font-bold transition-colors duration-long',
+                      'relative block rounded-md px-2 py-3 text-2xl font-bold transition-colors duration-long',
                       'focus-ring',
                       'hover:text-brand',
+                      'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-brand after:transition-all after:duration-long after:content-[""]',
+                      'hover:after:w-3/7',
                       {
-                        'text-brand': isActive,
+                        'text-brand after:w-3/7': isActive, // Active state line is fraction of width
                         'text-foreground': !isActive,
                       },
                     )}

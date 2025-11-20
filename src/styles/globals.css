@@ -110,11 +110,10 @@ body {
   background-color: var(--background);
 }
 
-/* Add custom utility for foreground and brand text colors */
 @utility text-foreground {
-    color: var(--foreground);
+  color: var(--foreground);
 }
 
-@utility text-brand {
-    color: var(--brand-color);
+@utility bg-brand {
+  background-color: var(--brand-color);
 }

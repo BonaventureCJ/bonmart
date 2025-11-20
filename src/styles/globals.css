@@ -106,7 +106,15 @@ body {
   background-color: var(--toggle-bg-active);
 }
 
-/* Add the bg-background custom utility class */
 @utility bg-background {
   background-color: var(--background);
+}
+
+/* Add custom utility for foreground and brand text colors */
+@utility text-foreground {
+    color: var(--foreground);
+}
+
+@utility text-brand {
+    color: var(--brand-color);
 }

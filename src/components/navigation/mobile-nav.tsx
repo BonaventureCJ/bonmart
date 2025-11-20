@@ -35,7 +35,7 @@ export const MobileNav = () => {
         'fixed left-0 z-50 w-3/4 transform transition-transform duration-300 md:hidden',
         'bg-background',
         'top-16 overflow-y-auto',
-        'h-[calc(var(--vh)-4rem)]', // Use the custom --vh variable
+        'h-[calc(var(--vh)-4rem)]',
         {
           'translate-x-0': isMobileMenuOpen,
           '-translate-x-full': !isMobileMenuOpen,
@@ -46,7 +46,7 @@ export const MobileNav = () => {
       id="mobile-menu"
       tabIndex={isMobileMenuOpen ? 0 : -1}
     >
-      <div className="flex h-full flex-col px-4 pb-4 pt-4"> {/* Added pt-4 here */}
+      <div className="flex h-full flex-col px-4 pb-4 pt-4">
         <nav aria-label="Main mobile navigation">
           <ul className="flex flex-col space-y-2">
             {mainNavLinks.map((link) => {
@@ -59,9 +59,9 @@ export const MobileNav = () => {
                     className={clsx(
                       'block rounded-md px-2 py-3 text-2xl font-bold transition-colors duration-long',
                       'focus-ring',
-                      'hover:text-brand-color',
+                      'hover:text-brand',
                       {
-                        'text-brand-color': isActive,
+                        'text-brand': isActive,
                         'text-foreground': !isActive,
                       },
                     )}

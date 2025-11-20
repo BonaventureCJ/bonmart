@@ -2,7 +2,7 @@
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { Icon, type IconName } from '@/components/ui/icon/icon';
-import type { Theme } from '@/store/themeSlice';
+import type { Theme } from '@/features/theme/theme-slice';
 
 type ThemeButtonProps = {
     theme: Theme;

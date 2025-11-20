@@ -1,4 +1,4 @@
-// src/components/shared/footer.tsx
+// src/components/layout/footer.tsx
 import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';

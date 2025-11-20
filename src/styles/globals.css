@@ -1,38 +1,40 @@
 /* src/app/globals.css */
+
+/* 1. Import Tailwind. */
 @import "tailwindcss";
 
+/* 2. Define custom theme variables with the @theme directive. */
 /* Centralize design tokens with the @theme directive. */
 @theme {
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
-
   --color-neutral-text-light: #4b5563;
   --color-neutral-text-dark: #d1d5db;
   --color-neutral-bg-dark: #1f2937;
-
   --color-surface-light: #ffffff;
   --color-surface-dark: #0a0a0a;
   --color-text-light: #171717;
   --color-text-dark: #ededed;
-
   --color-focus-ring: var(--color-brand-primary);
   --color-focus-ring-dark: var(--color-brand-primary-light);
-
   --color-toggle-hover-light: #f3f4f6;
   --color-toggle-hover-dark: #374151;
-
   --color-toggle-bg-light: #e5e7eb;
   --color-toggle-bg-dark: #2d3748;
-
+  --color-toggle-bg-active-light: #d1d5db;
+  --color-toggle-bg-active-dark: #4b5563;
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
 }
 
+/* 3. Define custom variants with @custom-variant. */
 /* Configure custom variants for dark mode. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
-/* Implement theming using standard CSS custom properties. */
+/* 4. Implement theming using standard CSS custom properties. */
+/* Define custom properties under :root and dark selector.
+   This sets up the dual theme variables (light/dark). */
 :root {
   color-scheme: light;
   --background: var(--color-surface-light);
@@ -41,8 +43,10 @@
   --neutral-color: var(--color-neutral-text-light);
   --toggle-hover-bg: var(--color-toggle-hover-light);
   --toggle-bg: var(--color-toggle-bg-light);
+  --toggle-bg-active: var(--color-toggle-bg-active-light);
   --focus-ring: var(--color-focus-ring);
   --footer-border: var(--color-neutral-text-light);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
 }
 
 html.dark {
@@ -53,18 +57,22 @@ html.dark {
   --neutral-color: var(--color-neutral-text-dark);
   --toggle-hover-bg: var(--color-toggle-hover-dark);
   --toggle-bg: var(--color-toggle-bg-dark);
+  --toggle-bg-active: var(--color-toggle-bg-active-dark);
   --focus-ring: var(--color-focus-ring-dark);
   --footer-border: var(--color-neutral-text-dark);
+  --overlay-bg: rgba(0, 0, 0, 0.7);
 }
 
-/* Global base styles using the custom properties. */
+/* 5. Add custom base styles. */
+/* These styles are applied directly to elements. */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family-sans);
 }
 
-/* Reusable custom utility classes. */
+/* 6. Add custom utility classes with the @utility directive. */
+/* Utilities are custom classes that work like built-in Tailwind utilities. */
 @utility text-brand {
   color: var(--brand-color);
 }
@@ -90,4 +98,20 @@ body {
 
 @utility bg-toggle-bg {
   background-color: var(--toggle-bg);
+}
+
+@utility bg-toggle-bg-active {
+  background-color: var(--toggle-bg-active);
+}
+
+@utility bg-background {
+  background-color: var(--background);
+}
+
+@utility text-foreground {
+  color: var(--foreground);
+}
+
+@utility bg-brand {
+  background-color: var(--brand-color);
 }

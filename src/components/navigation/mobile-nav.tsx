@@ -5,15 +5,17 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { mainNavLinks } from './links';
-import { useMobileNav } from './mobile-nav-context';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 
 export const MobileNav = () => {
-  const { isOpen, setIsOpen } = useMobileNav();
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
   const pathname = usePathname();
 
   // Close the menu if the route changes
   const handleLinkClick = () => {
-    setIsOpen(false);
+    dispatch(closeMobileMenu());
   };
 
   return (
@@ -60,4 +62,5 @@ export const MobileNav = () => {
     </div>
   );
 };
+
 

@@ -4,24 +4,29 @@
 import { FC } from 'react';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
-import { useMobileNav } from './mobile-nav-context';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
+import { toggleMobileMenu } from '@/features/navigation/navigation-slice';
 
 export const MenuToggle: FC = () => {
-  const { isOpen, toggle } = useMobileNav();
+  const dispatch = useAppDispatch();
+  const isOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
+
+  const handleToggle = () => {
+    dispatch(toggleMobileMenu());
+  };
 
   return (
     <div className="md:hidden">
       <button
-        onClick={toggle}
+        onClick={handleToggle}
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
         type="button"
         className={clsx(
-          'flex items-center justify-center rounded-full p-1',
-          'focus-ring',
+          'flex items-center justify-center rounded-full p-2',
+          'bg-toggle-bg focus-ring',
           'transition-colors duration-long',
-          'hover:bg-toggle-bg',
-          'cursor-pointer'
+          'hover:bg-toggle-hover-bg',
         )}
       >
         <Icon
@@ -34,4 +39,5 @@ export const MenuToggle: FC = () => {
     </div>
   );
 };
+
 

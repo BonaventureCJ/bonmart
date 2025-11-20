@@ -1,9 +1,10 @@
+// src/providers/ReduxProvider.tsx
 'use client';
 
 import { Provider } from 'react-redux';
-import { store } from '@/store/store'; // Updated import path for the store
+import { store } from '@/store/store';
 import { useLayoutEffect } from 'react';
-import { useAppSelector } from '@/store/hooks'; // Updated import path for the hooks
+import { useAppSelector } from '@/store/hooks';
 
 // Helper component to apply theme logic.
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {

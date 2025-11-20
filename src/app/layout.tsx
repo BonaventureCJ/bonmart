@@ -3,7 +3,6 @@ import type { Metadata } from 'next';
 import { ReduxProvider } from '@/providers/ReduxProvider';
 import { Footer } from '@/components/layout/footer';
 import { Header } from '@/components/layout/header';
-import { MobileNavProvider } from '@/components/navigation/mobile-nav-context';
 import { MobileNav } from '@/components/navigation/mobile-nav';
 import '@/styles/globals.css';
 
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 };
 
 // Immediately applies the theme to prevent FOUC, based on stored preference or system setting.
-// This script is crucial for theme persistence across page loads.
 const setInitialTheme = `
   (function() {
     const storedTheme = localStorage.getItem("theme");
@@ -37,28 +35,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         */}
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
       </head>
-      {/*
-        Wrapping the entire app in the MobileNavProvider.
-        This provides the mobile navigation state to the entire component tree.
-      */}
-      <MobileNavProvider>
-        <body className="antialiased">
-          <ReduxProvider>
-            {/* Main container where the theme transition will be applied universally */}
-            <div className="min-h-screen bg-background text-foreground font-sans transition-colors duration-300">
-              {/* Inner container for the grid layout */}
-              <div className="grid grid-rows-[auto_1fr_auto] min-h-screen items-center justify-items-center p-4 sm:p-8">
-                <Header />
-                <MobileNav />
-                <main className="row-start-2 w-full flex items-center justify-center">
-                  {children}
-                </main>
-                <Footer />
-              </div>
+      <body className="antialiased">
+        <ReduxProvider>
+          {/* Main container where the theme transition will be applied universally */}
+          <div className="min-h-screen bg-surface-light text-text-light dark:bg-surface-dark dark:text-text-dark font-sans">
+            {/* Inner container for the grid layout */}
+            <div className="grid grid-rows-[auto_1fr_auto] min-h-screen items-center justify-items-center p-4 sm:p-8">
+              <Header />
+              <main className="row-start-2 w-full flex items-center justify-center">
+                {children}
+              </main>
+              <Footer />
             </div>
-          </ReduxProvider>
-        </body>
-      </MobileNavProvider>
+          </div>
+          <MobileNav />
+        </ReduxProvider>
+      </body>
     </html>
   );
 }
+

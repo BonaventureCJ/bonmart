@@ -47,6 +47,7 @@
   --ring-offset-color: var(--color-toggle-bg-active-light);
   --footer-border: var(--color-neutral-text-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
+  --icon-hover-color: var(--color-brand-primary);
 }
 
 html.dark {
@@ -63,6 +64,7 @@ html.dark {
   --ring-offset-color: var(--color-toggle-bg-active-dark);
   --footer-border: var(--color-neutral-text-dark);
   --overlay-bg: rgba(0, 0, 0, 0.7);
+  --icon-hover-color: var(--color-brand-primary-light);
 }
 
 /* 5. Add custom base styles. */

@@ -56,7 +56,7 @@ export const UtilityNav = () => {
               <Link
                 href={item.href}
                 className={clsx(
-                  'flex items-center justify-center rounded-full p-2',
+                  'group flex items-center justify-center rounded-full p-2',
                   'focus-ring',
                   'transition-colors duration-100',
                   'hover:bg-(--toggle-hover-bg)',
@@ -67,7 +67,12 @@ export const UtilityNav = () => {
                 <Icon
                   name={item.iconName}
                   label={item.label}
-                  className="h-6 w-6 text-(--neutral-color)"
+                  className={clsx(
+                    'h-6 w-6',
+                    isActive ? 'text-(--brand-color)' : 'text-(--neutral-color)',
+                    'group-hover:text-(--icon-hover-color)',
+                    'transition-colors duration-100'
+                  )}
                 />
                 <span className="sr-only">{item.label}</span>
               </Link>

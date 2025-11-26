@@ -4,7 +4,7 @@
 @import "tailwindcss";
 
 /* 2. Define primitive design tokens with the @theme directive. */
-/* This is the single source of truth for your fundamental values. */
+/* This is the single source of truth for fundamental values. */
 @theme {
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
@@ -29,7 +29,6 @@
 }
 
 /* 3. Configure custom variants. */
-/* This setting is correct and does not need modification. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
 /* 4. Define semantic variables using native CSS custom properties. */
@@ -63,7 +62,6 @@ html.dark {
 }
 
 /* 5. Add custom base styles. */
-/* This is still the correct way to set global styles. */
 body {
   background: var(--background);
   color: var(--foreground);
@@ -71,7 +69,7 @@ body {
 }
 
 /* 6. Define focused utilities with the @utility directive. */
-/* Only keep utilities that need custom logic, like focus-visible. */
+/* Utilities that need custom logic, like focus-visible. */
 @utility focus-ring {
   &:focus-visible {
     outline: 0;
@@ -79,8 +77,5 @@ body {
   }
 }
 
-/* 7. Remove all other manual @utility directives. */
-/* The standard Tailwind utilities now handle these automatically: */
-/* - text-[var(--brand-color)] becomes text-brand */
-/* - bg-[var(--background)] becomes bg-background */
-/* - etc. */
+/* 7. Other @utility directives. */
+

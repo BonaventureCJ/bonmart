@@ -40,9 +40,11 @@
   --brand-color: var(--color-brand-primary);
   --neutral-color: var(--color-neutral-text-light);
   --toggle-hover-bg: var(--color-toggle-hover-light);
+  --toggle-container-bg: var(--color-toggle-bg-light);
   --toggle-bg: var(--color-toggle-bg-light);
   --toggle-bg-active: var(--color-toggle-bg-active-light);
   --focus-ring: var(--color-focus-ring);
+  --ring-offset-color: var(--color-toggle-bg-active-light);
   --footer-border: var(--color-neutral-text-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
 }
@@ -54,9 +56,11 @@ html.dark {
   --brand-color: var(--color-brand-primary-light);
   --neutral-color: var(--color-neutral-text-dark);
   --toggle-hover-bg: var(--color-toggle-hover-dark);
+  --toggle-container-bg: var(--color-neutral-bg-dark);
   --toggle-bg: var(--color-toggle-bg-dark);
   --toggle-bg-active: var(--color-toggle-bg-active-dark);
   --focus-ring: var(--color-focus-ring-dark);
+  --ring-offset-color: var(--color-toggle-bg-active-dark);
   --footer-border: var(--color-neutral-text-dark);
   --overlay-bg: rgba(0, 0, 0, 0.7);
 }
@@ -78,4 +82,3 @@ body {
 }
 
 /* 7. Other @utility directives. */
-

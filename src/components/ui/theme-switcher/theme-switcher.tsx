@@ -1,4 +1,5 @@
 // src/components/ui/theme-switcher/theme-switcher.tsx
+// src/components/ui/theme-switcher/theme-switcher.tsx
 'use client';
 
 import clsx from 'clsx';
@@ -86,7 +87,7 @@ export const ThemeSwitcher = () => {
             <div
                 className={clsx(
                     'flex rounded-full p-1',
-                    'bg-(--toggle-bg)',
+                    'bg-(--toggle-container-bg)',
                 )}
                 role="radiogroup"
                 aria-label="Theme Switcher"
@@ -108,7 +109,7 @@ export const ThemeSwitcher = () => {
         <div
             className={clsx(
                 'flex rounded-full p-1',
-                'bg-(--toggle-bg)',
+                'bg-(--toggle-container-bg)',
             )}
             role="radiogroup"
             aria-label="Theme Switcher"
@@ -137,3 +138,4 @@ export const ThemeSwitcher = () => {
         </div>
     );
 };
+

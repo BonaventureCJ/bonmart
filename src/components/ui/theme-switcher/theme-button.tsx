@@ -25,7 +25,9 @@ export const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(
                     'hover:bg-(--toggle-hover-bg)',
                     'focus:focus-ring',
                     'cursor-pointer',
-                    isSelected ? 'text-(--brand-color)' : 'text-(--neutral-color)',
+                    isSelected
+                        ? 'text-(--brand-color) bg-(--toggle-bg-active) ring-[0.89px] ring-(--brand-color) ring-offset-[0.5px] ring-offset-(--ring-offset-color)'
+                        : 'text-(--neutral-color)',
                     className
                 )}
                 role="radio"

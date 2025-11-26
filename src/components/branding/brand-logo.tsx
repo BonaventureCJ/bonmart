@@ -21,7 +21,7 @@ export const BrandLogo: FC<BrandLogoProps> = ({
 }: BrandLogoProps) => {
   return (
     <BonMartLogo
-      className={clsx('text-brand', sizeClasses[size], className)}
+      className={clsx('text-(--brand-color)', sizeClasses[size], className)}
       aria-label="BonMart logo"
     />
   );

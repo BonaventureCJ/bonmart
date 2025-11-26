@@ -13,7 +13,6 @@ interface BrandProps {
   showName?: boolean;
 }
 
-// Client Component to enable the <Link> component
 export const Brand: FC<BrandProps> = ({
   className,
   logoSize = 'md',
@@ -31,7 +30,7 @@ export const Brand: FC<BrandProps> = ({
     >
       <BrandLogo size={logoSize} />
       {showName && (
-        <BrandName className="transition-colors duration-long group-hover:text-brand" />
+        <BrandName className="transition-colors duration-100" />
       )}
     </Link>
   );

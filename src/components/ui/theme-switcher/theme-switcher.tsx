@@ -83,7 +83,14 @@ export const ThemeSwitcher = () => {
 
     if (!mounted) {
         return (
-            <div className="flex rounded-full bg-toggle-bg p-1" role="radiogroup" aria-label="Theme Switcher">
+            <div
+                className={clsx(
+                    'flex rounded-full p-1',
+                    'bg-(--toggle-bg)',
+                )}
+                role="radiogroup"
+                aria-label="Theme Switcher"
+            >
                 {THEMES.map((theme) => (
                     <button
                         key={theme}
@@ -101,7 +108,7 @@ export const ThemeSwitcher = () => {
         <div
             className={clsx(
                 'flex rounded-full p-1',
-                'bg-toggle-bg',
+                'bg-(--toggle-bg)',
             )}
             role="radiogroup"
             aria-label="Theme Switcher"

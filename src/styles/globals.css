@@ -1,10 +1,10 @@
 /* src/app/globals.css */
 
-/* 1. Import Tailwind. */
+/* 1. Import Tailwind CSS. */
 @import "tailwindcss";
 
-/* 2. Define custom theme variables with the @theme directive. */
-/* Centralize design tokens with the @theme directive. */
+/* 2. Define primitive design tokens with the @theme directive. */
+/* This is the single source of truth for your fundamental values. */
 @theme {
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
@@ -28,13 +28,12 @@
   --duration-long: 100ms;
 }
 
-/* 3. Define custom variants with @custom-variant. */
-/* Configure custom variants for dark mode. */
+/* 3. Configure custom variants. */
+/* This setting is correct and does not need modification. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
-/* 4. Implement theming using standard CSS custom properties. */
-/* Define custom properties under :root and dark selector.
-   This sets up the dual theme variables (light/dark). */
+/* 4. Define semantic variables using native CSS custom properties. */
+/* These variables reference the tokens above and adapt to the current theme. */
 :root {
   color-scheme: light;
   --background: var(--color-surface-light);
@@ -64,31 +63,15 @@ html.dark {
 }
 
 /* 5. Add custom base styles. */
-/* These styles are applied directly to elements. */
+/* This is still the correct way to set global styles. */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family-sans);
 }
 
-/* 6. Add custom utility classes with the @utility directive. */
-/* Utilities are custom classes that work like built-in Tailwind utilities. */
-@utility text-brand {
-  color: var(--brand-color);
-}
-
-@utility bg-neutral-dark {
-  background-color: var(--color-neutral-bg-dark);
-}
-
-@utility text-neutral {
-  color: var(--neutral-color);
-}
-
-@utility border-footer {
-  border-color: var(--footer-border);
-}
-
+/* 6. Define focused utilities with the @utility directive. */
+/* Only keep utilities that need custom logic, like focus-visible. */
 @utility focus-ring {
   &:focus-visible {
     outline: 0;
@@ -96,22 +79,8 @@ body {
   }
 }
 
-@utility bg-toggle-bg {
-  background-color: var(--toggle-bg);
-}
-
-@utility bg-toggle-bg-active {
-  background-color: var(--toggle-bg-active);
-}
-
-@utility bg-background {
-  background-color: var(--background);
-}
-
-@utility text-foreground {
-  color: var(--foreground);
-}
-
-@utility bg-brand {
-  background-color: var(--brand-color);
-}
+/* 7. Remove all other manual @utility directives. */
+/* The standard Tailwind utilities now handle these automatically: */
+/* - text-[var(--brand-color)] becomes text-brand */
+/* - bg-[var(--background)] becomes bg-background */
+/* - etc. */

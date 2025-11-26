@@ -33,7 +33,7 @@ export const MobileNav = () => {
     <div
       className={clsx(
         'fixed left-0 z-50 w-3/4 transform transition-transform duration-300 md:hidden',
-        'bg-background',
+        'bg-(--background)',
         'top-16 overflow-y-auto',
         'h-[calc(var(--vh)-4rem)]',
         {
@@ -57,14 +57,14 @@ export const MobileNav = () => {
                     href={link.href}
                     onClick={handleLinkClick}
                     className={clsx(
-                      'relative block rounded-md px-2 py-3 text-2xl font-bold transition-colors duration-long',
-                      'focus-ring',
-                      'hover:text-brand',
-                      'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-brand after:transition-all after:duration-long after:content-[""]',
+                      'relative block rounded-md px-2 py-3 text-2xl font-bold',
+                      'transition-colors duration-100 focus-ring',
+                      'hover:text-(--brand-color)',
+                      'after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:rounded-full after:bg-(--brand-color) after:transition-all after:duration-100 after:content-[""]',
                       'hover:after:w-3/7',
                       {
-                        'text-brand after:w-3/7': isActive, // Active state line is fraction of width
-                        'text-foreground': !isActive,
+                        'text-(--brand-color) after:w-3/7': isActive,
+                        'text-(--foreground)': !isActive,
                       },
                     )}
                     aria-current={

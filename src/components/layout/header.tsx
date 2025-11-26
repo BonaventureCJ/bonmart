@@ -10,9 +10,9 @@ export const Header: FC = () => {
     return (
         <header
             className={clsx(
-                'sticky top-0 z-60 w-full', // Increased z-index
-                'bg-background',
-                'border-b border-b-footer',
+                'sticky top-0 z-60 w-full',
+                'bg-(--background)',
+                'border-b border-b-(--footer-border)',
             )}
         >
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-2 md:px-6">

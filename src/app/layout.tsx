@@ -7,6 +7,9 @@ import '@/styles/globals.css';
 export const metadata: Metadata = {
   title: 'BonMart - Bonzer & Green',
   description: 'BonMart online store: under construction. Coming soon.',
+  appleWebApp: {
+    title: 'BonMart',
+  },
 };
 
 // Immediately applies the theme to prevent FOUC, based on stored preference or system setting.

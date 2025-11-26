@@ -10,13 +10,13 @@ import { BrandName } from './brand-name';
 interface BrandProps {
   className?: string;
   logoSize?: 'sm' | 'md' | 'lg';
-  showName?: boolean;
+  responsive?: boolean;
 }
 
 export const Brand: FC<BrandProps> = ({
   className,
   logoSize = 'md',
-  showName = true,
+  responsive = false,
 }: BrandProps) => {
   return (
     <Link
@@ -29,9 +29,13 @@ export const Brand: FC<BrandProps> = ({
       aria-label="Bonmart homepage"
     >
       <BrandLogo size={logoSize} />
-      {showName && (
-        <BrandName className="transition-colors duration-100" />
-      )}
+
+      <BrandName
+        className={clsx(
+          'transition-colors duration-100',
+          responsive && 'hidden md:block'
+        )}
+      />
     </Link>
   );
 };

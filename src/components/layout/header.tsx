@@ -11,15 +11,18 @@ export const Header: FC = () => {
         <header
             className={clsx(
                 'sticky top-0 z-60 w-full',
-                'bg-(--background)',
-                'border-b border-b-(--footer-border)',
+                'bg-(--background)', // This now references the CSS custom property
+                'border-b border-b-(--footer-border)'
             )}
         >
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-2 md:px-6">
                 <div className="flex items-center space-x-1">
                     <MenuToggle />
-                    <Brand />
+
+                    {/* Responsive brand: logo always visible, name hidden on small screens */}
+                    <Brand responsive={true} />
                 </div>
+
                 <div className="flex items-center space-x-2">
                     <DesktopNav />
                     <UtilityNav />

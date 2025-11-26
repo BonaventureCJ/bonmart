@@ -11,7 +11,7 @@ export const Header: FC = () => {
         <header
             className={clsx(
                 'sticky top-0 z-60 w-full',
-                'bg-(--background)', // This now references the CSS custom property
+                'bg-(--background)',
                 'border-b border-b-(--footer-border)'
             )}
         >

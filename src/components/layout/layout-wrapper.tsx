@@ -39,7 +39,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 <div
                     className={clsx(
                         'fixed inset-0 z-40 md:hidden',
-                        'bg-[var(--overlay-bg)] transition-opacity duration-300',
+                        'bg-(--overlay-bg) transition-opacity duration-300',
                     )}
                     aria-hidden="true"
                     onClick={handleOverlayClick}

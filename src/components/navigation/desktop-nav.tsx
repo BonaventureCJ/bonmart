@@ -20,12 +20,12 @@ export const DesktopNav = () => {
                 href={link.href}
                 className={clsx(
                   'relative py-2 font-medium',
-                  'transition-colors duration-long focus-ring',
-                  'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-brand after:transition-transform after:duration-long after:content-[""]',
-                  'hover:text-brand hover:after:scale-x-100',
+                  'transition-colors duration-100 focus-ring',
+                  'after:absolute after:inset-x-0 after:bottom-0 after:h-0.5 after:origin-center after:scale-x-0 after:rounded-full after:bg-(--brand-color) after:transition-transform after:duration-100 after:content-[""]',
+                  'hover:text-(--brand-color) hover:after:scale-x-100',
                   {
-                    'text-brand after:scale-x-100': isActive,
-                    'text-neutral': !isActive,
+                    'text-(--brand-color) after:scale-x-100': isActive,
+                    'text-(--neutral-color)': !isActive,
                   },
                 )}
                 aria-current={isActive ? 'page' : undefined}

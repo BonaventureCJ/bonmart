@@ -21,12 +21,13 @@ export const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(
                 type="button"
                 onClick={onClick}
                 className={clsx(
-                    'relative z-0 flex size-8 items-center justify-center rounded-full sync-transition',
-                    'hover:bg-[var(--color-toggle-hover-light)] dark:hover:bg-[var(--color-toggle-hover-dark)]',
+                    'relative z-0 flex size-8 items-center justify-center rounded-full transition-colors',
+                    'hover:bg-(--toggle-hover-bg)',
                     'focus:focus-ring',
                     'cursor-pointer',
-                    isSelected && 'text-brand',
-                    !isSelected && 'text-neutral-color',
+                    isSelected
+                        ? 'text-(--brand-color) bg-(--toggle-bg-active) ring-[0.89px] ring-(--brand-color) ring-offset-[0.5px] ring-offset-(--ring-offset-color)'
+                        : 'text-(--neutral-color)',
                     className
                 )}
                 role="radio"

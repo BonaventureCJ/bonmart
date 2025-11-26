@@ -35,19 +35,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/*
-                    Script to set initial theme based on localStorage to prevent FOUC.
-                    This runs before React hydrates the page.
-                */}
+          Script to set initial theme based on localStorage to prevent FOUC.
+          This runs before React hydrates the page.
+        */}
         <script dangerouslySetInnerHTML={{ __html: setInitialTheme }} />
       </head>
-      <body className="antialiased">
+      <body>
         <ReduxProvider>
-          {/* Main container where the theme transition will be applied universally */}
-          <div className="min-h-screen bg-surface-light text-text-light font-sans dark:bg-surface-dark dark:text-text-dark">
-            <LayoutWrapper>
-              {children}
-            </LayoutWrapper>
-          </div>
+          <LayoutWrapper>
+            {children}
+          </LayoutWrapper>
         </ReduxProvider>
       </body>
     </html>

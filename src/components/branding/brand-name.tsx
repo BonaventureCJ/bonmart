@@ -12,12 +12,12 @@ export const BrandName: FC<BrandNameProps> = ({ className }: BrandNameProps) => 
     <p
       className={clsx(
         'text-xl font-bold tracking-tight',
-        'transition-colors duration-long',
+        'transition-colors duration-100',
         className,
       )}
     >
-      <span className="text-brand">Bon</span>
-      <span className="text-neutral">Mart</span>
+      <span className="text-(--brand-color)">Bon</span>
+      <span className="text-(--neutral-color)">Mart</span>
     </p>
   );
 };

@@ -1,7 +1,7 @@
 // src/components/ui/heading/heading.tsx
-import * as React from "react";
-import { clsx } from "clsx";
-import { Icon, type IconName } from "../icon/icon";
+import * as React from 'react';
+import { clsx } from 'clsx';
+import { Icon, type IconName } from '../icon/icon';
 
 export interface HeadingProps {
     children: React.ReactNode;
@@ -9,33 +9,33 @@ export interface HeadingProps {
     icon?: IconName;
     iconLabel?: string;
     className?: string;
-    align?: "left" | "center" | "right";
+    align?: 'left' | 'center' | 'right';
     as?: keyof React.JSX.IntrinsicElements;
     id?: string;
-    weight?: "light" | "normal" | "medium" | "semibold" | "bold";
+    weight?: 'light' | 'normal' | 'medium' | 'semibold' | 'bold';
 }
 
 const HEADING_STYLES: Record<number, string> = {
-    1: "text-2xl md:text-3xl lg:text-4xl",
-    2: "text-xl md:text-2xl lg:text-3xl",
-    3: "text-lg md:text-xl lg:text-2xl",
-    4: "text-base md:text-lg lg:text-xl",
-    5: "text-sm md:text-base lg:text-lg",
-    6: "text-xs md:text-sm lg:text-base",
+    1: 'text-2xl md:text-3xl lg:text-4xl',
+    2: 'text-xl md:text-2xl lg:text-3xl',
+    3: 'text-lg md:text-xl lg:text-2xl',
+    4: 'text-base md:text-lg lg:text-xl',
+    5: 'text-sm md:text-base lg:text-lg',
+    6: 'text-xs md:text-sm lg:text-base',
 };
 
-const WEIGHT_STYLES = {
-    light: "font-light",
-    normal: "font-normal",
-    medium: "font-medium",
-    semibold: "font-semibold",
-    bold: "font-bold",
+const WEIGHT_STYLES: Record<string, string> = {
+    light: 'font-light',
+    normal: 'font-normal',
+    medium: 'font-medium',
+    semibold: 'font-semibold',
+    bold: 'font-bold',
 };
 
-const ALIGNMENT: Record<string, string> = {
-    left: "text-left",
-    center: "text-center",
-    right: "text-right",
+const ALIGNMENT_STYLES: Record<string, string> = {
+    left: 'text-left',
+    center: 'text-center',
+    right: 'text-right',
 };
 
 export const Heading = React.memo(function Heading({
@@ -43,7 +43,7 @@ export const Heading = React.memo(function Heading({
     level = 1,
     icon,
     iconLabel,
-    align = "left",
+    align = 'left',
     weight,
     className,
     as,
@@ -51,7 +51,6 @@ export const Heading = React.memo(function Heading({
 }: HeadingProps) {
     if (process.env.NODE_ENV !== 'production' && (level < 1 || level > 6)) {
         console.error(`Heading: invalid "level" value ${level}. Must be 1–6.`);
-        // Fallback to level 1 for production to prevent a crash
         level = 1;
     }
 
@@ -60,15 +59,16 @@ export const Heading = React.memo(function Heading({
 
     const isNonSemanticTag = as && as !== semanticTag;
 
-    const defaultWeight = level <= 2 ? "bold" : level <= 4 ? "semibold" : "medium";
+    const defaultWeight = level <= 2 ? 'bold' : level <= 4 ? 'semibold' : 'medium';
+    const effectiveWeight = weight || defaultWeight;
 
     const classes = clsx(
-        "leading-tight tracking-tight",
-        icon && "flex items-center gap-2",
+        'text-foreground leading-tight tracking-tight font-sans',
         HEADING_STYLES[level],
-        WEIGHT_STYLES[weight || defaultWeight],
-        ALIGNMENT[align],
-        className
+        WEIGHT_STYLES[effectiveWeight],
+        ALIGNMENT_STYLES[align],
+        icon && 'flex items-center gap-2',
+        className,
     );
 
     return (
@@ -76,7 +76,7 @@ export const Heading = React.memo(function Heading({
             id={id}
             className={classes}
             {...(isNonSemanticTag
-                ? { role: "heading", "aria-level": level }
+                ? { role: 'heading', 'aria-level': level }
                 : undefined)}
         >
             {icon && (
@@ -91,4 +91,4 @@ export const Heading = React.memo(function Heading({
     );
 });
 
-Heading.displayName = "Heading";
+Heading.displayName = 'Heading';

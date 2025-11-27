@@ -36,7 +36,7 @@ export function Hero() {
                 Because we use a CI/CD pipeline, you&apos;ll see changes and new features added on a rolling basis!
             </p>
 
-            <div className="flex items-center gap-3 p-3 bg-(--background) rounded-lg shadow-xl">
+            <div className="flex items-center gap-3 p-3 rounded-lg shadow-lg dark:shadow-white/50">
                 <Loader2 className="w-5 h-5 text-(--brand-color) animate-spin" aria-hidden="true" />
                 <span className="text-(--neutral-color)">Getting better every day!</span>
             </div>

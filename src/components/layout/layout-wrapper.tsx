@@ -55,7 +55,9 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 )}
                 aria-hidden={isMobileMenuOpen}
             >
-                <main className="flex w-full items-center justify-center p-4 sm:p-8">
+                <main
+                    className="flex w-full items-center justify-center px-4 pt-(--header-height) pb-[4rem]"
+                >
                     {children}
                 </main>
                 <Footer />
@@ -64,3 +66,4 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
         </>
     );
 };
+

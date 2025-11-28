@@ -1,19 +1,22 @@
 // src/components/ui/button/button.tsx
 'use client';
 
-import { forwardRef } from "react";
-import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from "react";
-import Link from "next/link";
-import { clsx } from "clsx";
-import { Icon, type IconName } from "../icon/icon";
-import type React from "react";
+import { forwardRef } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from 'react';
+import Link from 'next/link';
+import { clsx } from 'clsx';
+import { Icon, type IconName } from '@/components/ui/icon/icon';
+import type React from 'react';
+
+// Define the correct ref type for the polymorphic component.
+type PolymorphicRef<T extends ElementType> = React.ComponentPropsWithRef<T>['ref'];
 
 type CommonProps = {
     children?: ReactNode;
-    variant?: "primary" | "secondary" | "ghost" | "danger";
-    size?: "sm" | "md" | "lg";
+    variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+    size?: 'sm' | 'md' | 'lg';
     icon?: IconName;
-    iconPlacement?: "left" | "right";
+    iconPlacement?: 'left' | 'right';
     ariaLabel?: string;
     fullWidth?: boolean;
     loading?: boolean;
@@ -21,9 +24,6 @@ type CommonProps = {
     className?: string;
     disableFocusRing?: boolean;
 };
-
-// Define the correct ref type for the polymorphic component.
-type PolymorphicRef<T extends ElementType> = React.ComponentPropsWithRef<T>['ref'];
 
 // Props for a button (renders as <button>)
 type ButtonAsButton = CommonProps & {
@@ -46,15 +46,14 @@ type ButtonComponentType = <T extends ElementType = 'button'>(
     props: ButtonProps<T> & { ref?: PolymorphicRef<T> }
 ) => React.ReactElement | null;
 
-
 const ButtonComponent = forwardRef(
     <T extends ElementType>(
         {
             children,
-            variant = "primary",
-            size = "md",
+            variant = 'primary',
+            size = 'md',
             icon,
-            iconPlacement = "left",
+            iconPlacement = 'left',
             loading = false,
             disabled = false,
             ariaLabel,
@@ -76,36 +75,36 @@ const ButtonComponent = forwardRef(
         const isDisabled = disabled || loading;
 
         const baseStyles = clsx(
-            "inline-flex items-center justify-center rounded-full font-medium transition-colors duration-200 cursor-pointer whitespace-nowrap select-none",
-            !disableFocusRing && "focus-ring",
-            isDisabled && "disabled:cursor-not-allowed"
+            'inline-flex items-center justify-center rounded-full font-medium transition-colors duration-long ease-in-out cursor-pointer whitespace-nowrap select-none',
+            !disableFocusRing && 'focus-ring',
+            isDisabled && 'disabled:cursor-not-allowed',
         );
 
         const variantStyles = {
             primary:
-                "bg-brand-color text-white hover:bg-brand-color/90 disabled:bg-brand-color/40 disabled:text-white/60",
+                'bg-brand-color text-white hover:bg-[--brand-color]/90 disabled:bg-[--brand-color]/40 disabled:text-white/60 dark:text-text-dark',
             secondary:
-                "bg-toggle-bg text-foreground hover:bg-toggle-hover-bg disabled:bg-toggle-bg/50 disabled:text-foreground/40",
+                'bg-toggle-bg text-foreground hover:bg-toggle-hover-bg disabled:bg-[--toggle-bg]/50 disabled:text-[--foreground]/40',
             ghost:
-                "bg-transparent text-foreground hover:bg-toggle-hover-bg disabled:text-foreground/40",
+                'bg-transparent text-foreground hover:bg-toggle-hover-bg disabled:text-[--foreground]/40',
             danger:
-                "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-700/60 disabled:text-white/60",
+                'bg-red-600 text-white hover:bg-red-700 disabled:bg-[--color-red-700]/60 disabled:text-white/60',
         };
 
         const sizeStyles = {
-            sm: "px-3 py-1.5 text-sm gap-1.5",
-            md: "px-4 py-2 text-base gap-2",
-            lg: "px-6 py-3 text-lg gap-3",
+            sm: 'px-3 py-1.5 text-sm gap-1.5',
+            md: 'px-4 py-2 text-base gap-2',
+            lg: 'px-6 py-3 text-lg gap-3',
         };
 
         const combinedStyles = clsx(
             baseStyles,
             variantStyles[variant],
             sizeStyles[size],
-            iconPlacement === "right" && children && "flex-row-reverse",
-            fullWidth && "w-full",
+            iconPlacement === 'right' && children && 'flex-row-reverse',
+            fullWidth && 'w-full',
             (props as ButtonAsLink<T>).href && isDisabled ? 'pointer-events-none' : '',
-            className
+            className,
         );
 
         const content = (
@@ -124,7 +123,7 @@ const ButtonComponent = forwardRef(
             </>
         );
 
-        if ("href" in props) {
+        if ('href' in props) {
             const { href, as, ...linkProps } = props as ButtonAsLink<T>;
             const LinkComponent = as || Link;
             return (
@@ -158,9 +157,9 @@ const ButtonComponent = forwardRef(
                 {content}
             </button>
         );
-    }
+    },
 );
 
-ButtonComponent.displayName = "Button";
+ButtonComponent.displayName = 'Button';
 
 export const Button = ButtonComponent as ButtonComponentType;

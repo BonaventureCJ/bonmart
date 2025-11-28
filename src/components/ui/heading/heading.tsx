@@ -1,7 +1,7 @@
 // src/components/ui/heading/heading.tsx
 import * as React from 'react';
 import { clsx } from 'clsx';
-import { Icon, type IconName } from '../icon/icon';
+import { Icon, type IconName } from '@/components/ui/icon/icon';
 
 export interface HeadingProps {
     children: React.ReactNode;

@@ -5,7 +5,7 @@ import { forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from 'react';
 import Link from 'next/link';
 import { clsx } from 'clsx';
-import { Icon, type IconName } from '../icon/icon';
+import { Icon, type IconName } from '@/components/ui/icon/icon';
 import type React from 'react';
 
 // Define the correct ref type for the polymorphic component.

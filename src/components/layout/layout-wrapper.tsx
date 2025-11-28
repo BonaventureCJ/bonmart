@@ -38,8 +38,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
             {isMobileMenuOpen && (
                 <div
                     className={clsx(
-                        'fixed inset-0 z-40 md:hidden',
-                        'bg-(--overlay-bg) transition-opacity duration-300',
+                        'fixed inset-0 z-40 md:hidden transition-opacity duration-300 bg-(--overlay-bg)',
                     )}
                     aria-hidden="true"
                     onClick={handleOverlayClick}
@@ -56,7 +55,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 aria-hidden={isMobileMenuOpen}
             >
                 <main
-                    className="flex w-full items-center justify-center px-4 pt-(--header-height) pb-[4rem]"
+                    className="flex w-full items-center justify-center px-4 pb-[4rem] pt-(--header-height)"
                 >
                     {children}
                 </main>
@@ -66,4 +65,3 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
         </>
     );
 };
-

@@ -1,46 +1,11 @@
 // src/components/navigation/utility-nav.tsx
-
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
-import { Icon, type IconName } from '@/components/ui/icon/icon';
-
-// Define the data structure for utility navigation items.
-type UtilityNavItem = {
-  id: number;
-  label: string;
-  iconName: IconName; // Correctly typed from icons.ts
-  href: string;
-};
-
-const utilityNavItems: UtilityNavItem[] = [
-  {
-    id: 1,
-    label: 'Search',
-    iconName: 'search',
-    href: '/search',
-  },
-  {
-    id: 2,
-    label: 'Account',
-    iconName: 'user',
-    href: '/account',
-  },
-  {
-    id: 3,
-    label: 'Wishlist',
-    iconName: 'heart',
-    href: '/wishlist',
-  },
-  {
-    id: 4,
-    label: 'Cart',
-    iconName: 'cart',
-    href: '/cart',
-  },
-];
+import { Icon } from '@/components/ui/icon/icon';
+import { utilityNavLinks } from './links';
 
 export const UtilityNav = () => {
   const pathname = usePathname();
@@ -48,7 +13,7 @@ export const UtilityNav = () => {
   return (
     <nav aria-label="Utility navigation">
       <ul className="flex items-center space-x-1">
-        {utilityNavItems.map((item) => {
+        {utilityNavLinks.map((item) => {
           const isActive = pathname === item.href;
 
           return (

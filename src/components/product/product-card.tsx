@@ -1,5 +1,3 @@
-//src/components/product/product-card.tsx
-
 import Image from "next/image";
 import Link from "next/link";
 import { ShoppingCart, Leaf, Star } from "lucide-react";
@@ -19,10 +17,6 @@ interface ProductCardProps {
     priority?: boolean;
 }
 
-/**
- * ProductCard Component 
- * Enhanced with Tailwind CSS v4.1 variable shorthands.
- */
 export default function ProductCard({
     id,
     slug,
@@ -48,7 +42,7 @@ export default function ProductCard({
                 "hover:shadow-lg hover:border-[--brand-color]"
             )}
         >
-            {/* Media Section */}
+            {/* Product Image Wrapper */}
             <div className="aspect-[4/5] relative w-full overflow-hidden bg-[--toggle-container-bg]">
                 <Link
                     href={`/products/${slug}`}
@@ -65,12 +59,12 @@ export default function ProductCard({
                     />
                 </Link>
 
-                {/* Floating Badges */}
+                {/* Brand Labels */}
                 <div className="absolute top-3 left-3 flex flex-col gap-2">
                     {isEcoFriendly && (
                         <span className="flex items-center gap-1 rounded-full bg-[--brand-color] px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wider shadow-sm">
                             <Leaf size={12} fill="currentColor" />
-                            Eco-Conscious
+                            Eco-Choice
                         </span>
                     )}
                     {discountPercentage && (
@@ -81,7 +75,7 @@ export default function ProductCard({
                 </div>
             </div>
 
-            {/* Info Section */}
+            {/* Product Details */}
             <div className="flex flex-1 flex-col p-4">
                 <div className="mb-2 flex items-center justify-between">
                     <span className="text-[11px] font-semibold text-[--neutral-color] uppercase tracking-widest">
@@ -89,7 +83,7 @@ export default function ProductCard({
                     </span>
                     <div
                         className="flex items-center gap-1 text-amber-500"
-                        aria-label={`Rating: ${rating} out of 5 stars`}
+                        aria-label={`Rated ${rating} out of 5 stars`}
                     >
                         <Star size={12} fill="currentColor" />
                         <span className="text-xs font-medium text-[--foreground]">{rating}</span>
@@ -105,24 +99,24 @@ export default function ProductCard({
                     </h3>
                 </Link>
 
-                {/* Price & Action Section */}
+                {/* Pricing & Cart Action */}
                 <div className="mt-auto flex items-center justify-between pt-4">
                     <div className="flex flex-col">
                         {originalPrice && (
                             <del className="text-xs text-[--neutral-color] no-underline">
-                                <span className="sr-only">Original price: </span>
+                                <span className="sr-only">Was: </span>
                                 <span className="line-through">${originalPrice.toFixed(2)}</span>
                             </del>
                         )}
                         <span className="text-lg font-black tracking-tight">
-                            <span className="sr-only">Current price: </span>
+                            <span className="sr-only">Price: </span>
                             ${price.toFixed(2)}
                         </span>
                     </div>
 
                     <button
                         type="button"
-                        aria-label={`Add ${name} to shopping cart`}
+                        aria-label={`Add ${name} to cart`}
                         className={clsx(
                             "focus-ring flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-none",
                             "bg-[--toggle-container-bg] text-[--foreground] transition-all duration-200",

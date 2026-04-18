@@ -1,132 +1,135 @@
-import Image from "next/image";
-import Link from "next/link";
-import { ShoppingCart, Leaf, Star } from "lucide-react";
-import { clsx } from "clsx";
+//src/components/product/product-card.tsx
+
+'use client';
+
+import * as React from 'react';
+import Image from 'next/image';
+import { clsx } from 'clsx';
+import { Heading } from '@/components/ui/heading/heading';
+import { Button } from '@/components/ui/button/button';
+import { Icon } from '@/components/ui/icon/icon';
+import type { Product } from '@/data/mock-products';
 
 interface ProductCardProps {
-    id: string;
-    slug: string;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    imageUrl: string;
-    imageAlt?: string;
-    category: string;
-    rating: number;
-    isEcoFriendly: boolean;
-    priority?: boolean;
+    product: Product;
+    onAddToCart?: (id: number) => void;
+    className?: string;
 }
 
-export default function ProductCard({
-    id,
-    slug,
-    name,
-    price,
-    originalPrice,
-    imageUrl,
-    imageAlt,
-    category,
-    rating,
-    isEcoFriendly,
-    priority = false,
+/**
+ * ProductCard Component
+ * 
+ * Features:
+ * - Responsive Mobile-first design
+ * - Semantic HTML (article, figure, section)
+ * - WCAG Accessible (ARIA labels, focus states)
+ * - Eco-friendly indicator using brand-primary colors
+ */
+export const ProductCard = React.memo(function ProductCard({
+    product,
+    onAddToCart,
+    className,
 }: ProductCardProps) {
-    const discountPercentage = originalPrice
-        ? Math.round(((originalPrice - price) / originalPrice) * 100)
-        : null;
+    const {
+        id,
+        slug,
+        name,
+        price,
+        category,
+        imageUrl,
+        rating,
+        isEcoFriendly,
+    } = product;
+
+    const productHref = `/products/${slug}`;
 
     return (
         <article
             className={clsx(
-                "group relative flex flex-col overflow-hidden rounded-xl border border-transparent",
-                "bg-[--background] transition-all duration-[--duration-long] ease-[--transition-ease-in-out]",
-                "hover:shadow-lg hover:border-[--brand-color]"
+                'group relative flex flex-col overflow-hidden rounded-2xl border border-toggle-bg bg-background transition-shadow duration-long hover:shadow-lg',
+                className
             )}
         >
-            {/* Product Image Wrapper */}
-            <div className="aspect-[4/5] relative w-full overflow-hidden bg-[--toggle-container-bg]">
-                <Link
-                    href={`/products/${slug}`}
-                    className="block h-full w-full"
-                    tabIndex={-1}
+            {/* Image Container */}
+            <figure className="relative aspect-square overflow-hidden bg-neutral-100/50 dark:bg-neutral-800/50">
+                <Image
+                    src={imageUrl}
+                    alt={name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
+                    priority={id <= 4} // Priority for top products above the fold
+                />
+
+                {/* Eco-Friendly Badge */}
+                {isEcoFriendly && (
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-brand-color px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                        <Icon name="check" className="h-3 w-3" />
+                        Eco-Friendly
+                    </div>
+                )}
+
+                {/* Wishlist Toggle (Positioned for easy thumb reach on mobile) */}
+                <button
+                    type="button"
+                    className="focus-ring absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:text-red-500"
+                    aria-label={`Add ${name} to wishlist`}
                 >
-                    <Image
-                        src={imageUrl}
-                        alt={imageAlt || name}
-                        fill
-                        priority={priority}
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                </Link>
+                    <Icon name="heart" className="h-5 w-5" />
+                </button>
+            </figure>
 
-                {/* Brand Labels */}
-                <div className="absolute top-3 left-3 flex flex-col gap-2">
-                    {isEcoFriendly && (
-                        <span className="flex items-center gap-1 rounded-full bg-[--brand-color] px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wider shadow-sm">
-                            <Leaf size={12} fill="currentColor" />
-                            Eco-Choice
-                        </span>
-                    )}
-                    {discountPercentage && (
-                        <span className="w-fit rounded-full bg-red-600 px-2.5 py-1 text-[10px] font-bold text-white uppercase tracking-wider shadow-sm">
-                            -{discountPercentage}%
-                        </span>
-                    )}
-                </div>
-            </div>
-
-            {/* Product Details */}
-            <div className="flex flex-1 flex-col p-4">
-                <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-[--neutral-color] uppercase tracking-widest">
+            {/* Content Section */}
+            <section className="flex flex-1 flex-col p-4">
+                <header className="mb-1 flex items-center justify-between">
+                    <span className="text-xs font-medium uppercase tracking-wide text-neutral-color">
                         {category}
                     </span>
-                    <div
-                        className="flex items-center gap-1 text-amber-500"
-                        aria-label={`Rated ${rating} out of 5 stars`}
-                    >
-                        <Star size={12} fill="currentColor" />
-                        <span className="text-xs font-medium text-[--foreground]">{rating}</span>
+                    <div className="flex items-center gap-1" aria-label={`Rating: ${rating.rate} out of 5 stars`}>
+                        <Icon name="star" className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+                        <span className="text-xs font-semibold">{rating.rate}</span>
                     </div>
-                </div>
+                </header>
 
-                <Link
-                    href={`/products/${slug}`}
-                    className="focus-ring mb-2 block rounded-sm outline-none"
-                >
-                    <h3 className="line-clamp-2 text-base font-bold leading-tight transition-colors group-hover:text-[--brand-color]">
+                <Link href={productHref} className="focus-ring mb-2 block outline-offset-4">
+                    <Heading level={3} weight="semibold" className="line-clamp-2 min-h-[3rem] transition-colors group-hover:text-brand-color">
                         {name}
-                    </h3>
+                    </Heading>
                 </Link>
 
-                {/* Pricing & Cart Action */}
-                <div className="mt-auto flex items-center justify-between pt-4">
+                <div className="mt-auto flex items-center justify-between gap-4">
                     <div className="flex flex-col">
-                        {originalPrice && (
-                            <del className="text-xs text-[--neutral-color] no-underline">
-                                <span className="sr-only">Was: </span>
-                                <span className="line-through">${originalPrice.toFixed(2)}</span>
-                            </del>
-                        )}
-                        <span className="text-lg font-black tracking-tight">
-                            <span className="sr-only">Price: </span>
+                        <span className="sr-only">Price:</span>
+                        <span className="text-xl font-bold tracking-tight text-foreground">
                             ${price.toFixed(2)}
                         </span>
                     </div>
 
-                    <button
-                        type="button"
-                        aria-label={`Add ${name} to cart`}
-                        className={clsx(
-                            "focus-ring flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border-none",
-                            "bg-[--toggle-container-bg] text-[--foreground] transition-all duration-200",
-                            "hover:bg-[--brand-color] hover:text-white active:scale-95"
-                        )}
+                    <Button
+                        size="sm"
+                        variant="primary"
+                        icon="cart"
+                        onClick={() => onAddToCart?.(id)}
+                        ariaLabel={`Add ${name} to cart`}
+                        className="shadow-sm"
                     >
-                        <ShoppingCart size={20} />
-                    </button>
+                        Add
+                    </Button>
                 </div>
-            </div>
+            </section>
+
+            {/* Hidden SEO Link for better hit area and indexing */}
+            <Link
+                href={productHref}
+                className="absolute inset-0 z-0"
+                aria-hidden="true"
+                tabIndex={-1}
+            >
+                <span className="sr-only">View {name} details</span>
+            </Link>
         </article>
     );
-}
+});
+
+// Helper for SEO and hit area - imports relative to your structure
+import Link from 'next/link';

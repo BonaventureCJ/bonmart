@@ -1,84 +1,78 @@
-//src/app/(shop)/productspage.tsx
+// src/app/(shop)/products/page.tsx
 
-import { Metadata } from "next";
-import PageContainer from "@/components/layout/page-container";
-import ProductCard from "@/components/product/product-card";
-import { MOCK_PRODUCTS } from "@/data/mock-products";
+import { Metadata } from 'next';
+import { MOCK_PRODUCTS } from '@/data/mock-products';
+import { ProductCard } from '@/components/product/product-card';
+import { Heading } from '@/components/ui/heading/heading';
+import PageContainer from '@/components/layout/page-container';
 
 /**
- * Metadata for SEO - Essential for Enterprise apps
+ * Enterprise SEO Metadata
  */
 export const metadata: Metadata = {
-    title: "Shop Sustainable Products | Bonmart",
-    description: "Browse our curated collection of eco-friendly and sustainable products.",
+    title: 'All Products | Bonmart',
+    description: 'Explore our curated selection of high-quality, eco-friendly products for a sustainable lifestyle.',
+    openGraph: {
+        title: 'All Products | Bonmart',
+        description: 'Shop sustainable with Bonmart. High-quality products, environmentally friendly.',
+        type: 'website',
+        images: [{ url: '/og-image.jpg' }], // Recommended for enterprise SEO
+    },
 };
 
 /**
- * Products Page (PLP)
+ * Product Listing Page (Server Component)
  * 
- * Showcases the product catalog in a responsive grid.
- * Uses Server-Side Rendering (SSR) for optimal SEO and performance.
+ * Wrapped in PageContainer for consistent max-width and padding.
  */
-export default function ProductsPage() {
+export default async function ProductsPage() {
+    const products = MOCK_PRODUCTS;
+
     return (
         <PageContainer>
-            {/* Header Section */}
-            <header className="mb-10 flex flex-col items-center gap-4 text-center">
-                <h1 className="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">
-                    Our <span className="text-[--brand-color]">Products</span>
-                </h1>
-                <p className="max-w-2xl text-lg text-[--neutral-color]">
-                    Explore our curated selection of environmentally conscious items,
-                    crafted to make your shopping experience seamless and sustainable.
-                </p>
-            </header>
+            <main className="flex flex-col text-left">
+                {/* Header Section */}
+                <header className="mb-8 flex flex-col gap-4 border-b border-toggle-bg pb-8 md:mb-12 md:flex-row md:items-end md:justify-between">
+                    <div className="max-w-2xl">
+                        <Heading level={1} weight="bold" className="mb-2">
+                            Our Products
+                        </Heading>
+                        <p className="text-neutral-color text-lg">
+                            Browse through our extensive collection of {products.length} sustainable items.
+                        </p>
+                    </div>
 
+                    <div className="flex items-center gap-4">
+                        <span className="text-sm font-medium text-neutral-color">
+                            Showing all {products.length} results
+                        </span>
+                    </div>
+                </header>
 
-            {/* Catalog Control Bar */}
-            <section
-                className="mb-8 flex items-center justify-between border-b border-[--toggle-container-bg] pb-4"
-                aria-label="Catalog filters"
-            >
-                <p className="text-sm font-medium">
-                    Showing <span className="text-[--brand-color] font-bold">{MOCK_PRODUCTS.length}</span> items
-                </p>
-
-                {/* Sort Dropdown - Accessible and Styled */}
-                <div className="flex items-center gap-2">
-                    <label htmlFor="sort-products" className="sr-only">Sort by</label>
-                    <select
-                        id="sort-products"
-                        className="focus-ring cursor-pointer rounded-lg bg-[--toggle-container-bg] px-3 py-2 text-sm font-semibold outline-none transition-colors hover:bg-[--toggle-hover-bg]"
+                {/* Product Grid */}
+                {products.length > 0 ? (
+                    <section
+                        aria-label="Product list"
+                        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
                     >
-                        <option value="featured">Featured</option>
-                        <option value="newest">Newest</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                    </select>
-                </div>
-            </section>
-
-            {/* Responsive Grid - Mobile First */}
-            <section
-                className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-                aria-label="Product list"
-            >
-                {MOCK_PRODUCTS.map((product, index) => (
-                    <ProductCard
-                        key={product.id}
-                        id={product.id.toString()}
-                        slug={product.slug}
-                        name={product.name}
-                        price={product.price}
-                        imageUrl={product.imageUrl}
-                        category={product.category}
-                        rating={product.rating.rate}
-                        isEcoFriendly={product.isEcoFriendly}
-                        // Optimization: Prioritize loading for images above the fold
-                        priority={index < 4}
-                    />
-                ))}
-            </section>
+                        {products.map((product) => (
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                            />
+                        ))}
+                    </section>
+                ) : (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <Heading level={2} weight="semibold" className="mb-4">
+                            No products found
+                        </Heading>
+                        <p className="text-neutral-color">
+                            We couldn't find any products matching your criteria.
+                        </p>
+                    </div>
+                )}
+            </main>
         </PageContainer>
     );
 }

@@ -1,17 +1,18 @@
 // src/components/ui/button/button.tsx
+
 'use client';
 
-import { forwardRef } from 'react';
+import { forwardRef, type ReactElement } from 'react';
 import type { ButtonHTMLAttributes, ReactNode, ElementType, ComponentPropsWithoutRef } from 'react';
 import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Icon, type IconName } from '@/components/ui/icon/icon';
-import type React from 'react';
 
-// Define the correct ref type for the polymorphic component.
-type PolymorphicRef<T extends ElementType> = React.ComponentPropsWithRef<T>['ref'];
-
-type CommonProps = {
+/**
+ * Interface for the base configuration.
+ * Interfaces are preferred for static objects to allow declaration merging.
+ */
+export interface ButtonBaseProps {
     children?: ReactNode;
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
     size?: 'sm' | 'md' | 'lg';
@@ -23,30 +24,41 @@ type CommonProps = {
     disabled?: boolean;
     className?: string;
     disableFocusRing?: boolean;
-};
+}
 
-// Props for a button (renders as <button>)
-type ButtonAsButton = CommonProps & {
+/**
+ * Interface for the button-specific props.
+ */
+interface ButtonAsButtonProps extends ButtonBaseProps, ButtonHTMLAttributes<HTMLButtonElement> {
     href?: undefined;
     as?: 'button';
-} & ButtonHTMLAttributes<HTMLButtonElement>;
+}
 
-// Props for a link (renders as <a> or Next.js <Link>)
-type ButtonAsLink<T extends ElementType = typeof Link> = CommonProps & {
-    href: string;
-    as?: T;
-} & ComponentPropsWithoutRef<T>;
+/**
+ * Use a Type Alias for the Link props.
+ * Interfaces CANNOT extend generic types like ComponentPropsWithoutRef<T>.
+ */
+type ButtonAsLinkProps<T extends ElementType = typeof Link> = ButtonBaseProps &
+    ComponentPropsWithoutRef<T> & {
+        href: string;
+        as?: T;
+    };
 
-// Combined props type with `ElementType` generic
-type ButtonProps<T extends ElementType> = ButtonAsButton | ButtonAsLink<T>;
+/**
+ * Union type for polymorphism.
+ */
+export type ButtonProps<T extends ElementType> = ButtonAsButtonProps | ButtonAsLinkProps<T>;
 
-// Type the component using an intersection of the props and ref types.
-// This is the correct pattern for polymorphic components with forwardRef.
-type ButtonComponentType = <T extends ElementType = 'button'>(
+type PolymorphicRef<T extends ElementType> = ComponentPropsWithoutRef<T>['ref'];
+
+/**
+ * Type for the final component export to handle generic polymorphism correctly.
+ */
+type ButtonComponent = <T extends ElementType = 'button'>(
     props: ButtonProps<T> & { ref?: PolymorphicRef<T> }
-) => React.ReactElement | null;
+) => ReactElement | null;
 
-const ButtonComponent = forwardRef(
+const ButtonInternal = forwardRef(
     <T extends ElementType>(
         {
             children,
@@ -64,33 +76,38 @@ const ButtonComponent = forwardRef(
         }: ButtonProps<T>,
         ref: PolymorphicRef<T>
     ) => {
-        if (process.env.NODE_ENV !== 'production') {
-            if (!children && !ariaLabel) {
-                console.warn(
-                    'Button: For an accessible icon-only button, you must provide an `ariaLabel` prop.'
-                );
-            }
-        }
-
         const isDisabled = disabled || loading;
 
+        // 1. Base Styles using global tokens from globals.css
         const baseStyles = clsx(
-            'inline-flex items-center justify-center rounded-full font-medium transition-colors duration-long ease-in-out cursor-pointer whitespace-nowrap select-none',
+            'inline-flex items-center justify-center rounded-full font-medium whitespace-nowrap select-none shrink-0',
+            'transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+            'cursor-pointer disabled:cursor-not-allowed',
             !disableFocusRing && 'focus-ring',
-            isDisabled && 'disabled:cursor-not-allowed',
+            fullWidth && 'w-full'
         );
 
+        // 2. Variant Styles using Tailwind v4 variable shorthands & semantic tokens
         const variantStyles = {
-            primary:
-                'bg-brand-color text-white hover:bg-[--brand-color]/90 disabled:bg-[--brand-color]/40 disabled:text-white/60 dark:text-text-dark',
-            secondary:
-                'bg-toggle-bg text-foreground hover:bg-toggle-hover-bg disabled:bg-[--toggle-bg]/50 disabled:text-[--foreground]/40',
-            ghost:
-                'bg-transparent text-foreground hover:bg-toggle-hover-bg disabled:text-[--foreground]/40',
-            danger:
-                'bg-red-600 text-white hover:bg-red-700 disabled:bg-[--color-red-700]/60 disabled:text-white/60',
+            primary: clsx(
+                'bg-(--brand-color) text-(--text-on-image) hover:opacity-90',
+                'disabled:bg-(--brand-color)/40 disabled:text-(--text-on-image)/60'
+            ),
+            secondary: clsx(
+                'bg-(--toggle-bg) text-(--foreground) hover:bg-(--toggle-hover-bg)',
+                'disabled:bg-(--toggle-bg)/50 disabled:text-(--neutral-color)/40'
+            ),
+            ghost: clsx(
+                'bg-transparent text-(--foreground) hover:bg-(--toggle-hover-bg)',
+                'disabled:text-(--neutral-color)/40'
+            ),
+            danger: clsx(
+                'bg-(--error) text-(--text-on-image) hover:opacity-90',
+                'disabled:bg-(--error)/40 disabled:text-(--text-on-image)/60'
+            ),
         };
 
+        // 3. Size Styles
         const sizeStyles = {
             sm: 'px-3 py-1.5 text-sm gap-1.5',
             md: 'px-4 py-2 text-base gap-2',
@@ -102,64 +119,59 @@ const ButtonComponent = forwardRef(
             variantStyles[variant],
             sizeStyles[size],
             iconPlacement === 'right' && children && 'flex-row-reverse',
-            fullWidth && 'w-full',
-            (props as ButtonAsLink<T>).href && isDisabled ? 'pointer-events-none' : '',
-            className,
+            'href' in props && isDisabled && 'pointer-events-none opacity-50',
+            className
         );
 
         const content = (
             <>
-                {loading && (
-                    <Icon
-                        name="loader"
-                        className="animate-spin"
-                        label="Loading"
-                    />
+                {loading ? (
+                    <Icon name="loader" className="animate-spin" size="1.1em" label="Loading" />
+                ) : (
+                    icon && <Icon name={icon} size="1.1em" aria-hidden="true" />
                 )}
-                {!loading && icon && (
-                    <Icon name={icon} className="w-[1em] h-[1em]" />
-                )}
-                {children}
+                {children && <span>{children}</span>}
             </>
         );
 
+        // 4. Polymorphic Rendering Logic
         if ('href' in props) {
-            const { href, as, ...linkProps } = props as ButtonAsLink<T>;
+            const { href, as, ...linkProps } = props as ButtonAsLinkProps<T>;
             const LinkComponent = as || Link;
             return (
                 <LinkComponent
+                    {...(linkProps as any)}
+                    ref={ref}
                     href={href}
                     className={combinedStyles}
-                    aria-label={children ? undefined : ariaLabel}
+                    aria-label={ariaLabel}
                     aria-disabled={isDisabled}
                     tabIndex={isDisabled ? -1 : undefined}
-                    {...linkProps}
-                    ref={ref}
                 >
                     {content}
                 </LinkComponent>
             );
         }
 
-        const { type = 'button', ...buttonProps } = props as ButtonAsButton;
-
+        const { type = 'button', ...buttonProps } = props as ButtonAsButtonProps;
         return (
             <button
-                ref={ref}
-                className={combinedStyles}
-                disabled={isDisabled}
-                aria-disabled={isDisabled}
-                aria-busy={loading || undefined}
-                aria-label={children ? undefined : ariaLabel}
+                {...(buttonProps as any)}
+                ref={ref as any}
                 type={type}
-                {...buttonProps}
+                disabled={isDisabled}
+                className={combinedStyles}
+                aria-label={ariaLabel}
+                aria-busy={loading}
             >
                 {content}
             </button>
         );
-    },
+    }
 );
 
-ButtonComponent.displayName = 'Button';
+(ButtonInternal as any).displayName = 'Button';
 
-export const Button = ButtonComponent as ButtonComponentType;
+export const Button = ButtonInternal as ButtonComponent;
+
+

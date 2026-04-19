@@ -1,9 +1,10 @@
 // src/components/ui/icon/icon.tsx
+
 import { forwardRef } from "react";
 import type { LucideProps } from "lucide-react";
 import { clsx } from "clsx";
 import { appIcons, type IconName, isValidIconName } from "./icons";
-
+export type { IconName }; // ✅ Re-export so Button.tsx can see it
 /**
  * Enterprise Icon Component for Bonmart.
  * Uses semantic color tokens from globals.css for theme-aware styling.

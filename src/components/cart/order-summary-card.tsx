@@ -1,72 +1,126 @@
 // src/components/cart/order-summary-card.tsx
 
-import { Heading } from '@/components/ui/heading/heading';
-import { Button } from '@/components/ui/button/button';
-import { Icon } from '@/components/ui/icon/icon';
-import { clsx } from 'clsx';
+'use client';
 
-interface OrderSummaryProps {
+import { clsx } from 'clsx';
+import { Heading } from '@/components/ui/heading/heading';
+import { Icon } from '@/components/ui/icon/icon';
+
+interface OrderSummaryItem {
+    id: string;
+    name: string;
+    quantity: number;
+    price: number;
+}
+
+export interface OrderSummaryCardProps {
+    orderNumber: string;
+    date: string;
+    items: OrderSummaryItem[];
     subtotal: number;
     shipping: number;
     tax: number;
     total: number;
-    isLoading?: boolean;
     className?: string;
 }
 
-export const OrderSummaryCard = ({
+/**
+ * Enterprise Order Summary Card for Bonmart.
+ * Optimized for post-purchase review and order history views.
+ */
+export function OrderSummaryCard({
+    orderNumber,
+    date,
+    items,
     subtotal,
     shipping,
     tax,
     total,
-    isLoading,
-    className
-}: OrderSummaryProps) => (
-    <section className={clsx(
-        "sticky top-24 rounded-2xl border border-toggle-bg bg-surface-raised p-6 shadow-sm",
-        className
-    )}>
-        <Heading level={3} weight="bold" className="mb-6 text-foreground">
-            Order Summary
-        </Heading>
-
-        <div className="space-y-4 text-sm font-medium">
-            <div className="flex justify-between text-neutral-color">
-                <span>Subtotal</span>
-                <span className="text-foreground">${subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-neutral-color">
-                <span>Shipping Estimate</span>
-                <span className="text-foreground">
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
-                </span>
-            </div>
-            <div className="flex justify-between text-neutral-color">
-                <span>Estimated Tax</span>
-                <span className="text-foreground">${tax.toFixed(2)}</span>
-            </div>
-
-            {/* Divider and Total */}
-            <div className="pt-4 border-t border-toggle-bg flex justify-between text-lg font-bold text-foreground">
-                <span>Order Total</span>
-                <span className="text-brand-color">${total.toFixed(2)}</span>
-            </div>
-        </div>
-
-        <Button
-            variant="primary"
-            fullWidth
-            size="lg"
-            className="mt-8 shadow-sm transition-transform active:scale-[0.98]"
-            loading={isLoading}
+    className,
+}: OrderSummaryCardProps) {
+    return (
+        <div
+            className={clsx(
+                'flex flex-col overflow-hidden rounded-3xl border border-(--toggle-bg)',
+                'bg-(--surface-raised) transition-all duration-(--duration-long)',
+                className
+            )}
         >
-            Complete Purchase
-        </Button>
+            {/* Header: Order Metadata */}
+            <div className="border-b border-(--toggle-bg) bg-(--surface-muted)/20 p-6">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div>
+                        <p className="text-xs font-bold uppercase tracking-widest text-(--neutral-color) opacity-70">
+                            Order Number
+                        </p>
+                        <Heading level={4} weight="bold" className="text-lg">
+                            #{orderNumber}
+                        </Heading>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-xs font-bold uppercase tracking-widest text-(--neutral-color) opacity-70">
+                            Date Placed
+                        </p>
+                        <p className="text-sm font-semibold text-(--foreground)">{date}</p>
+                    </div>
+                </div>
+            </div>
 
-        {/* Secure Checkout Badge - Replaced text-brand-color with semantic variable */}
-        <div className="mt-6 flex items-center justify-center gap-2 text-xs text-brand-color font-bold uppercase tracking-wider">
-            <Icon name="check" className="h-4 w-4" />
-            Secure Environmental Checkout
+            {/* Body: Item List */}
+            <div className="flex flex-col gap-4 p-6">
+                <div className="flex flex-col gap-3">
+                    {items.map((item) => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                            <p className="text-(--neutral-color)">
+                                <span className="font-bold text-(--foreground)">{item.quantity}x</span> {item.name}
+                            </p>
+                            <span className="font-medium text-(--foreground)">
+                                ${(item.price * item.quantity).toFixed(2)}
+                            </span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Divider */}
+                <div className="my-2 h-px w-full bg-(--toggle-bg) opacity-50" />
+
+                {/* Financial Breakdown */}
+                <div className="flex flex-col gap-2">
+                    <div className="flex justify-between text-sm">
+                        <span className="text-(--neutral-color)">Subtotal</span>
+                        <span className="text-(--foreground)">${subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-(--neutral-color)">Shipping (Eco-Neutral)</span>
+                        <span className="text-(--brand-color) font-medium">
+                            {shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}
+                        </span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-(--neutral-color)">Estimated Tax</span>
+                        <span className="text-(--foreground)">${tax.toFixed(2)}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* Footer: Final Total & Impact */}
+            <div className="mt-auto border-t border-(--toggle-bg) p-6">
+                <div className="mb-4 flex items-center justify-between">
+                    <span className="text-base font-bold">Total Amount</span>
+                    <span className="text-2xl font-black text-(--foreground)">
+                        ${total.toFixed(2)}
+                    </span>
+                </div>
+
+                {/* Brand Mission Badge */}
+                <div className="flex items-center gap-3 rounded-2xl bg-(--brand-color)/10 p-4 text-(--brand-color)">
+                    <Icon name="check" size={20} className="shrink-0" />
+                    <p className="text-xs font-semibold leading-tight">
+                        This order offset <span className="underline">2.4kg of CO2</span> through our reforestation partnership.
+                    </p>
+                </div>
+            </div>
         </div>
-    </section>
-);
+    );
+}
+

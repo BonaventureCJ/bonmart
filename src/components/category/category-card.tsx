@@ -2,101 +2,83 @@
 
 'use client';
 
-import * as React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { clsx } from 'clsx';
-import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
+import { Heading } from '@/components/ui/heading/heading';
 
 interface CategoryCardProps {
-    title: string;
-    description?: string;
+    name: string;
+    slug: string;
     imageUrl: string;
-    href: string;
     itemCount?: number;
     className?: string;
 }
 
 /**
- * CategoryCard Component
- * 
- * Features:
- * - Immersive lifestyle imagery with brand-color overlays.
- * - Semantic structure for SEO discoverability.
- * - Mobile-first responsive design.
- * - High-performance Next.js Image handling.
+ * Enterprise Category Card for Bonmart.
+ * Optimized for discovery with high-impact visuals and theme-aware overlays.
  */
-export const CategoryCard = React.memo(function CategoryCard({
-    title,
-    description,
+export function CategoryCard({
+    name,
+    slug,
     imageUrl,
-    href,
     itemCount,
     className,
 }: CategoryCardProps) {
     return (
         <Link
-            href={href}
+            href={`/category/${slug}`}
             className={clsx(
-                'group relative block aspect-[4/5] overflow-hidden rounded-3xl bg-surface-muted',
+                'group relative flex aspect-[4/5] w-full flex-col overflow-hidden rounded-3xl',
+                'bg-(--surface-muted) transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
                 'focus-ring outline-offset-4',
                 className
             )}
         >
-            {/* Background Image */}
+            {/* 1. Background Image with Hover Zoom */}
             <Image
                 src={imageUrl}
-                alt="" // Decorative: Title provides context
+                alt={name}
                 fill
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                className="object-cover transition-transform duration-700 ease-in-out group-hover:scale-110"
+                className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
 
-            {/* Gradient Overlay: Transitions from neutral black to brand-color on hover */}
+            {/* 2. Gradient Overlay for Text Legibility */}
             <div
-                className={clsx(
-                    "absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent",
-                    "transition-colors duration-500 group-hover:from-brand-color/90 group-hover:via-brand-color/40"
-                )}
+                className="absolute inset-0 bg-gradient-to-t from-(--overlay-bg) via-(--overlay-bg)/20 to-transparent transition-opacity duration-500 group-hover:opacity-80"
                 aria-hidden="true"
             />
 
-            {/* Content Container */}
-            <div className="absolute inset-0 flex flex-col justify-end p-6 text-text-on-image sm:p-8">
-                <div className="translate-y-4 transition-transform duration-500 ease-out group-hover:translate-y-0">
+            {/* 3. Content Section */}
+            <div className="relative mt-auto flex flex-col p-6 sm:p-8">
+                <div className="mb-2 flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-(--brand-color) text-(--text-on-image) shadow-lg">
+                        <Icon name="chevronRight" size={16} />
+                    </div>
                     {itemCount !== undefined && (
-                        <span className="mb-2 inline-block text-xs font-bold uppercase tracking-widest text-text-on-image/80">
+                        <span className="text-xs font-bold uppercase tracking-widest text-(--text-on-image)/80">
                             {itemCount} Products
                         </span>
                     )}
+                </div>
 
-                    <Heading
-                        level={2}
-                        as="span" // Semantic H2 but visually scoped to card
-                        weight="bold"
-                        className="mb-2 text-2xl text-text-on-image md:text-3xl"
-                    >
-                        {title}
-                    </Heading>
+                <Heading
+                    level={2}
+                    weight="bold"
+                    className="text-2xl text-(--text-on-image) sm:text-3xl"
+                >
+                    {name}
+                </Heading>
 
-                    {description && (
-                        <p className="line-clamp-2 max-h-0 text-sm font-medium text-text-on-image/0 opacity-0 transition-all duration-500 group-hover:max-h-20 group-hover:text-text-on-image/90 group-hover:opacity-100">
-                            {description}
-                        </p>
-                    )}
-
-                    <div className="mt-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider">
-                        Explore Collection
-                        <Icon
-                            name="arrowRight"
-                            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
-                        />
-                    </div>
+                <div className="mt-4 flex items-center gap-1.5 text-sm font-semibold text-(--text-on-image) opacity-0 transition-all duration-300 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0">
+                    <span>Explore Collection</span>
+                    <Icon name="arrowRight" size={14} />
                 </div>
             </div>
         </Link>
     );
-});
+}
 
-CategoryCard.displayName = 'CategoryCard';

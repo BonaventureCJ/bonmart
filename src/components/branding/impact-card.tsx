@@ -2,76 +2,98 @@
 
 'use client';
 
-import * as React from 'react';
 import { clsx } from 'clsx';
-import { Heading } from '@/components/ui/heading/heading';
 import { Icon, type IconName } from '@/components/ui/icon/icon';
+import { Heading } from '@/components/ui/heading/heading';
 
-interface ImpactCardProps {
+export interface ImpactCardProps {
     title: string;
+    value: string;
     description: string;
     icon: IconName;
-    metric?: string; // e.g., "100% Organic" or "12kg CO2 saved"
+    /** Primary brand background variant */
+    isProminent?: boolean;
     className?: string;
 }
 
 /**
- * ImpactCard Component
- * 
- * Purpose: High-trust informational card for sustainability claims.
- * Features:
- * - Semantic <section> for SEO indexing of brand values.
- * - Integration with brand-primary (green) design tokens.
- * - Mobile-first responsive layout.
+ * Enterprise Impact Card for Bonmart.
+ * 100% Variable-driven to ensure perfect dark/light mode synchronization.
  */
-export const ImpactCard = React.memo(function ImpactCard({
+export function ImpactCard({
     title,
+    value,
     description,
     icon,
-    metric,
+    isProminent = false,
     className,
 }: ImpactCardProps) {
     return (
-        <section
+        <article
             className={clsx(
-                'group flex flex-col items-center p-6 text-center transition-all duration-long ease-in-out sm:p-8',
-                'rounded-3xl border border-toggle-bg bg-background hover:border-brand-color/40 hover:shadow-md',
+                'group relative flex flex-col gap-4 overflow-hidden rounded-3xl p-6 sm:p-8',
+                'transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'border border-(--toggle-bg)',
+                isProminent
+                    ? 'bg-(--brand-color) text-(--text-on-image)'
+                    : 'bg-(--surface-raised) text-(--foreground)',
                 className
             )}
         >
-            {/* Icon Container with brand accent - Using brand-color with opacity shorthand */}
-            <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-color/10 text-brand-color transition-transform duration-long group-hover:scale-110">
-                <Icon name={icon} className="h-8 w-8" />
-            </div>
-
-            {/* Content */}
-            <div className="flex flex-col gap-2">
-                {metric && (
-                    <span className="text-xs font-bold uppercase tracking-widest text-brand-color">
-                        {metric}
-                    </span>
+            {/* Decorative Brand Accent (Top-Right) */}
+            <div
+                className={clsx(
+                    'absolute -top-4 -right-4 h-24 w-24 rounded-full opacity-10 transition-transform duration-700 group-hover:scale-150',
+                    isProminent ? 'bg-(--text-on-image)' : 'bg-(--brand-color)'
                 )}
+                aria-hidden="true"
+            />
 
-                <Heading
-                    level={3}
-                    weight="bold"
-                    className="text-xl tracking-tight text-foreground"
+            <div className="relative z-10 flex flex-col gap-6">
+                {/* Icon Container */}
+                <div
+                    className={clsx(
+                        'flex h-14 w-14 items-center justify-center rounded-2xl shadow-sm',
+                        isProminent
+                            ? 'bg-(--text-on-image)/20 text-(--text-on-image)'
+                            : 'bg-(--brand-color)/10 text-(--brand-color)'
+                    )}
                 >
-                    {title}
-                </Heading>
+                    <Icon name={icon} size={28} />
+                </div>
 
-                <p className="text-sm leading-relaxed text-neutral-color md:text-base">
+                <div className="flex flex-col gap-1">
+                    <Heading
+                        level={4}
+                        weight="bold"
+                        className={clsx(
+                            'text-3xl sm:text-4xl tracking-tight',
+                            isProminent ? 'text-(--text-on-image)' : 'text-(--foreground)'
+                        )}
+                    >
+                        {value}
+                    </Heading>
+                    <Heading
+                        level={6}
+                        weight="semibold"
+                        className={clsx(
+                            'text-sm uppercase tracking-widest opacity-90',
+                            isProminent ? 'text-(--text-on-image)/80' : 'text-(--brand-color)'
+                        )}
+                    >
+                        {title}
+                    </Heading>
+                </div>
+
+                <p
+                    className={clsx(
+                        'text-sm leading-relaxed max-w-[22ch] sm:max-w-none',
+                        isProminent ? 'text-(--text-on-image)/90' : 'text-(--neutral-color)'
+                    )}
+                >
                     {description}
                 </p>
             </div>
-
-            {/* Decorative Brand Element - Replaced toggle-bg with semantic variable */}
-            <div
-                className="mt-6 h-1 w-8 rounded-full bg-toggle-bg transition-all duration-long group-hover:w-16 group-hover:bg-brand-color/50"
-                aria-hidden="true"
-            />
-        </section>
+        </article>
     );
-});
-
-ImpactCard.displayName = 'ImpactCard';
+}

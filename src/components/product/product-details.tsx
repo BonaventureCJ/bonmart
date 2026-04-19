@@ -4,7 +4,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';

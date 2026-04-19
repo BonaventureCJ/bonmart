@@ -1,15 +1,15 @@
 // src/components/layout/layout-wrapper.tsx
+
 'use client';
 
 import type { FC, ReactNode } from 'react';
-import { useAppSelector } from '@/store/hooks';
+import { clsx } from 'clsx';
+import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { MobileNav } from '@/components/navigation/mobile-nav';
+import { closeMobileMenu } from '@/features/navigation/navigation-slice';
+import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { clsx } from 'clsx';
-import { closeMobileMenu } from '@/features/navigation/navigation-slice';
-import { useAppDispatch } from '@/store/hooks';
-import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
 
 type LayoutWrapperProps = {
     children: ReactNode;

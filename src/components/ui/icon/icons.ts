@@ -1,6 +1,6 @@
 // src/components/ui/icon/icons.ts
+
 import {
-  // Common icons
   ArrowRight,
   Menu,
   Home,
@@ -17,16 +17,13 @@ import {
   Minus,
   Check,
   AlertCircle,
-  // Footer Icons
   Globe,
-  // Theme Icons
   Sun,
   Moon,
   Monitor,
 } from 'lucide-react';
 
 export const appIcons = {
-  // Common icons
   arrowRight: ArrowRight,
   menu: Menu,
   home: Home,
@@ -43,9 +40,7 @@ export const appIcons = {
   minus: Minus,
   check: Check,
   alertCircle: AlertCircle,
-  // Footer icons
   globe: Globe,
-  // Theme Icons
   sun: Sun,
   moon: Moon,
   monitor: Monitor,
@@ -53,6 +48,4 @@ export const appIcons = {
 
 export type IconName = keyof typeof appIcons;
 
-export const isValidIconName = (name: string): name is IconName => {
-  return name in appIcons;
-};
+export const isValidIconName = (name: string): name is IconName => name in appIcons;

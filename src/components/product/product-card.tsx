@@ -1,9 +1,10 @@
-//src/components/product/product-card.tsx
+// src/components/product/product-card.tsx
 
 'use client';
 
 import * as React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
@@ -23,7 +24,7 @@ interface ProductCardProps {
  * - Responsive Mobile-first design
  * - Semantic HTML (article, figure, section)
  * - WCAG Accessible (ARIA labels, focus states)
- * - Eco-friendly indicator using brand-primary colors
+ * - Uses shared Button component for all interactive elements
  */
 export const ProductCard = React.memo(function ProductCard({
     product,
@@ -51,32 +52,34 @@ export const ProductCard = React.memo(function ProductCard({
             )}
         >
             {/* Image Container */}
-            <figure className="relative aspect-square overflow-hidden bg-neutral-100/50 dark:bg-neutral-800/50">
+            <figure className="relative aspect-square overflow-hidden bg-surface-muted/50">
                 <Image
                     src={imageUrl}
                     alt={name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-contain p-6 transition-transform duration-500 group-hover:scale-105"
-                    priority={id <= 4} // Priority for top products above the fold
+                    priority={id <= 4}
                 />
 
                 {/* Eco-Friendly Badge */}
                 {isEcoFriendly && (
-                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-brand-color px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1 rounded-full bg-brand-color px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-background shadow-sm">
                         <Icon name="check" className="h-3 w-3" />
                         Eco-Friendly
                     </div>
                 )}
 
-                {/* Wishlist Toggle (Positioned for easy thumb reach on mobile) */}
-                <button
-                    type="button"
-                    className="focus-ring absolute top-3 right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:text-red-500"
-                    aria-label={`Add ${name} to wishlist`}
-                >
-                    <Icon name="heart" className="h-5 w-5" />
-                </button>
+                {/* Wishlist Toggle refactored to use semantic variables */}
+                <div className="absolute top-3 right-3 z-10">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        icon="heart"
+                        ariaLabel={`Add ${name} to wishlist`}
+                        className="h-9 w-9 rounded-full bg-background/80 p-0 text-foreground backdrop-blur-sm hover:bg-error-muted hover:text-error"
+                    />
+                </div>
             </figure>
 
             {/* Content Section */}
@@ -86,8 +89,8 @@ export const ProductCard = React.memo(function ProductCard({
                         {category}
                     </span>
                     <div className="flex items-center gap-1" aria-label={`Rating: ${rating.rate} out of 5 stars`}>
-                        <Icon name="star" className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-                        <span className="text-xs font-semibold">{rating.rate}</span>
+                        <Icon name="star" className="h-3.5 w-3.5 fill-warning text-warning" />
+                        <span className="text-xs font-semibold text-foreground">{rating.rate}</span>
                     </div>
                 </header>
 
@@ -118,7 +121,7 @@ export const ProductCard = React.memo(function ProductCard({
                 </div>
             </section>
 
-            {/* Hidden SEO Link for better hit area and indexing */}
+            {/* Hidden SEO Link for better hit area */}
             <Link
                 href={productHref}
                 className="absolute inset-0 z-0"
@@ -131,5 +134,4 @@ export const ProductCard = React.memo(function ProductCard({
     );
 });
 
-// Helper for SEO and hit area - imports relative to your structure
-import Link from 'next/link';
+ProductCard.displayName = 'ProductCard';

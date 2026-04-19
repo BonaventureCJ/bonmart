@@ -1,4 +1,4 @@
-/* src/app/globals.css */
+/* src/styles/globals.css */
 
 /* 1. Import Tailwind CSS. */
 @import "tailwindcss";
@@ -15,6 +15,14 @@
   --color-surface-dark: #0a0a0a;
   --color-text-light: #171717;
   --color-text-dark: #ededed;
+
+  /* Status Primitives */
+  --color-error-light: #dc2626;
+  --color-error-dark: #ef4444;
+  --color-error-muted-light: #fee2e2;
+  --color-error-muted-dark: rgba(127, 29, 29, 0.4);
+  --color-warning-amber: #fbbf24;
+
   --color-focus-ring: var(--color-brand-primary);
   --color-focus-ring-dark: var(--color-brand-primary-light);
   --color-toggle-hover-light: #f3f4f6;
@@ -26,7 +34,8 @@
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
-  --header-height: 4rem; /* The height of the header is Tailwind's h-16 class, which is = 4rem */
+  --header-height: 4rem;
+  /* The height of the header is Tailwind's h-16 class, which is = 4rem */
 }
 
 /* 3. Configure custom variants. */
@@ -40,6 +49,13 @@
   --foreground: var(--color-text-light);
   --brand-color: var(--color-brand-primary);
   --neutral-color: var(--color-neutral-text-light);
+  --surface-muted: var(--color-toggle-hover-light);
+  --surface-raised: var(--color-surface-light);
+  /* Base for light mode */
+  --text-on-image: #ffffff;
+  --error: var(--color-error-light);
+  --error-muted: var(--color-error-muted-light);
+  --warning: var(--color-warning-amber);
   --toggle-hover-bg: var(--color-toggle-hover-light);
   --toggle-container-bg: var(--color-toggle-bg-light);
   --toggle-bg: var(--color-toggle-bg-light);
@@ -57,6 +73,13 @@ html.dark {
   --foreground: var(--color-text-dark);
   --brand-color: var(--color-brand-primary-light);
   --neutral-color: var(--color-neutral-text-dark);
+  --surface-muted: var(--color-neutral-bg-dark);
+  --surface-raised: var(--color-neutral-bg-dark);
+  /* Slightly lifted for dark mode */
+  --text-on-image: #ffffff;
+  --error: var(--color-error-dark);
+  --error-muted: var(--color-error-muted-dark);
+  --warning: var(--color-warning-amber);
   --toggle-hover-bg: var(--color-toggle-hover-dark);
   --toggle-container-bg: var(--color-neutral-bg-dark);
   --toggle-bg: var(--color-toggle-bg-dark);

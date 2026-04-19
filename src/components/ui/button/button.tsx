@@ -8,10 +8,6 @@ import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Icon, type IconName } from '@/components/ui/icon/icon';
 
-/**
- * Interface for the base configuration.
- * Interfaces are preferred for static objects to allow declaration merging.
- */
 export interface ButtonBaseProps {
     children?: ReactNode;
     variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -26,34 +22,21 @@ export interface ButtonBaseProps {
     disableFocusRing?: boolean;
 }
 
-/**
- * Interface for the button-specific props.
- */
 interface ButtonAsButtonProps extends ButtonBaseProps, ButtonHTMLAttributes<HTMLButtonElement> {
     href?: undefined;
     as?: 'button';
 }
 
-/**
- * Use a Type Alias for the Link props.
- * Interfaces CANNOT extend generic types like ComponentPropsWithoutRef<T>.
- */
 type ButtonAsLinkProps<T extends ElementType = typeof Link> = ButtonBaseProps &
     ComponentPropsWithoutRef<T> & {
         href: string;
         as?: T;
     };
 
-/**
- * Union type for polymorphism.
- */
 export type ButtonProps<T extends ElementType> = ButtonAsButtonProps | ButtonAsLinkProps<T>;
 
 type PolymorphicRef<T extends ElementType> = ComponentPropsWithoutRef<T>['ref'];
 
-/**
- * Type for the final component export to handle generic polymorphism correctly.
- */
 type ButtonComponent = <T extends ElementType = 'button'>(
     props: ButtonProps<T> & { ref?: PolymorphicRef<T> }
 ) => ReactElement | null;
@@ -78,7 +61,6 @@ const ButtonInternal = forwardRef(
     ) => {
         const isDisabled = disabled || loading;
 
-        // 1. Base Styles using global tokens from globals.css
         const baseStyles = clsx(
             'inline-flex items-center justify-center rounded-full font-medium whitespace-nowrap select-none shrink-0',
             'transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
@@ -87,7 +69,6 @@ const ButtonInternal = forwardRef(
             fullWidth && 'w-full'
         );
 
-        // 2. Variant Styles using Tailwind v4 variable shorthands & semantic tokens
         const variantStyles = {
             primary: clsx(
                 'bg-(--brand-color) text-(--text-on-image) hover:opacity-90',
@@ -107,7 +88,6 @@ const ButtonInternal = forwardRef(
             ),
         };
 
-        // 3. Size Styles
         const sizeStyles = {
             sm: 'px-3 py-1.5 text-sm gap-1.5',
             md: 'px-4 py-2 text-base gap-2',
@@ -134,13 +114,13 @@ const ButtonInternal = forwardRef(
             </>
         );
 
-        // 4. Polymorphic Rendering Logic
         if ('href' in props) {
             const { href, as, ...linkProps } = props as ButtonAsLinkProps<T>;
             const LinkComponent = as || Link;
+
             return (
                 <LinkComponent
-                    {...(linkProps as any)}
+                    {...(linkProps as ComponentPropsWithoutRef<T>)}
                     ref={ref}
                     href={href}
                     className={combinedStyles}
@@ -154,10 +134,11 @@ const ButtonInternal = forwardRef(
         }
 
         const { type = 'button', ...buttonProps } = props as ButtonAsButtonProps;
+
         return (
             <button
-                {...(buttonProps as any)}
-                ref={ref as any}
+                {...(buttonProps as ButtonHTMLAttributes<HTMLButtonElement>)}
+                ref={ref as React.Ref<HTMLButtonElement>}
                 type={type}
                 disabled={isDisabled}
                 className={combinedStyles}
@@ -170,8 +151,7 @@ const ButtonInternal = forwardRef(
     }
 );
 
-(ButtonInternal as any).displayName = 'Button';
+// Fix: Missing display name error
+ButtonInternal.displayName = 'Button';
 
 export const Button = ButtonInternal as ButtonComponent;
-
-

@@ -2,131 +2,95 @@
 
 'use client';
 
-import * as React from 'react';
+'use client';
+
 import { clsx } from 'clsx';
-// Removed: import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
-import { Button } from '@/components/ui/button/button';
+import { Heading } from '@/components/ui/heading/heading';
 
 interface ProductReviewCardProps {
     author: string;
-    rating: number;
     date: string;
-    content: string;
+    rating: number;
+    comment: string;
     isVerified?: boolean;
-    helpfulCount?: number;
     className?: string;
 }
 
 /**
- * ProductReviewCard Component
- * 
- * Specifically designed for product-level social proof.
+ * Enterprise Product Review Card for Bonmart.
+ * Optimized for readability, theme consistency, and accessibility.
  */
-export const ProductReviewCard = React.memo(function ProductReviewCard({
+export function ProductReviewCard({
     author,
-    rating,
     date,
-    content,
+    rating,
+    comment,
     isVerified = false,
-    helpfulCount = 0,
     className,
 }: ProductReviewCardProps) {
-    // Local state for the "Helpful" toggle to provide immediate feedback
-    const [hasVoted, setHasVoted] = React.useState(false);
-
     return (
         <article
             className={clsx(
-                'flex flex-col gap-4 rounded-2xl border border-toggle-bg bg-background p-5 transition-shadow hover:shadow-sm sm:p-6',
+                'flex flex-col gap-4 rounded-2xl border border-(--toggle-bg) p-5',
+                'bg-(--surface-raised) transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'hover:shadow-sm',
                 className
             )}
-            itemProp="review"
-            itemScope
-            itemType="https://schema.org"
         >
-            {/* 1. Review Header: Stars & Date */}
-            <header className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-start justify-between">
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                        <Heading level={6} weight="bold" className="text-base">
+                            {author}
+                        </Heading>
+                        {isVerified && (
+                            <div
+                                className="flex items-center gap-1 text-(--brand-color)"
+                                title="Verified Purchase"
+                            >
+                                <Icon name="check" size={14} className="rounded-full bg-(--brand-color)/10 p-0.5" />
+                                <span className="text-[10px] font-bold uppercase tracking-tight">Verified</span>
+                            </div>
+                        )}
+                    </div>
+                    <time className="text-xs text-(--neutral-color) opacity-70" dateTime={date}>
+                        {date}
+                    </time>
+                </div>
+
+                {/* Dynamic Star Rating */}
                 <div
                     className="flex items-center gap-0.5"
                     aria-label={`Rated ${rating} out of 5 stars`}
-                    itemProp="reviewRating"
-                    itemScope
-                    itemType="https://schema.org"
                 >
-                    <meta itemProp="ratingValue" content={rating.toString()} />
-                    <meta itemProp="bestRating" content="5" />
-                    {[...Array(5)].map((_, i) => (
+                    {Array.from({ length: 5 }).map((_, index) => (
                         <Icon
-                            key={i}
+                            key={index}
                             name="star"
+                            size={16}
                             className={clsx(
-                                'h-4 w-4',
-                                i < rating ? 'fill-warning text-warning' : 'text-surface-muted'
+                                index < rating ? 'text-(--warning) fill-(--warning)' : 'text-(--toggle-bg)'
                             )}
                         />
                     ))}
                 </div>
-                <time
-                    dateTime={date}
-                    className="text-xs font-medium text-neutral-color"
-                    itemProp="datePublished"
-                >
-                    {date}
-                </time>
-            </header>
-
-            {/* 2. Author Info */}
-            <div className="flex items-center gap-2">
-                <span className="font-bold text-foreground" itemProp="author" itemScope itemType="https://schema.org">
-                    <span itemProp="name">{author}</span>
-                </span>
-                {isVerified && (
-                    <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-tight text-brand-color">
-                        <Icon name="check" className="h-3 w-3" />
-                        Verified Buyer
-                    </span>
-                )}
             </div>
 
-            {/* 3. Review Content */}
-            <div className="text-sm leading-relaxed text-neutral-color md:text-base">
-                <p itemProp="reviewBody">{content}</p>
-            </div>
+            <p className="text-sm leading-relaxed text-(--neutral-color)">
+                {comment}
+            </p>
 
-            {/* 4. Footer: Feedback Actions */}
-            <footer className="mt-2 flex items-center justify-between border-t border-toggle-bg pt-4">
-                <div className="flex items-center gap-4">
-                    <span className="text-xs font-medium text-neutral-color">
-                        Was this helpful?
-                    </span>
-                    <div className="flex items-center gap-2">
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            icon="plus"
-                            onClick={() => setHasVoted(!hasVoted)}
-                            className={clsx(
-                                'h-8 px-3 text-xs transition-all',
-                                hasVoted ? 'bg-brand-color/10 text-brand-color' : 'text-neutral-color'
-                            )}
-                            ariaLabel="Mark as helpful"
-                        >
-                            {hasVoted ? helpfulCount + 1 : helpfulCount}
-                        </Button>
-                    </div>
-                </div>
-
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-xs text-neutral-color hover:text-foreground"
-                >
+            {/* Helpful Toggle - Enterprise micro-interaction placeholder */}
+            <div className="mt-2 flex items-center gap-4 border-t border-(--toggle-bg) pt-4">
+                <button className="flex items-center gap-1.5 text-xs font-medium text-(--neutral-color) transition-colors hover:text-(--brand-color) focus-ring rounded-sm p-1">
+                    <Icon name="plus" size={14} />
+                    Helpful
+                </button>
+                <button className="text-xs font-medium text-(--neutral-color) transition-colors hover:text-(--error) focus-ring rounded-sm p-1">
                     Report
-                </Button>
-            </footer>
+                </button>
+            </div>
         </article>
     );
-});
-
-ProductReviewCard.displayName = 'ProductReviewCard';
+}

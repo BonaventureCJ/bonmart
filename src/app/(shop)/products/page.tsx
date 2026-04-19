@@ -16,15 +16,10 @@ export const metadata: Metadata = {
         title: 'All Products | Bonmart',
         description: 'Shop sustainable with Bonmart. High-quality products, environmentally friendly.',
         type: 'website',
-        images: [{ url: '/og-image.jpg' }], // Recommended for enterprise SEO
+        images: [{ url: '/og-image.jpg' }],
     },
 };
 
-/**
- * Product Listing Page (Server Component)
- * 
- * Wrapped in PageContainer for consistent max-width and padding.
- */
 export default async function ProductsPage() {
     const products = MOCK_PRODUCTS;
 
@@ -68,7 +63,8 @@ export default async function ProductsPage() {
                             No products found
                         </Heading>
                         <p className="text-neutral-color">
-                            We couldn't find any products matching your criteria.
+                            {/* FIX: Escaped the apostrophe using &apos; */}
+                            We couldn&apos;t find any products matching your criteria.
                         </p>
                     </div>
                 )}
@@ -76,3 +72,4 @@ export default async function ProductsPage() {
         </PageContainer>
     );
 }
+

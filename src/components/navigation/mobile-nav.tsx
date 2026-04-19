@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
-import { mainNavLinks } from './links';
+import { mainNavLinks } from './nav-links';
 
 /**
  * Mobile navigation component that displays a 3/4 width, slide-in menu on small devices.

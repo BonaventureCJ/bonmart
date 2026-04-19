@@ -1,4 +1,5 @@
 // src/providers/ReduxProvider.tsx
+
 'use client';
 
 import { Provider } from 'react-redux';
@@ -6,7 +7,6 @@ import { store } from '@/store/store';
 import { useLayoutEffect } from 'react';
 import { useAppSelector } from '@/store/hooks';
 
-// Helper component to apply theme logic.
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useAppSelector((state) => state.theme);
 
@@ -25,7 +25,6 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('theme', 'light');
       }
 
-      // Handle the system setting explicitly by removing the stored theme.
       if (theme === 'system') {
         localStorage.removeItem('theme');
       }
@@ -33,22 +32,25 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
 
     applyTheme();
 
-    // Listen for system theme changes and update the UI if the theme is 'system'.
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const listener = (e: MediaQueryListEvent) => {
       if (theme === 'system') {
-        e.matches ? document.documentElement.classList.add('dark') : document.documentElement.classList.remove('dark');
+        // Corrected assignment/function call logic
+        if (e.matches) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
       }
     };
 
     mediaQuery.addEventListener('change', listener);
     return () => mediaQuery.removeEventListener('change', listener);
-  }, [theme]); // Re-run effect only when the theme state changes
+  }, [theme]);
 
   return <>{children}</>;
 };
 
-// Main Redux provider component.
 export function ReduxProvider({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>

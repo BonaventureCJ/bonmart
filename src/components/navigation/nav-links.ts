@@ -1,4 +1,4 @@
-// src/components/navigation/links.ts
+// src/components/navigation/nav-links.ts
 import { type IconName } from '@/components/ui/icon/icon';
 
 export interface NavItem {

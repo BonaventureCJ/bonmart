@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
-import { mainNavLinks } from './links';
+import { mainNavLinks } from './nav-links';
 
 export const DesktopNav = () => {
   const pathname = usePathname();

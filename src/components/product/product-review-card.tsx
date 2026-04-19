@@ -4,7 +4,7 @@
 
 import * as React from 'react';
 import { clsx } from 'clsx';
-import { Heading } from '@/components/ui/heading/heading';
+// Removed: import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 
@@ -22,10 +22,6 @@ interface ProductReviewCardProps {
  * ProductReviewCard Component
  * 
  * Specifically designed for product-level social proof.
- * Features:
- * - Schema.org Structured Data (Review) for SEO rich snippets.
- * - Verified buyer badge using brand-primary colors.
- * - Design-system-compliant "Helpful" voting mechanism.
  */
 export const ProductReviewCard = React.memo(function ProductReviewCard({
     author,
@@ -66,7 +62,6 @@ export const ProductReviewCard = React.memo(function ProductReviewCard({
                             name="star"
                             className={clsx(
                                 'h-4 w-4',
-                                // Using semantic warning token and surface-muted for empty stars
                                 i < rating ? 'fill-warning text-warning' : 'text-surface-muted'
                             )}
                         />
@@ -113,7 +108,6 @@ export const ProductReviewCard = React.memo(function ProductReviewCard({
                             onClick={() => setHasVoted(!hasVoted)}
                             className={clsx(
                                 'h-8 px-3 text-xs transition-all',
-                                // Using semantic brand-color and opacity shorthand
                                 hasVoted ? 'bg-brand-color/10 text-brand-color' : 'text-neutral-color'
                             )}
                             ariaLabel="Mark as helpful"

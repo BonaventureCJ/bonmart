@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
-import { utilityNavLinks } from './links';
+import { utilityNavLinks } from './nav-links';
 
 export const UtilityNav = () => {
   const pathname = usePathname();

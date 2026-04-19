@@ -2,22 +2,33 @@ import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  reactStrictMode: true, // recommended for Next.js projects
+  reactStrictMode: true,
 
-  // Webpack configuration to add path alias
+  // 1. Configure images to allow the external host for product data
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "fakestoreapi.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
+  },
+
+  // 2. Webpack configuration for path alias (legacy support alongside tsconfig)
   webpack: (config) => {
     config.resolve.alias["@"] = path.resolve(__dirname, "src");
     return config;
   },
 
-  // Keep your existing experimental Turbopack SVG loader
+  // 3. Experimental Turbopack configuration for SVG support
   experimental: {
     turbo: {
       rules: {
         '*.svg': {
           loaders: ['@svgr/webpack'],
-          as: '*.js', // Treat output as a JS module/component
+          as: '*.js',
         },
       },
     },

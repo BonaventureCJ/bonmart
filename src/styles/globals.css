@@ -8,7 +8,8 @@
 @theme {
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
-  --color-neutral-text-light: #4b5563;
+  --color-neutral-text-light: #374151;
+  /* Darkened from #4b5563 for better contrast */
   --color-neutral-text-dark: #d1d5db;
   --color-neutral-bg-dark: #1f2937;
   --color-surface-light: #ffffff;
@@ -20,8 +21,11 @@
   --color-error-light: #dc2626;
   --color-error-dark: #ef4444;
   --color-error-muted-light: #fee2e2;
-  --color-error-muted-dark: rgba(127, 29, 29, 0.4);
+  --color-error-muted-dark: #450a0a;
+  /* Solid color to ensure visibility on dark surfaces */
   --color-warning-amber: #fbbf24;
+  --color-warning-dark: #92400e;
+  /* New: For text contrast in light mode */
 
   --color-focus-ring: var(--color-brand-primary);
   --color-focus-ring-dark: var(--color-brand-primary-light);
@@ -55,7 +59,8 @@
   --text-on-image: #ffffff;
   --error: var(--color-error-light);
   --error-muted: var(--color-error-muted-light);
-  --warning: var(--color-warning-amber);
+  --warning: var(--color-warning-dark);
+  /* Switched to dark amber for readability */
   --toggle-hover-bg: var(--color-toggle-hover-light);
   --toggle-container-bg: var(--color-toggle-bg-light);
   --toggle-bg: var(--color-toggle-bg-light);
@@ -87,7 +92,8 @@ html.dark {
   --focus-ring: var(--color-focus-ring-dark);
   --ring-offset-color: var(--color-toggle-bg-active-dark);
   --footer-border: var(--color-neutral-text-dark);
-  --overlay-bg: rgba(0, 0, 0, 0.7);
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  /* Reduced opacity for better visibility on dark bg */
   --icon-hover-color: var(--color-brand-primary-light);
 }
 

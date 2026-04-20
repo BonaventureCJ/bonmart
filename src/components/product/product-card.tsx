@@ -17,10 +17,6 @@ interface ProductCardProps {
     onFavouriteToggle?: (id: number) => void;
 }
 
-/**
- * Enterprise Product Card for Bonmart.
- * Optimized to prevent "muddy" transitions during theme switching.
- */
 export function ProductCard({
     product,
     className,
@@ -41,16 +37,16 @@ export function ProductCard({
         >
             {/* Image & Actions Container */}
             <div className="relative aspect-square w-full overflow-hidden bg-(--surface-muted)/20">
-                {/* Wishlist Button */}
+                {/* Wishlist Button*/}
                 <div className="absolute top-1.5 right-1.5 z-20 md:top-2 md:right-2">
                     <Button
                         variant="ghost"
                         size="sm"
                         className={clsx(
                             'h-7 w-7 rounded-full bg-(--surface-raised)/80 p-0 backdrop-blur-sm hover:bg-(--surface-raised) md:h-8 md:w-8',
-                            isFavourite ? 'text-(--error)' : 'text-(--neutral-color)'
+                            isFavourite ? 'text-(--error)' : 'text-(--brand-color)'
                         )}
-                        icon={isFavourite ? 'heart' : 'heart'}
+                        icon="heart"
                         ariaLabel={isFavourite ? 'Remove from wishlist' : 'Add to wishlist'}
                         onClick={() => onFavouriteToggle?.(id)}
                     />
@@ -76,7 +72,7 @@ export function ProductCard({
                     priority={id <= 6}
                 />
 
-                {/* Quick Add Overlay (Desktop) */}
+                {/* Desktop Add to Cart Overlay */}
                 <div className="absolute inset-x-0 bottom-0 hidden translate-y-full bg-gradient-to-t from-(--overlay-bg) to-transparent p-3 transition-transform duration-300 group-hover:translate-y-0 md:block">
                     <Button
                         variant="primary"
@@ -85,7 +81,7 @@ export function ProductCard({
                         icon="plus"
                         ariaLabel={`Add ${name} to cart`}
                     >
-                        Quick Add
+                        Add to Cart
                     </Button>
                 </div>
             </div>
@@ -118,11 +114,12 @@ export function ProductCard({
                         ${price.toFixed(2)}
                     </span>
 
+                    {/* Mobile Plus Button */}
                     <div className="md:hidden">
                         <Button
-                            variant="secondary"
+                            variant="primary"
                             size="sm"
-                            className="h-7 w-7 p-0 md:h-8 md:w-8"
+                            className="h-7 w-7 p-0 shadow-sm active:scale-95 md:h-8 md:w-8"
                             icon="plus"
                             ariaLabel={`Add ${name} to cart`}
                         />
@@ -132,3 +129,5 @@ export function ProductCard({
         </article>
     );
 }
+
+

@@ -27,34 +27,31 @@ export default async function ProductsPage() {
         <PageContainer>
             <main className="flex flex-col text-left">
                 {/* Header Section */}
-                <header className="mb-8 flex flex-col gap-4 border-b border-toggle-bg pb-8 md:mb-12 md:flex-row md:items-end md:justify-between">
+                <header className="mb-6 flex flex-col gap-4 border-b border-(--toggle-bg) pb-6 md:mb-10 md:flex-row md:items-end md:justify-between">
                     <div className="max-w-2xl">
                         <Heading level={1} weight="bold" className="mb-2">
                             Our Products
                         </Heading>
-                        <p className="text-neutral-color text-lg">
+                        <p className="text-(--neutral-color) text-base md:text-lg">
                             Browse through our extensive collection of {products.length} sustainable items.
                         </p>
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <span className="text-sm font-medium text-neutral-color">
+                        <span className="text-sm font-medium text-(--neutral-color)">
                             Showing all {products.length} results
                         </span>
                     </div>
                 </header>
 
-                {/* Product Grid */}
+                {/* Product Grid: Mobile-first 2 cols -> Laptop 6 cols */}
                 {products.length > 0 ? (
                     <section
                         aria-label="Product list"
-                        className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+                        className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
                     >
                         {products.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                            />
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </section>
                 ) : (
@@ -62,8 +59,7 @@ export default async function ProductsPage() {
                         <Heading level={2} weight="semibold" className="mb-4">
                             No products found
                         </Heading>
-                        <p className="text-neutral-color">
-                            {/* FIX: Escaped the apostrophe using &apos; */}
+                        <p className="text-(--neutral-color)">
                             We couldn&apos;t find any products matching your criteria.
                         </p>
                     </div>
@@ -72,4 +68,3 @@ export default async function ProductsPage() {
         </PageContainer>
     );
 }
-

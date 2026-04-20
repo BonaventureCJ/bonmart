@@ -19,7 +19,7 @@ interface ProductCardProps {
 
 /**
  * Enterprise Product Card for Bonmart.
- * Refactored for high-density grids with persistent Eco-choice branding.
+ * Optimized to prevent "muddy" transitions during theme switching.
  */
 export function ProductCard({
     product,
@@ -33,7 +33,8 @@ export function ProductCard({
         <article
             className={clsx(
                 'group relative flex flex-col overflow-hidden rounded-xl border border-(--toggle-bg)',
-                'bg-(--surface-raised) transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'bg-(--surface-raised)',
+                'transition-[box-shadow,transform] duration-(--duration-long) ease-(--transition-ease-in-out)',
                 'hover:border-(--brand-color)/40 hover:shadow-md',
                 className
             )}
@@ -55,7 +56,7 @@ export function ProductCard({
                     />
                 </div>
 
-                {/* Eco-friendly Badge - Now fully visible on all screen sizes */}
+                {/* Eco-friendly Badge */}
                 {isEcoFriendly && (
                     <div
                         className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) md:top-2 md:left-2 md:px-2 md:text-[9px] md:tracking-wider"
@@ -106,7 +107,7 @@ export function ProductCard({
                     <Heading
                         level={3}
                         weight="semibold"
-                        className="line-clamp-2 min-h-[2rem] text-xs text-(--foreground) transition-colors group-hover/link:text-(--brand-color) md:min-h-[2.2rem] md:text-sm"
+                        className="line-clamp-2 min-h-[2rem] text-xs text-(--foreground) transition-colors duration-(--duration-long) group-hover/link:text-(--brand-color) md:min-h-[2.2rem] md:text-sm"
                     >
                         {name}
                     </Heading>
@@ -117,7 +118,6 @@ export function ProductCard({
                         ${price.toFixed(2)}
                     </span>
 
-                    {/* Mobile Add to Cart Icon */}
                     <div className="md:hidden">
                         <Button
                             variant="secondary"

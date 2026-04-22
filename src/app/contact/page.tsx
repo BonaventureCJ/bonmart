@@ -1,22 +1,31 @@
-import PageContainer from "@/components/layout/page-container";
+// src/app/contact/page.tsx
 
-export default function Contact() {
+import { Metadata } from 'next';
+import PageContainer from '@/components/layout/page-container';
+import { ContactHeader } from '@/components/contact/contact-header';
+import { ContactInfo } from '@/components/contact/contact-info';
+import { ContactForm } from '@/components/contact/contact-form';
+
+export const metadata: Metadata = {
+    title: 'Contact Us | Bonmart Support',
+    description: 'Get in touch with the Bonmart team regarding sustainability, orders, or partnerships.',
+    openGraph: {
+        title: 'Contact Bonmart | Sustainable Support',
+        description: 'Connect with our environmental specialists and support team.',
+        type: 'website',
+    },
+};
+
+export default function ContactPage() {
     return (
         <PageContainer>
-            <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-            <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
-                For inquiries or support, please reach out to us at{" "}
-                <a
-                    href="mailto:support@bonmart.com"
-                    className="text-indigo-600 hover:underline"
-                >
-                    support@bonmart.com
-                </a>
-                .
-            </p>
-            <p className="text-lg text-gray-700 dark:text-gray-300">
-                You can also follow us on social media for updates and announcements.
-            </p>
+            <article className="mx-auto max-w-5xl py-12 md:py-24">
+                <ContactHeader />
+                <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
+                    <ContactInfo />
+                    <ContactForm />
+                </div>
+            </article>
         </PageContainer>
     );
 }

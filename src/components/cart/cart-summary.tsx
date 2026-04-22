@@ -11,19 +11,19 @@ interface CartSummaryProps {
     subtotal: number;
     shippingFee: number;
     tax: number;
-    onAction: () => void;
-    buttonLabel?: string;
-    isProcessing?: boolean;
+    onCheckout: () => void;
     className?: string;
 }
 
+/**
+ * Enterprise Cart Summary Component for Bonmart.
+ * Optimized for high-conversion with clear hierarchy and theme-aware design.
+ */
 export function CartSummary({
     subtotal,
     shippingFee,
     tax,
-    onAction,
-    buttonLabel = "Proceed to Checkout",
-    isProcessing = false,
+    onCheckout,
     className,
 }: CartSummaryProps) {
     const total = subtotal + shippingFee + tax;
@@ -32,7 +32,7 @@ export function CartSummary({
         <section
             className={clsx(
                 'flex flex-col gap-6 rounded-3xl border border-(--toggle-bg) p-6 sm:p-8',
-                'bg-(--surface-raised) shadow-sm',
+                'bg-(--surface-raised) shadow-sm transition-all duration-(--duration-long)',
                 className
             )}
         >
@@ -40,6 +40,7 @@ export function CartSummary({
                 Order Summary
             </Heading>
 
+            {/* Pricing Breakdown */}
             <div className="flex flex-col gap-4 border-b border-(--toggle-bg) pb-6">
                 <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-(--neutral-color)">Subtotal</span>
@@ -57,6 +58,7 @@ export function CartSummary({
                 </div>
             </div>
 
+            {/* Total Section */}
             <div className="flex items-center justify-between">
                 <span className="text-lg font-bold">Total</span>
                 <span className="text-2xl font-black text-(--foreground)">
@@ -64,8 +66,9 @@ export function CartSummary({
                 </span>
             </div>
 
+            {/* Environmental Impact Reminder (Bonmart Branding) */}
             <div className="rounded-2xl bg-(--brand-color)/5 p-4 flex items-start gap-3">
-                <Icon name="globe" size={20} className="shrink-0 text-(--brand-color)" />
+                <Icon name="globe" variant="primary" size={20} className="shrink-0" />
                 <p className="text-xs leading-relaxed text-(--neutral-color)">
                     By completing this order, you&apos;re supporting
                     <span className="font-bold text-(--brand-color)"> carbon-neutral </span>
@@ -73,18 +76,21 @@ export function CartSummary({
                 </p>
             </div>
 
+            {/* Checkout Action */}
             <div className="flex flex-col gap-3">
                 <Button
                     variant="primary"
                     size="lg"
                     fullWidth
-                    icon={isProcessing ? "loader" : "arrowRight"}
+                    icon="arrowRight"
                     iconPlacement="right"
-                    onClick={onAction}
-                    disabled={isProcessing}
+                    onClick={onCheckout}
                 >
-                    {isProcessing ? "Processing..." : buttonLabel}
+                    Proceed to Checkout
                 </Button>
+                <p className="text-center text-[10px] uppercase tracking-widest text-(--neutral-color) opacity-60">
+                    Secure encrypted checkout
+                </p>
             </div>
         </section>
     );

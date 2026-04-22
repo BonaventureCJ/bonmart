@@ -10,6 +10,7 @@ import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
 import { CartSummary } from '@/components/cart/cart-summary';
 import { CheckoutForm } from '@/components/checkout/checkout-form';
+import { PaymentForm } from '@/components/checkout/payment-form';
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -21,7 +22,6 @@ export default function CheckoutPage() {
 
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
-    // Simulate real-world payment API latency
     await new Promise((resolve) => setTimeout(resolve, 2500));
     setIsProcessing(false);
     router.push('/checkout/success');
@@ -42,10 +42,13 @@ export default function CheckoutPage() {
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-7 xl:col-span-8">
+          {/* Form Column */}
+          <div className="lg:col-span-7 xl:col-span-8 space-y-8">
             <CheckoutForm />
+            <PaymentForm />
           </div>
 
+          {/* Sticky Summary Column */}
           <aside className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <CartSummary
@@ -63,4 +66,5 @@ export default function CheckoutPage() {
     </PageContainer>
   );
 }
+
 

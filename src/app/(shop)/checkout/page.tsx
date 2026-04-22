@@ -23,7 +23,7 @@ export default function CheckoutPage() {
 
   /**
    * Handles the order placement simulation.
-   * Redirects to the status page with a success flag.
+   * Uses optional catch binding (no error variable) to satisfy strict linting rules.
    */
   const handlePlaceOrder = async () => {
     setIsProcessing(true);
@@ -32,7 +32,7 @@ export default function CheckoutPage() {
       // Simulate real-world payment API latency
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
-      // In a real application, logic here would determine success vs failure
+      // Simulation: assume successful transaction
       const isSuccessful = true;
 
       if (isSuccessful) {
@@ -40,7 +40,8 @@ export default function CheckoutPage() {
       } else {
         router.push('/checkout/status?status=error');
       }
-    } catch (error) {
+    } catch {
+      // Omitted catch binding variable to prevent 'no-unused-vars' warning
       router.push('/checkout/status?status=error');
     } finally {
       setIsProcessing(false);
@@ -53,7 +54,7 @@ export default function CheckoutPage() {
         <header className="mb-10 flex items-center gap-4">
           <button
             onClick={() => router.back()}
-            /* Transition classes removed to prevent theme lag during mode switching */
+            /* Transition classes removed to ensure instant theme adaptation */
             className="group flex h-10 w-10 items-center justify-center rounded-full border border-(--toggle-bg) hover:bg-(--surface-muted)"
             aria-label="Go back"
           >
@@ -63,13 +64,13 @@ export default function CheckoutPage() {
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          {/* Main Content: Shipping & Payment */}
+          {/* Left Column: Unified Shipping and Payment Forms */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-8">
             <CheckoutForm />
             <PaymentForm />
           </div>
 
-          {/* Sticky Summary: Order Breakdown & Primary Action */}
+          {/* Right Column: Sticky Order Summary */}
           <aside className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <CartSummary
@@ -81,7 +82,7 @@ export default function CheckoutPage() {
                 isProcessing={isProcessing}
               />
               <p className="mt-4 px-2 text-center text-[10px] text-(--neutral-color) uppercase tracking-widest opacity-60">
-                Taxes and shipping calculated based on Nigeria region
+                Secure transaction powered by Bonmart
               </p>
             </div>
           </aside>
@@ -90,5 +91,6 @@ export default function CheckoutPage() {
     </PageContainer>
   );
 }
+
 
 

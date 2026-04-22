@@ -58,7 +58,7 @@ export const Heading = React.memo(function Heading({
     level = 1,
     icon,
     iconLabel,
-    align = 'left',
+    align = 'center', // Updated: Changed default from 'left' to 'center'
     weight,
     className,
     as,
@@ -89,8 +89,12 @@ export const Heading = React.memo(function Heading({
         HEADING_LEVEL_CLASSES[safeLevel],
         WEIGHT_CLASSES[effectiveWeight],
         ALIGN_CLASSES[align],
-        // Layout logic for icons
-        icon && 'flex items-center gap-3',
+        // Layout logic for icons - updated to handle horizontal distribution based on alignment
+        icon && [
+            'flex items-center gap-3',
+            align === 'center' && 'justify-center',
+            align === 'right' && 'justify-end'
+        ],
         className
     );
 

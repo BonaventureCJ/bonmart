@@ -25,11 +25,12 @@ export default async function ProductsPage() {
 
     return (
         <PageContainer>
-            <main className="flex flex-col text-left">
-                {/* Header Section */}
-                <header className="mb-6 flex flex-col gap-4 border-b border-(--toggle-bg) pb-6 md:mb-10 md:flex-row md:items-end md:justify-between">
+            <main className="flex flex-col">
+                {/* Header Section: Now center-aligned for all viewports */}
+                <header className="mb-10 flex flex-col items-center gap-4 border-b border-(--toggle-bg) pb-10 text-center">
                     <div className="max-w-2xl">
-                        <Heading level={1} weight="bold" className="mb-2">
+                        {/* Heading defaults to center now */}
+                        <Heading level={1} weight="bold" className="mb-3">
                             Our Products
                         </Heading>
                         <p className="text-(--neutral-color) text-base md:text-lg">
@@ -37,14 +38,14 @@ export default async function ProductsPage() {
                         </p>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <span className="text-sm font-medium text-(--neutral-color)">
+                    <div className="flex items-center justify-center gap-4">
+                        <span className="text-xs font-bold uppercase tracking-widest text-(--brand-color) opacity-80">
                             Showing all {products.length} results
                         </span>
                     </div>
                 </header>
 
-                {/* Product Grid: Mobile-first 2 cols -> Laptop 6 cols */}
+                {/* Product Grid */}
                 {products.length > 0 ? (
                     <section
                         aria-label="Product list"

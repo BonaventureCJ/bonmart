@@ -66,7 +66,7 @@ export default function CheckoutStatusPage() {
                     />
                 ) : (
                     <div className="rounded-3xl border border-(--toggle-bg) p-8 text-center bg-(--surface-raised)">
-                        <Heading level={4} weight="bold" align="center" className="mb-4">
+                        <Heading level={4} weight="bold" className="mb-4">
                             Common issues:
                         </Heading>
                         <ul className="text-sm text-(--neutral-color) space-y-2 mb-8 inline-block text-left">

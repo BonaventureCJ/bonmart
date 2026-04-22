@@ -2,6 +2,7 @@
 
 import {
   ArrowRight,
+  ArrowLeft,
   Menu,
   Home,
   ShoppingCart,
@@ -21,10 +22,12 @@ import {
   Sun,
   Moon,
   Monitor,
+  Lock,
 } from 'lucide-react';
 
 export const appIcons = {
   arrowRight: ArrowRight,
+  arrowLeft: ArrowLeft,
   menu: Menu,
   home: Home,
   cart: ShoppingCart,
@@ -44,6 +47,7 @@ export const appIcons = {
   sun: Sun,
   moon: Moon,
   monitor: Monitor,
+  lock: Lock,
 } as const;
 
 export type IconName = keyof typeof appIcons;

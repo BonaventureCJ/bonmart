@@ -1,40 +1,65 @@
 //src/app/(shop)/wishlist/page.tsx
 
-import { Metadata } from "next";
-import PageContainer from "@/components/layout/page-container";
+'use client';
 
-export const metadata: Metadata = {
-  title: "My Wishlist | BonMart",
-  description: "Save and manage your favorite eco-friendly items for later.",
-};
+import { useState } from 'react';
+import { WISHLIST_ITEMS as INITIAL_DATA } from '@/data/wishlist-data';
+import PageContainer from '@/components/layout/page-container';
+import { Heading } from '@/components/ui/heading/heading';
+import { Button } from '@/components/ui/button/button';
+import { Icon } from '@/components/ui/icon/icon';
+import { WishlistItem } from '@/components/wishlist/wishlist-item';
+import Link from 'next/link';
 
-/**
- * WishlistPage Component
- * Semantic placeholder for the customer's saved items.
- */
 export default function WishlistPage() {
+  const [items, setItems] = useState(INITIAL_DATA);
+
+  const handleRemove = (id: number) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleMoveToCart = (id: number) => {
+    console.log(`Moving product ${id} to cart...`);
+    // Logic for RTK Query or Context will go here later
+    handleRemove(id); // Usually items are removed or kept based on settings
+  };
+
+  if (items.length === 0) {
+    return (
+      <PageContainer>
+        <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+          <div className="mb-6 rounded-full bg-(--surface-muted) p-6">
+            <Icon name="heart" size={48} className="text-(--neutral-color)" />
+          </div>
+          <Heading level={2} className="mb-2">Your wishlist is empty</Heading>
+          <p className="mb-8 text-(--neutral-color)">Save items you love to find them easily later.</p>
+          <Link href="/products">
+            <Button variant="primary" size="lg">Browse Products</Button>
+          </Link>
+        </div>
+      </PageContainer>
+    );
+  }
+
   return (
     <PageContainer>
-      <div className="flex flex-col items-center gap-6">
-        <header className="text-center">
-          <h1 className="text-3xl font-bold sm:text-4xl">My Wishlist</h1>
-          <p className="mt-2 text-neutral-color">
-            A curated collection of your favorite sustainable finds.
-          </p>
+      <main className="mx-auto max-w-4xl py-8 md:py-12">
+        <header className="mb-10">
+          <Heading level={1} weight="bold">My Wishlist</Heading>
+          <p className="text-(--neutral-color)">{items.length} items saved for later</p>
         </header>
 
-        <section 
-          aria-labelledby="empty-wishlist-heading"
-          className="w-full max-w-3xl rounded-xl p-12 text-center"
-        >
-          <h2 id="empty-wishlist-heading" className="text-xl font-medium">
-            Your wishlist is empty
-          </h2>
-          <p className="mt-2 text-neutral-color">
-            Start exploring our shop to save items you love.
-          </p>
+        <section className="flex flex-col border-t border-(--toggle-bg)">
+          {items.map((item) => (
+            <WishlistItem
+              key={item.id}
+              item={item}
+              onRemove={handleRemove}
+              onMoveToCart={handleMoveToCart}
+            />
+          ))}
         </section>
-      </div>
+      </main>
     </PageContainer>
   );
 }

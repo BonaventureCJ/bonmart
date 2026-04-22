@@ -136,8 +136,11 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             size="lg"
                             icon="heart"
                             ariaLabel="Add to Wishlist"
-                            className="px-4"
-                        />
+                            className="sm:px-6"
+                        >
+                            Add to Wishlist
+                        </Button>
+
                     </div>
 
                     {/* Trust Badges */}

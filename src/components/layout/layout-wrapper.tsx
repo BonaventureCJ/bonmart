@@ -16,9 +16,8 @@ type LayoutWrapperProps = {
 };
 
 /**
- * A client component that wraps the main content and handles mobile navigation state.
- * @param {LayoutWrapperProps} props The component props.
- * @returns {JSX.Element} The LayoutWrapper component.
+ * A client component that wraps the main content and handles layout structure.
+ * Implements a sticky footer pattern using CSS Grid and proper content alignment.
  */
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     const isMobileMenuOpen = useAppSelector(
@@ -35,32 +34,36 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     return (
         <>
             <Header />
+
+            {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
-                    className={clsx(
-                        'fixed inset-0 z-40 md:hidden transition-opacity duration-300 bg-(--overlay-bg)',
-                    )}
+                    className="bg-(--overlay-bg) fixed inset-0 z-40 transition-opacity duration-300 md:hidden"
                     aria-hidden="true"
                     onClick={handleOverlayClick}
                 />
             )}
+
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[auto_1fr_auto]',
                     {
-                        'pointer-events-none md:pointer-events-auto':
-                            isMobileMenuOpen,
+                        'pointer-events-none md:pointer-events-auto': isMobileMenuOpen,
                     },
                 )}
                 aria-hidden={isMobileMenuOpen}
             >
                 <main
-                    className="flex w-full items-center justify-center px-4 pb-[4rem] pt-(--header-height)"
+                    className="pt-(--header-height) flex w-full flex-col px-4 pb-16 md:px-6 lg:px-8"
                 >
-                    {children}
+                    <div className="mx-auto w-full max-w-7xl">
+                        {children}
+                    </div>
                 </main>
+
                 <Footer />
             </div>
+
             <MobileNav />
         </>
     );

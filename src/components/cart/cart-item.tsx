@@ -4,74 +4,71 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
-import type { Product } from '@/data/mock-products';
-import { clsx } from 'clsx';
+import type { CartItem as CartItemType } from '@/features/cart/cart-slice';
 
 interface CartItemProps {
-    item: Product & { quantity: number };
-    onUpdateQuantity: (id: number, delta: number) => void;
+    item: CartItemType;
+    onUpdateQuantity: (id: number, currentQty: number, delta: number) => void;
     onRemove: (id: number) => void;
     className?: string;
 }
 
-/**
- * Enterprise Cart Item Component for Bonmart.
- * Optimized for row-based layout with clear hit areas and theme-aware styling.
- */
 export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartItemProps) {
     const { id, name, price, imageUrl, slug, quantity, isEcoFriendly } = item;
 
     return (
         <article
             className={clsx(
-                'group flex items-center gap-4 py-4 border-b border-(--toggle-bg)',
-                'bg-(--background) transition-colors duration-(--duration-long)',
+                'group flex items-center gap-4 border-b border-(--toggle-bg) bg-(--background) py-6 transition-colors duration-(--duration-long) last:border-0',
                 className
             )}
+            role="listitem"
         >
-            {/* 1. Product Image */}
             <div className="relative aspect-square h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-(--surface-muted)/30 sm:h-24 sm:w-24">
                 <Image
                     src={imageUrl}
                     alt={name}
                     fill
                     sizes="96px"
-                    className="object-contain p-2 transition-transform group-hover:scale-105"
+                    className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                 />
             </div>
 
-            {/* 2. Product Info */}
-            <div className="flex flex-1 flex-col gap-1 min-w-0">
+            <div className="flex min-w-0 flex-1 flex-col gap-1">
                 <div className="flex items-start justify-between gap-2">
                     <Link href={`/products/${slug}`} className="focus-ring rounded-sm">
-                        <Heading level={6} weight="semibold" className="line-clamp-1 text-sm sm:text-base hover:text-(--brand-color) transition-colors">
+                        <Heading
+                            level={6}
+                            weight="semibold"
+                            className="line-clamp-1 text-sm transition-colors hover:text-(--brand-color) sm:text-base"
+                        >
                             {name}
                         </Heading>
                     </Link>
                     <Button
                         variant="ghost"
                         size="sm"
-                        icon="close"
-                        className="text-(--neutral-color) hover:text-(--error) -mt-1 -mr-2"
+                        icon="trash"
+                        className="-mr-2 -mt-1 shrink-0 text-(--neutral-color) hover:text-(--error)"
                         ariaLabel={`Remove ${name} from cart`}
                         onClick={() => onRemove(id)}
                     />
                 </div>
 
                 {isEcoFriendly && (
-                    <div className="flex items-center gap-1 text-(--brand-color) text-[10px] font-bold uppercase tracking-wider">
+                    <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-(--brand-color)">
                         <Icon name="globe" size={10} />
                         <span>Eco Choice</span>
                     </div>
                 )}
 
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
-                    {/* Price Calculation */}
                     <div className="flex flex-col">
-                        <span className="text-sm font-bold text-(--foreground)">
+                        <span className="text-sm font-bold text-(--foreground) sm:text-base">
                             ${(price * quantity).toFixed(2)}
                         </span>
                         {quantity > 1 && (
@@ -81,27 +78,26 @@ export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartIt
                         )}
                     </div>
 
-                    {/* Quantity Controls */}
-                    <div className="flex items-center gap-1 rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-0.5">
+                    <div className="flex items-center gap-1 rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1">
                         <Button
                             variant="ghost"
                             size="sm"
                             icon="minus"
-                            className="h-7 w-7"
+                            className="h-7 w-7 rounded-full"
                             disabled={quantity <= 1}
                             ariaLabel="Decrease quantity"
-                            onClick={() => onUpdateQuantity(id, -1)}
+                            onClick={() => onUpdateQuantity(id, quantity, -1)}
                         />
-                        <span className="w-6 text-center text-xs font-bold" aria-live="polite">
+                        <span className="min-w-6 text-center text-xs font-bold" aria-live="polite">
                             {quantity}
                         </span>
                         <Button
                             variant="ghost"
                             size="sm"
                             icon="plus"
-                            className="h-7 w-7"
+                            className="h-7 w-7 rounded-full"
                             ariaLabel="Increase quantity"
-                            onClick={() => onUpdateQuantity(id, 1)}
+                            onClick={() => onUpdateQuantity(id, quantity, 1)}
                         />
                     </div>
                 </div>

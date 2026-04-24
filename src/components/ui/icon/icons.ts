@@ -23,6 +23,9 @@ import {
   Moon,
   Monitor,
   Lock,
+  Printer,
+  Trash2,
+  ExternalLink,
 } from 'lucide-react';
 
 export const appIcons = {
@@ -48,6 +51,9 @@ export const appIcons = {
   moon: Moon,
   monitor: Monitor,
   lock: Lock,
+  printer: Printer,
+  trash: Trash2,
+  externalLink: ExternalLink, // Registered
 } as const;
 
 export type IconName = keyof typeof appIcons;

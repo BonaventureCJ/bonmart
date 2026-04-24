@@ -2,8 +2,6 @@
 
 'use client';
 
-'use client';
-
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Heading } from '@/components/ui/heading/heading';

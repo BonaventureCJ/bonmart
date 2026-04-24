@@ -2,35 +2,61 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
 
+// RTK Imports
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { addToCart } from '@/features/cart/cart-slice';
+import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
+
 interface ProductDetailsProps {
     product: Product;
 }
 
-/**
- * Enterprise Product Details Component for Bonmart.
- * Features: Responsive two-column layout, theme-aware semantic tokens,
- * and high-accessibility quantity controls.
- */
 export function ProductDetails({ product }: ProductDetailsProps) {
-    const [quantity, setQuantity] = useState(1);
-    const { name, price, description, category, imageUrl, rating, isEcoFriendly } = product;
+    const { id, name, price, description, category, imageUrl, rating, isEcoFriendly } = product;
 
-    const updateQuantity = (type: 'inc' | 'dec') => {
+    const dispatch = useAppDispatch();
+    const [quantity, setQuantity] = useState(1);
+    const [isAdded, setIsAdded] = useState(false);
+
+    // Track state from store
+    const isFavourite = useAppSelector((state) =>
+        state.wishlist.items.some((item) => item.id === id)
+    );
+
+    // Feedback effect
+    useEffect(() => {
+        if (isAdded) {
+            const timer = setTimeout(() => setIsAdded(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [isAdded]);
+
+    const handleUpdateQuantity = (type: 'inc' | 'dec') => {
         setQuantity((prev) => (type === 'inc' ? prev + 1 : Math.max(1, prev - 1)));
+    };
+
+    const handleAddToCart = () => {
+        dispatch(addToCart({ ...product, quantity }));
+        setIsAdded(true);
+    };
+
+    const handleWishlistToggle = () => {
+        dispatch(toggleWishlist(product));
     };
 
     return (
         <section className="mx-auto max-w-7xl px-4 py-8 lg:py-12">
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
 
-                {/* Left: Image Gallery / Preview */}
+                {/* Left: Image Gallery */}
                 <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-(--toggle-bg) bg-(--surface-muted)/30">
                     {isEcoFriendly && (
                         <div className="absolute top-6 left-6 z-10 flex items-center gap-2 rounded-full bg-(--brand-color) px-4 py-2 text-xs font-bold uppercase tracking-widest text-(--text-on-image) shadow-xl">
@@ -50,32 +76,29 @@ export function ProductDetails({ product }: ProductDetailsProps) {
 
                 {/* Right: Product Information */}
                 <div className="flex flex-col">
-                    {/* Breadcrumb / Category */}
-                    <div className="mb-4 flex items-center gap-2 text-sm font-medium text-(--neutral-color)">
+                    <nav className="mb-4 flex items-center gap-2 text-sm font-medium text-(--neutral-color)" aria-label="Breadcrumb">
                         <span className="capitalize">{category}</span>
                         <Icon name="chevronRight" size={14} className="opacity-40" />
-                        <span className="text-(--foreground) truncate">{name}</span>
-                    </div>
+                        <span className="truncate text-(--foreground)">{name}</span>
+                    </nav>
 
                     <Heading level={1} weight="bold" className="mb-4 text-3xl md:text-4xl lg:text-5xl">
                         {name}
                     </Heading>
 
-                    {/* Ratings and Stock */}
                     <div className="mb-8 flex flex-wrap items-center gap-6">
                         <div className="flex items-center gap-2 rounded-full bg-(--warning)/10 px-3 py-1.5">
                             <Icon name="star" variant="warning" size={18} />
                             <span className="font-bold text-(--foreground)">{rating.rate}</span>
-                            <span className="text-xs text-(--neutral-color) opacity-80">({rating.count} Verified Reviews)</span>
+                            <span className="text-xs text-(--neutral-color) opacity-80">({rating.count} Reviews)</span>
                         </div>
-                        <div className="h-5 w-px bg-(--toggle-bg) hidden sm:block" />
+                        <div className="hidden h-5 w-px bg-(--toggle-bg) sm:block" />
                         <div className="flex items-center gap-2 text-sm font-semibold text-(--brand-color)">
                             <Icon name="check" size={18} />
                             <span>In Stock & Ready to Ship</span>
                         </div>
                     </div>
 
-                    {/* Pricing Section */}
                     <div className="mb-8 border-y border-(--toggle-bg) py-6">
                         <div className="flex items-baseline gap-4">
                             <span className="text-4xl font-black text-(--foreground)">
@@ -95,21 +118,17 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                     </p>
 
                     {/* Purchase Actions */}
-                    <div className="flex flex-col gap-4 sm:flex-row mb-10">
-                        {/* Quantity Toggle */}
+                    <div className="mb-10 flex flex-col gap-4 sm:flex-row">
                         <div className="flex items-center justify-between rounded-full border border-(--toggle-bg) bg-(--background) p-1.5 sm:w-36">
                             <Button
                                 variant="ghost"
                                 size="sm"
                                 icon="minus"
                                 ariaLabel="Decrease quantity"
-                                onClick={() => updateQuantity('dec')}
+                                onClick={() => handleUpdateQuantity('dec')}
                                 disabled={quantity <= 1}
                             />
-                            <span
-                                className="w-10 text-center font-bold text-(--foreground)"
-                                aria-live="polite"
-                            >
+                            <span className="w-10 text-center font-bold text-(--foreground)" aria-live="polite">
                                 {quantity}
                             </span>
                             <Button
@@ -117,30 +136,29 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                                 size="sm"
                                 icon="plus"
                                 ariaLabel="Increase quantity"
-                                onClick={() => updateQuantity('inc')}
+                                onClick={() => handleUpdateQuantity('inc')}
                             />
                         </div>
 
                         <Button
-                            variant="primary"
+                            variant={isAdded ? "secondary" : "primary"}
                             size="lg"
                             fullWidth
-                            icon="cart"
-                            className="flex-1 shadow-md hover:shadow-lg"
+                            icon={isAdded ? "check" : "cart"}
+                            onClick={handleAddToCart}
+                            className="flex-1 shadow-md transition-all active:scale-95"
                         >
-                            Add to Shopping Cart
+                            {isAdded ? "Added to Cart" : "Add to Shopping Cart"}
                         </Button>
 
                         <Button
                             variant="secondary"
                             size="lg"
                             icon="heart"
-                            ariaLabel="Add to Wishlist"
-                            className="sm:px-6"
-                        >
-                            Add to Wishlist
-                        </Button>
-
+                            ariaLabel={isFavourite ? "Remove from wishlist" : "Add to wishlist"}
+                            onClick={handleWishlistToggle}
+                            className={clsx("sm:px-6 transition-colors", isFavourite && "text-(--error) bg-(--error-muted)/10")}
+                        />
                     </div>
 
                     {/* Trust Badges */}

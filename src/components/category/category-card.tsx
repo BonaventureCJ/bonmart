@@ -7,26 +7,29 @@ import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Heading } from '@/components/ui/heading/heading';
+import { useAppSelector } from '@/store/hooks'; // RTK Hook
 
 interface CategoryCardProps {
     name: string;
     slug: string;
     imageUrl: string;
-    itemCount?: number;
     className?: string;
 }
 
-/**
- * Enterprise Category Card for Bonmart.
- * Optimized for discovery with high-impact visuals and theme-aware overlays.
- */
 export function CategoryCard({
     name,
     slug,
     imageUrl,
-    itemCount,
     className,
 }: CategoryCardProps) {
+    // 1. RTK Optimization: Derive the product count dynamically from the store
+    // This ensures "itemCount" is always accurate based on the live product list
+    const itemCount = useAppSelector((state) =>
+        state.products.items.filter(product =>
+            product.category.toLowerCase() === name.toLowerCase()
+        ).length
+    );
+
     return (
         <Link
             href={`/category/${slug}`}
@@ -37,7 +40,6 @@ export function CategoryCard({
                 className
             )}
         >
-            {/* 1. Background Image with Hover Zoom */}
             <Image
                 src={imageUrl}
                 alt={name}
@@ -46,23 +48,20 @@ export function CategoryCard({
                 className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
             />
 
-            {/* 2. Gradient Overlay for Text Legibility */}
             <div
                 className="absolute inset-0 bg-gradient-to-t from-(--overlay-bg) via-(--overlay-bg)/20 to-transparent transition-opacity duration-500 group-hover:opacity-80"
                 aria-hidden="true"
             />
 
-            {/* 3. Content Section */}
             <div className="relative mt-auto flex flex-col p-6 sm:p-8">
                 <div className="mb-2 flex items-center gap-2">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-(--brand-color) text-(--text-on-image) shadow-lg">
                         <Icon name="chevronRight" size={16} />
                     </div>
-                    {itemCount !== undefined && (
-                        <span className="text-xs font-bold uppercase tracking-widest text-(--text-on-image)/80">
-                            {itemCount} Products
-                        </span>
-                    )}
+                    {/* Display dynamic count from RTK */}
+                    <span className="text-xs font-bold uppercase tracking-widest text-(--text-on-image)/80">
+                        {itemCount} Products
+                    </span>
                 </div>
 
                 <Heading
@@ -81,4 +80,5 @@ export function CategoryCard({
         </Link>
     );
 }
+
 

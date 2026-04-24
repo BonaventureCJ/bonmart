@@ -2,13 +2,15 @@
 
 'use client';
 
+import { useState, useEffect } from 'react'; // Added hooks
 import Image from 'next/image';
 import Link from 'next/link';
+import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
-import { clsx } from 'clsx';
+
 // RTK Imports
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/features/cart/cart-slice';
@@ -19,48 +21,59 @@ interface ProductCardProps {
     className?: string;
 }
 
-export function ProductCard({
-    product,
-    className,
-}: ProductCardProps) {
+export function ProductCard({ product, className }: ProductCardProps) {
     const { id, name, price, imageUrl, slug, rating, isEcoFriendly, category } = product;
-
     const dispatch = useAppDispatch();
 
-    // Check if this specific item is in the wishlist
+    // 1. Track "Added" state for temporary visual feedback
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    // 2. Track if item is in cart via Redux
+    const isInCart = useAppSelector((state) =>
+        state.cart.items.some((item) => item.id === id)
+    );
+
+    // 3. Track if item is in wishlist
     const isFavourite = useAppSelector((state) =>
         state.wishlist.items.some((item) => item.id === id)
     );
 
+    // Reset animation state after 2 seconds
+    useEffect(() => {
+        if (isAnimating) {
+            const timer = setTimeout(() => setIsAnimating(false), 2000);
+            return () => clearTimeout(timer);
+        }
+    }, [isAnimating]);
+
     const handleAddToCart = (e: React.MouseEvent) => {
-        e.preventDefault(); // Prevent navigation if button is inside a Link area
+        e.preventDefault();
+        e.stopPropagation();
         dispatch(addToCart({ ...product, quantity: 1 }));
+        setIsAnimating(true);
     };
 
     const handleWishlistToggle = (e: React.MouseEvent) => {
         e.preventDefault();
+        e.stopPropagation();
         dispatch(toggleWishlist(product));
     };
 
     return (
         <article
             className={clsx(
-                'group relative flex flex-col overflow-hidden rounded-xl border border-(--toggle-bg)',
-                'bg-(--surface-raised)',
-                'transition-[box-shadow,transform] duration-(--duration-long) ease-(--transition-ease-in-out)',
-                'hover:border-(--brand-color)/40 hover:shadow-md',
+                'group relative flex flex-col overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) transition-[box-shadow,transform] duration-(--duration-long) ease-(--transition-ease-in-out) hover:border-(--brand-color)/40 hover:shadow-md',
                 className
             )}
         >
             {/* Image & Actions Container */}
             <div className="relative aspect-square w-full overflow-hidden bg-(--surface-muted)/20">
-                {/* Wishlist Button */}
                 <div className="absolute top-1.5 right-1.5 z-20 md:top-2 md:right-2">
                     <Button
                         variant="ghost"
                         size="sm"
                         className={clsx(
-                            'h-7 w-7 rounded-full bg-(--surface-raised)/80 p-0 backdrop-blur-sm hover:bg-(--surface-raised) md:h-8 md:w-8',
+                            'h-7 w-7 rounded-full bg-(--surface-raised)/80 p-0 backdrop-blur-sm transition-colors hover:bg-(--surface-raised) md:h-8 md:w-8',
                             isFavourite ? 'text-(--error)' : 'text-(--brand-color)'
                         )}
                         icon="heart"
@@ -69,7 +82,6 @@ export function ProductCard({
                     />
                 </div>
 
-                {/* Eco-friendly Badge */}
                 {isEcoFriendly && (
                     <div
                         className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) md:top-2 md:left-2 md:px-2 md:text-[9px] md:tracking-wider"
@@ -89,17 +101,18 @@ export function ProductCard({
                     priority={id <= 6}
                 />
 
-                {/* Desktop Add to Cart Overlay */}
+                {/* Desktop Add to Cart Overlay - Adaptive UI */}
                 <div className="absolute inset-x-0 bottom-0 hidden translate-y-full bg-gradient-to-t from-(--overlay-bg) to-transparent p-3 transition-transform duration-300 group-hover:translate-y-0 md:block">
                     <Button
-                        variant="primary"
+                        variant={isAnimating || isInCart ? 'secondary' : 'primary'}
                         fullWidth
                         size="sm"
-                        icon="plus"
+                        icon={isAnimating ? 'check' : 'plus'}
                         ariaLabel={`Add ${name} to cart`}
                         onClick={handleAddToCart}
+                        className="transition-all duration-300"
                     >
-                        Add to Cart
+                        {isAnimating ? 'Added!' : isInCart ? 'Add More' : 'Add to Cart'}
                     </Button>
                 </div>
             </div>
@@ -132,13 +145,13 @@ export function ProductCard({
                         ${price.toFixed(2)}
                     </span>
 
-                    {/* Mobile Plus Button */}
+                    {/* Mobile Plus Button - Adaptive UI */}
                     <div className="md:hidden">
                         <Button
-                            variant="primary"
+                            variant={isAnimating || isInCart ? 'secondary' : 'primary'}
                             size="sm"
                             className="h-7 w-7 p-0 shadow-sm active:scale-95 md:h-8 md:w-8"
-                            icon="plus"
+                            icon={isAnimating ? 'check' : 'plus'}
                             ariaLabel={`Add ${name} to cart`}
                             onClick={handleAddToCart}
                         />

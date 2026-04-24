@@ -151,14 +151,27 @@ export function ProductDetails({ product }: ProductDetailsProps) {
                             {isAdded ? "Added to Cart" : "Add to Shopping Cart"}
                         </Button>
 
+                        {/* Resolved: Favourites Color and Text Toggle */}
                         <Button
                             variant="secondary"
                             size="lg"
-                            icon="heart"
                             ariaLabel={isFavourite ? "Remove from wishlist" : "Add to wishlist"}
                             onClick={handleWishlistToggle}
-                            className={clsx("sm:px-6 transition-colors", isFavourite && "text-(--error) bg-(--error-muted)/10")}
-                        />
+                            className={clsx(
+                                "flex items-center gap-2 transition-all active:scale-95 sm:px-6",
+                                isFavourite && "bg-(--brand-color)/10"
+                            )}
+                        >
+                            <Icon
+                                name="heart"
+                                size={20}
+                                filled={isFavourite}
+                                className="text-(--brand-color)"
+                            />
+                            <span className="text-sm font-bold text-(--brand-color)">
+                                {isFavourite ? "Saved to Favourites" : "Add to Favourites"}
+                            </span>
+                        </Button>
                     </div>
 
                     {/* Trust Badges */}

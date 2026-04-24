@@ -45,8 +45,8 @@ export function ProductActions({ product }: { product: Product }) {
 
     return (
         <div className="mb-10 flex flex-col gap-4 sm:flex-row">
-            {/* Quantity Selector */}
-            <div className="flex items-center justify-between rounded-full border border-(--toggle-bg) bg-(--background) p-1.5 sm:w-36">
+            {/* Quantity Selector - flex-shrink-0 prevents it from being squashed */}
+            <div className="flex shrink-0 items-center justify-between rounded-full border border-(--toggle-bg) bg-(--background) p-1.5 w-full sm:w-36">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -67,31 +67,31 @@ export function ProductActions({ product }: { product: Product }) {
                 />
             </div>
 
-            {/* Add to Cart Button with Persistent State */}
+            {/* Add to Cart Button - min-width covers "Added to Cart!" length */}
             <Button
                 variant={isAnimating || isInCart ? "secondary" : "primary"}
                 size="lg"
                 fullWidth
                 icon={isAnimating ? "check" : "cart"}
                 onClick={handleAddToCart}
-                className="flex-1 shadow-md transition-all active:scale-95"
+                className="flex-1 shadow-md transition-all active:scale-95 sm:min-w-[180px]"
             >
                 {isAnimating
                     ? "Added to Cart!"
                     : isInCart
-                        ? "In Cart — Add More?"
-                        : "Add to Shopping Cart"
+                        ? "Add More"
+                        : "Add to Cart"
                 }
             </Button>
 
-            {/* Favourites Toggle */}
+            {/* Favourites Toggle - min-width covers "Saved to Favourites" length */}
             <Button
                 variant="secondary"
                 size="lg"
                 ariaLabel={isFavourite ? "Remove from wishlist" : "Add to wishlist"}
                 onClick={() => dispatch(toggleWishlist(product))}
                 className={clsx(
-                    "flex items-center gap-2 transition-all active:scale-95 sm:px-6",
+                    "flex items-center transition-all active:scale-95 sm:px-6 sm:min-w-[220px]",
                     isFavourite && "bg-(--brand-color)/10"
                 )}
             >
@@ -101,10 +101,11 @@ export function ProductActions({ product }: { product: Product }) {
                     filled={isFavourite}
                     className="text-(--brand-color)"
                 />
-                <span className="text-sm font-bold text-(--brand-color)">
+                <span className="inline-block ml-2 text-sm font-bold text-(--brand-color)">
                     {isFavourite ? "Saved to Favourites" : "Add to Favourites"}
                 </span>
             </Button>
+
         </div>
     );
 }

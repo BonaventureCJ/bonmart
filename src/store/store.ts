@@ -3,14 +3,18 @@
 import { configureStore } from '@reduxjs/toolkit';
 import themeReducer from '@/features/theme/theme-slice';
 import navigationReducer from '@/features/navigation/navigation-slice';
-import productReducer from '@/features/products/product-slice'; // Add this
+import productReducer from '@/features/products/product-slice';
+import cartReducer from '@/features/cart/cart-slice';         // New
+import wishlistReducer from '@/features/wishlist/wishlist-slice'; // New
 
 export const store = configureStore({
-  reducer: {
-    theme: themeReducer,
-    navigation: navigationReducer,
-    products: productReducer,
-  },
+    reducer: {
+        theme: themeReducer,
+        navigation: navigationReducer,
+        products: productReducer,
+        cart: cartReducer,
+        wishlist: wishlistReducer,
+    },
 });
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

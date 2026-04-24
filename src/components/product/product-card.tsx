@@ -9,21 +9,38 @@ import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
 import { clsx } from 'clsx';
+// RTK Imports
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { addToCart } from '@/features/cart/cart-slice';
+import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
 
 interface ProductCardProps {
     product: Product;
     className?: string;
-    isFavourite?: boolean;
-    onFavouriteToggle?: (id: number) => void;
 }
 
 export function ProductCard({
     product,
     className,
-    isFavourite = false,
-    onFavouriteToggle,
 }: ProductCardProps) {
     const { id, name, price, imageUrl, slug, rating, isEcoFriendly, category } = product;
+
+    const dispatch = useAppDispatch();
+
+    // Check if this specific item is in the wishlist
+    const isFavourite = useAppSelector((state) =>
+        state.wishlist.items.some((item) => item.id === id)
+    );
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault(); // Prevent navigation if button is inside a Link area
+        dispatch(addToCart({ ...product, quantity: 1 }));
+    };
+
+    const handleWishlistToggle = (e: React.MouseEvent) => {
+        e.preventDefault();
+        dispatch(toggleWishlist(product));
+    };
 
     return (
         <article
@@ -37,7 +54,7 @@ export function ProductCard({
         >
             {/* Image & Actions Container */}
             <div className="relative aspect-square w-full overflow-hidden bg-(--surface-muted)/20">
-                {/* Wishlist Button*/}
+                {/* Wishlist Button */}
                 <div className="absolute top-1.5 right-1.5 z-20 md:top-2 md:right-2">
                     <Button
                         variant="ghost"
@@ -48,7 +65,7 @@ export function ProductCard({
                         )}
                         icon="heart"
                         ariaLabel={isFavourite ? 'Remove from wishlist' : 'Add to wishlist'}
-                        onClick={() => onFavouriteToggle?.(id)}
+                        onClick={handleWishlistToggle}
                     />
                 </div>
 
@@ -80,6 +97,7 @@ export function ProductCard({
                         size="sm"
                         icon="plus"
                         ariaLabel={`Add ${name} to cart`}
+                        onClick={handleAddToCart}
                     >
                         Add to Cart
                     </Button>
@@ -122,6 +140,7 @@ export function ProductCard({
                             className="h-7 w-7 p-0 shadow-sm active:scale-95 md:h-8 md:w-8"
                             icon="plus"
                             ariaLabel={`Add ${name} to cart`}
+                            onClick={handleAddToCart}
                         />
                     </div>
                 </div>
@@ -129,5 +148,3 @@ export function ProductCard({
         </article>
     );
 }
-
-

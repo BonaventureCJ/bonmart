@@ -1,7 +1,6 @@
 // src/app/(shop)/products/page.tsx
 
 import { Metadata } from 'next';
-import { MOCK_PRODUCTS } from '@/data/mock-products';
 import { Heading } from '@/components/ui/heading/heading';
 import PageContainer from '@/components/layout/page-container';
 import { ProductListClient } from '@/components/product/product-list-client';
@@ -21,8 +20,6 @@ export const metadata: Metadata = {
 };
 
 export default function ProductsPage() {
-    // We can still use the mock length for the initial header "static" text
-    const initialCount = MOCK_PRODUCTS.length;
 
     return (
         <PageContainer>

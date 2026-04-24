@@ -6,6 +6,7 @@ import navigationReducer from '@/features/navigation/navigation-slice';
 import productReducer from '@/features/products/product-slice';
 import cartReducer from '@/features/cart/cart-slice';         // New
 import wishlistReducer from '@/features/wishlist/wishlist-slice'; // New
+import ordersReducer from '@/features/orders/orders-slice';     // New
 
 export const store = configureStore({
     reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
         products: productReducer,
         cart: cartReducer,
         wishlist: wishlistReducer,
+        orders: ordersReducer,
     },
 });
 

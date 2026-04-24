@@ -4,18 +4,15 @@ import { forwardRef } from "react";
 import type { LucideProps } from "lucide-react";
 import { clsx } from "clsx";
 import { appIcons, type IconName, isValidIconName } from "./icons";
-export type { IconName }; // ✅ Re-export so Button.tsx can see it
-/**
- * Enterprise Icon Component for Bonmart.
- * Uses semantic color tokens from globals.css for theme-aware styling.
- */
+
+export type { IconName };
+
+type IconVariant = "primary" | "success" | "neutral" | "error" | "warning" | "on-image" | "inherit";
+
 export interface IconProps extends Omit<LucideProps, 'ref'> {
     name: IconName;
-    /** Accessible label for screen readers. If provided, role becomes "img". */
     label?: string;
-    /** Semantic color variants mapped to globals.css variables */
-    variant?: "primary" | "neutral" | "error" | "warning" | "on-image" | "inherit";
-    /** Standardized size constraints */
+    variant?: IconVariant;
     size?: number | string;
     className?: string;
 }
@@ -30,7 +27,6 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
         ...props
     }, ref) => {
 
-        // Development warning for missing icons
         if (process.env.NODE_ENV !== 'production' && !isValidIconName(name)) {
             console.error(`[Bonmart UI]: Icon "${name}" does not exist.`);
             return null;
@@ -38,9 +34,10 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
 
         const LucideIcon = appIcons[name];
 
-        // Map variants to Tailwind v4 semantic variables
-        const variantClasses = {
+        // 3. Explicitly type the mapping object to prevent the assignability error
+        const variantClasses: Record<IconVariant, string> = {
             primary: "text-(--brand-color)",
+            success: "text-(--brand-color)", 
             neutral: "text-(--neutral-color)",
             error: "text-(--error)",
             warning: "text-(--warning)",
@@ -57,11 +54,9 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
                     variantClasses[variant],
                     className
                 )}
-                // Accessibility: If no label, hide from screen readers
                 aria-hidden={label ? undefined : true}
                 aria-label={label}
                 role={label ? "img" : "none"}
-                // Prevent focus on icons themselves for better keyboard navigation
                 focusable="false"
                 {...props}
             />

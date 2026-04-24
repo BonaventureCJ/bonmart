@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react'; // Added hooks
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { clsx } from 'clsx';
@@ -10,8 +10,6 @@ import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
-
-// RTK Imports
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/features/cart/cart-slice';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
@@ -25,20 +23,16 @@ export function ProductCard({ product, className }: ProductCardProps) {
     const { id, name, price, imageUrl, slug, rating, isEcoFriendly, category } = product;
     const dispatch = useAppDispatch();
 
-    // 1. Track "Added" state for temporary visual feedback
     const [isAnimating, setIsAnimating] = useState(false);
 
-    // 2. Track if item is in cart via Redux
     const isInCart = useAppSelector((state) =>
         state.cart.items.some((item) => item.id === id)
     );
 
-    // 3. Track if item is in wishlist
     const isFavourite = useAppSelector((state) =>
         state.wishlist.items.some((item) => item.id === id)
     );
 
-    // Reset animation state after 2 seconds
     useEffect(() => {
         if (isAnimating) {
             const timer = setTimeout(() => setIsAnimating(false), 2000);
@@ -66,20 +60,23 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 className
             )}
         >
-            {/* Image & Actions Container */}
             <div className="relative aspect-square w-full overflow-hidden bg-(--surface-muted)/20">
                 <div className="absolute top-1.5 right-1.5 z-20 md:top-2 md:right-2">
                     <Button
                         variant="ghost"
                         size="sm"
-                        className={clsx(
-                            'h-7 w-7 rounded-full bg-(--surface-raised)/80 p-0 backdrop-blur-sm transition-colors hover:bg-(--surface-raised) md:h-8 md:w-8',
-                            isFavourite ? 'text-(--error)' : 'text-(--brand-color)'
-                        )}
-                        icon="heart"
+                        disableFocusRing
+                        className="h-7 w-7 rounded-full bg-(--surface-raised)/80 p-0 backdrop-blur-sm transition-colors hover:bg-(--surface-raised) md:h-8 md:w-8"
                         ariaLabel={isFavourite ? 'Remove from wishlist' : 'Add to wishlist'}
                         onClick={handleWishlistToggle}
-                    />
+                    >
+                        <Icon
+                            name="heart"
+                            size={18}
+                            filled={isFavourite}
+                            className="text-(--brand-color) transition-transform active:scale-125"
+                        />
+                    </Button>
                 </div>
 
                 {isEcoFriendly && (
@@ -101,7 +98,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     priority={id <= 6}
                 />
 
-                {/* Desktop Add to Cart Overlay - Adaptive UI */}
                 <div className="absolute inset-x-0 bottom-0 hidden translate-y-full bg-gradient-to-t from-(--overlay-bg) to-transparent p-3 transition-transform duration-300 group-hover:translate-y-0 md:block">
                     <Button
                         variant={isAnimating || isInCart ? 'secondary' : 'primary'}
@@ -117,7 +113,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 </div>
             </div>
 
-            {/* Content Section */}
             <div className="flex flex-1 flex-col p-2.5 md:p-3">
                 <div className="mb-1 flex items-center justify-between">
                     <span className="truncate text-[9px] font-semibold uppercase tracking-wider text-(--neutral-color) md:text-[10px]">
@@ -145,7 +140,6 @@ export function ProductCard({ product, className }: ProductCardProps) {
                         ${price.toFixed(2)}
                     </span>
 
-                    {/* Mobile Plus Button - Adaptive UI */}
                     <div className="md:hidden">
                         <Button
                             variant={isAnimating || isInCart ? 'secondary' : 'primary'}

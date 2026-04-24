@@ -15,6 +15,7 @@ export interface IconProps extends Omit<LucideProps, 'ref'> {
     variant?: IconVariant;
     size?: number | string;
     className?: string;
+    filled?: boolean; // Toggles fill-current
 }
 
 export const Icon = forwardRef<SVGSVGElement, IconProps>(
@@ -24,6 +25,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
         variant = "inherit",
         size = 20,
         className,
+        filled = false,
         ...props
     }, ref) => {
 
@@ -34,10 +36,9 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
 
         const LucideIcon = appIcons[name];
 
-        // 3. Explicitly type the mapping object to prevent the assignability error
         const variantClasses: Record<IconVariant, string> = {
             primary: "text-(--brand-color)",
-            success: "text-(--brand-color)", 
+            success: "text-(--brand-color)",
             neutral: "text-(--neutral-color)",
             error: "text-(--error)",
             warning: "text-(--warning)",
@@ -52,6 +53,7 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
                 className={clsx(
                     "inline-block shrink-0 transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)",
                     variantClasses[variant],
+                    filled ? "fill-current" : "fill-none", // Uses current text color for fill
                     className
                 )}
                 aria-hidden={label ? undefined : true}
@@ -65,3 +67,5 @@ export const Icon = forwardRef<SVGSVGElement, IconProps>(
 );
 
 Icon.displayName = "Icon";
+
+

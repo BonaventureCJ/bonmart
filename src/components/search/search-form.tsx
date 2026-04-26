@@ -1,13 +1,13 @@
 // src/components/search/search-form.tsx
-
 'use client';
 
-import React, { useEffect, useState, type FormEvent } from 'react';
-import { Search, X } from 'lucide-react';
+import React, { useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch } from '@/features/search/search-slice';
-import { useDebounce } from '@/hooks/use-debounce';
+import { Button } from '@/components/ui/button/button';
+import { Icon } from '@/components/ui/icon/icon';
 
 interface SearchFormProps {
     className?: string;
@@ -15,41 +15,33 @@ interface SearchFormProps {
 }
 
 /**
- * Enterprise-grade Search Form component.
- * Location: src/components/search/search-form.tsx
+ * Modern "Fused" Search Form with Integrated Clear Action.
  * 
- * Scalable for use in headers, sidebars, or dedicated search pages.
+ * Features:
+ * - Combined Input Group pattern for a premium enterprise feel.
+ * - Conditional "Clear" icon for better UX.
+ * - Full Redux and programmatic navigation integration.
  */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
 }) => {
+    const router = useRouter();
     const dispatch = useAppDispatch();
-    const globalQuery = useAppSelector((state) => state.search.query);
+    const [inputValue, setInputValue] = useState('');
 
-    // Local state for snappy UI feedback
-    const [inputValue, setInputValue] = useState(globalQuery);
-
-    // Debounce (300ms) to optimize performance and prevent rapid-fire filtering
-    const debouncedSearchTerm = useDebounce(inputValue, 300);
-
-    // Sync debounced value to global Redux state
-    useEffect(() => {
-        dispatch(setQuery(debouncedSearchTerm));
-    }, [debouncedSearchTerm, dispatch]);
-
-    // Sync local state if Redux state is updated externally (e.g., clear all filters)
-    useEffect(() => {
-        setInputValue(globalQuery);
-    }, [globalQuery]);
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        const trimmedQuery = inputValue.trim();
+        if (trimmedQuery) {
+            dispatch(setQuery(trimmedQuery));
+            router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
+        }
+    };
 
     const handleClear = () => {
         setInputValue('');
         dispatch(clearSearch());
-    };
-
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
     };
 
     return (
@@ -57,63 +49,68 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             role="search"
             onSubmit={handleSubmit}
             className={clsx(
-                "relative flex w-full items-center transition-all duration-long",
-                "md:max-w-md lg:max-w-lg",
+                "group relative flex w-full items-center overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised)",
+                "transition-all duration-(--duration-long) ease-in-out",
+                "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color)",
+                "dark:bg-(--surface-muted)",
                 className
             )}
         >
             <label htmlFor="global-search-input" className="sr-only">
-                Search products
+                Search Products
             </label>
 
-            <div className="relative w-full">
-                {/* Search Icon - Uses Green brand color on focus */}
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 md:pl-4">
-                    <Search
-                        className="size-4 text-neutral-color transition-colors md:size-5"
-                        aria-hidden="true"
-                    />
-                </div>
-
-                {/* Responsive Input */}
-                <input
-                    id="global-search-input"
-                    type="search"
-                    autoComplete="off"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder={placeholder}
-                    className={clsx(
-                        // Layout & Typography
-                        "block w-full rounded-xl border border-toggle-bg bg-surface-raised py-2 pl-9 pr-9",
-                        "text-sm font-normal text-foreground placeholder:text-neutral-color/50",
-                        "transition-all duration-long ease-in-out",
-
-                        // Responsive Scaling
-                        "md:py-2.5 md:pl-11 md:pr-11 md:text-base",
-
-                        // Focus & Theme States (Tailwind v4 Variable shorthand)
-                        "focus:border-brand-color focus:ring-1 focus:ring-brand-color focus:outline-none",
-                        "dark:bg-surface-muted",
-                        "focus-ring"
-                    )}
+            {/* 1. Leading Icon */}
+            <div className="flex shrink-0 items-center pl-3">
+                <Icon
+                    name="search"
+                    size={18}
+                    variant="neutral"
+                    className="group-focus-within:text-(--brand-color) transition-colors"
                 />
+            </div>
 
-                {/* Clear Button - Accessible touch target for mobile */}
+            {/* 2. Seamless Input */}
+            <input
+                id="global-search-input"
+                type="search"
+                autoComplete="off"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder={placeholder}
+                className={clsx(
+                    "h-10 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
+                    "placeholder:text-(--neutral-color)/50 focus:placeholder:opacity-30",
+                    "[&::-webkit-search-cancel-button]:appearance-none"
+                )}
+            />
+
+            {/* 3. Action Group: Clear Icon + Search Button */}
+            <div className="flex shrink-0 items-center gap-1 pr-1">
                 {inputValue && (
                     <button
                         type="button"
                         onClick={handleClear}
                         className={clsx(
-                            "absolute inset-y-0 right-0 flex items-center pr-2 md:pr-3",
-                            "text-neutral-color transition-colors hover:text-brand-color",
-                            "focus-ring rounded-full outline-none"
+                            "flex size-8 items-center justify-center rounded-lg text-(--neutral-color)",
+                            "transition-colors hover:bg-(--toggle-bg) hover:text-(--brand-color)",
+                            "focus-ring"
                         )}
-                        aria-label="Clear search input"
+                        aria-label="Clear input"
                     >
-                        <X className="size-4 md:size-5" aria-hidden="true" />
+                        <Icon name="close" size={16} />
                     </button>
                 )}
+
+                <Button
+                    type="submit"
+                    variant="primary"
+                    size="sm"
+                    className="h-8 rounded-lg px-4 text-xs font-semibold"
+                    ariaLabel="Search"
+                >
+                    Search
+                </Button>
             </div>
         </form>
     );

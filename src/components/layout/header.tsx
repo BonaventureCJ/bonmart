@@ -39,7 +39,7 @@ export const Header: FC = () => {
                            Wrapper div handles the 'lg' visibility without 
                            requiring props inside DesktopNav 
                         */}
-                        <div className="hidden lg:block">
+                        <div className="hidden md:block">
                             <DesktopNav />
                         </div>
                         <UtilityNav />

@@ -1,6 +1,6 @@
 // src/components/layout/header.tsx
 
-import type { FC } from 'react';
+import { FC, Suspense } from 'react';
 import clsx from 'clsx';
 import { Brand } from '@/components/branding/brand';
 import { UtilityNav } from '@/components/navigation/utility-nav';
@@ -22,23 +22,21 @@ export const Header: FC = () => {
                 {/* 1. Main Row: Logo, Search (Desktop), and Actions */}
                 <div className="flex h-16 items-center justify-between gap-4">
 
-                    {/* Left: Menu & Brand */}
+                    {/* Left Section */}
                     <div className="flex items-center space-x-1 shrink-0">
                         <MenuToggle />
                         <Brand responsive={true} />
                     </div>
 
-                    {/* Middle: Search Form (Visible from 'lg' breakpoint for laptops) */}
+                    {/* Middle: Search Form (Desktop) wrapped in Suspense */}
                     <div className="hidden flex-1 justify-center lg:flex">
-                        <SearchForm className="max-w-md xl:max-w-lg" />
+                        <Suspense fallback={<div className="h-10 w-full max-w-md animate-pulse rounded-full bg-(--surface-muted)" />}>
+                            <SearchForm className="max-w-md xl:max-w-lg" />
+                        </Suspense>
                     </div>
 
-                    {/* Right: Navigation & Utilities */}
+                    {/* Right Section */}
                     <div className="flex items-center space-x-2 shrink-0">
-                        {/* 
-                           Wrapper div handles the 'lg' visibility without 
-                           requiring props inside DesktopNav 
-                        */}
                         <div className="hidden md:block">
                             <DesktopNav />
                         </div>
@@ -46,13 +44,14 @@ export const Header: FC = () => {
                     </div>
                 </div>
 
-                {/* 2. Secondary Row: Search Form (Visible only on Mobile/Tablet) */}
+                {/* 2. Secondary Row: Search Form (Mobile) wrapped in Suspense */}
                 <div className="pb-3 lg:hidden">
                     <div className="w-full px-1">
-                        <SearchForm className="max-w-full" />
+                        <Suspense fallback={<div className="h-10 w-full animate-pulse rounded-full bg-(--surface-muted)" />}>
+                            <SearchForm className="max-w-full" />
+                        </Suspense>
                     </div>
                 </div>
-
             </div>
         </header>
     );

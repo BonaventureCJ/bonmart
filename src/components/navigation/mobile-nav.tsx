@@ -33,9 +33,9 @@ export const MobileNav = () => {
     <div
       className={clsx(
         'fixed left-0 z-50 w-3/4 transform transition-transform duration-300 md:hidden',
-        'bg-(--background)',
-        'top-16 overflow-y-auto',
-        'h-[calc(var(--vh)-4rem)]',
+        'bg-(--background) border-r border-(--toggle-bg)',
+        'overflow-y-auto',
+        'top-(--header-height) h-[calc(var(--vh,100vh)-var(--header-height))]',
         {
           'translate-x-0': isMobileMenuOpen,
           '-translate-x-full': !isMobileMenuOpen,

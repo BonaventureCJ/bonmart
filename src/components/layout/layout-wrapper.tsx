@@ -16,8 +16,12 @@ type LayoutWrapperProps = {
 };
 
 /**
- * A client component that wraps the main content and handles layout structure.
- * Implements a sticky footer pattern using CSS Grid and proper content alignment.
+ * Enterprise Layout Wrapper.
+ * 
+ * Architecture:
+ * - Uses CSS Grid (auto_1fr_auto) to manage header/content/footer flow without pt offsets.
+ * - Implements fluid vertical and horizontal padding for a premium UI feel.
+ * - Ensures semantic integrity and proper overlay management.
  */
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     const isMobileMenuOpen = useAppSelector(
@@ -53,8 +57,15 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 )}
                 aria-hidden={isMobileMenuOpen}
             >
+                {/* 
+                  1. Semantic Main: No pt offset needed as it's the second row in the grid.
+                  2. Padding: Fluid py (vertical) and px (horizontal) for premium spacing.
+                */}
                 <main
-                    className="pt-(--header-height) flex w-full flex-col px-4 pb-16 md:px-6 lg:px-8"
+                    className={clsx(
+                        "flex w-full flex-col overflow-x-hidden",
+                        "px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12"
+                    )}
                 >
                     <div className="mx-auto w-full max-w-7xl">
                         {children}

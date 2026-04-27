@@ -38,8 +38,12 @@
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
-  --header-height: 4rem;
-  /* The height of the header is Tailwind's h-16 class, which is = 4rem */
+
+  /* 
+     Base Header Height: Defaults to stacked mobile layout.
+     Math: Row1 (4rem) + Row2 (2.5rem) + Padding (0.75rem) = 7.25rem 
+  */
+  --header-height: 7.25rem;
 }
 
 /* 3. Configure custom variants. */
@@ -70,6 +74,11 @@
   --footer-border: var(--color-neutral-text-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
   --icon-hover-color: var(--color-brand-primary);
+
+  /* Responsive Override: Reverts to single-row height (h-16) on laptops */
+  @media (min-width: 1024px) {
+    --header-height: 4rem;
+  }
 }
 
 html.dark {

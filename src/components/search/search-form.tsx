@@ -1,4 +1,5 @@
 // src/components/search/search-form.tsx
+
 'use client';
 
 import React, { useState, type FormEvent } from 'react';
@@ -6,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch } from '@/features/search/search-slice';
-import { Button } from '@/components/ui/button/button';
+import { Button } from '@/components/ui/button/button'; // Reusable Button
 import { Icon } from '@/components/ui/icon/icon';
 
 interface SearchFormProps {
@@ -70,7 +71,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 />
             </div>
 
-            {/* 2. Seamless Input */}
+            {/* 2. Input Field */}
             <input
                 id="global-search-input"
                 type="search"
@@ -88,18 +89,16 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             {/* 3. Action Group: Clear Icon + Search Button */}
             <div className="flex shrink-0 items-center gap-1 pr-1">
                 {inputValue && (
-                    <button
+                    <Button
                         type="button"
                         onClick={handleClear}
-                        className={clsx(
-                            "flex size-8 items-center justify-center rounded-lg text-(--neutral-color)",
-                            "transition-colors hover:bg-(--toggle-bg) hover:text-(--brand-color)",
-                            "focus-ring"
-                        )}
-                        aria-label="Clear input"
-                    >
-                        <Icon name="close" size={16} />
-                    </button>
+                        variant="ghost"
+                        size="sm"
+                        icon="close"
+                        ariaLabel="Clear search input"
+                        className="h-8 w-8 !p-0 text-(--neutral-color) hover:text-(--brand-color)"
+                        disableFocusRing // Fused container handles the ring
+                    />
                 )}
 
                 <Button
@@ -107,7 +106,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     variant="primary"
                     size="sm"
                     className="h-8 rounded-lg px-4 text-xs font-semibold"
-                    ariaLabel="Search"
+                    ariaLabel="Submit search"
                 >
                     Search
                 </Button>

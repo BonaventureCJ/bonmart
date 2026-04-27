@@ -2,12 +2,12 @@
 
 'use client';
 
-import React, { useState, type FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, type FormEvent } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch } from '@/features/search/search-slice';
-import { Button } from '@/components/ui/button/button'; // Reusable Button
+import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 
 interface SearchFormProps {
@@ -15,34 +15,41 @@ interface SearchFormProps {
     placeholder?: string;
 }
 
-/**
- * Modern "Fused" Search Form with Integrated Clear Action.
- * 
- * Features:
- * - Combined Input Group pattern for a premium enterprise feel.
- * - Conditional "Clear" icon for better UX.
- * - Full Redux and programmatic navigation integration.
- */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
 }) => {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
-    const [inputValue, setInputValue] = useState('');
 
-    const handleSubmit = (e: FormEvent) => {
-        e.preventDefault();
-        const trimmedQuery = inputValue.trim();
+    const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
+
+    useEffect(() => {
+        const queryInUrl = searchParams.get('q') || '';
+        setInputValue(queryInUrl);
+        dispatch(setQuery(queryInUrl));
+    }, [searchParams, dispatch]);
+
+    const handleSearchAction = (query: string) => {
+        const trimmedQuery = query.trim();
         if (trimmedQuery) {
             dispatch(setQuery(trimmedQuery));
             router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
         }
     };
 
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        handleSearchAction(inputValue);
+    };
+
     const handleClear = () => {
         setInputValue('');
         dispatch(clearSearch());
+        if (searchParams.has('q')) {
+            router.push('/search');
+        }
     };
 
     return (
@@ -50,9 +57,9 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             role="search"
             onSubmit={handleSubmit}
             className={clsx(
-                "group relative flex w-full items-center overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised)",
+                "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
                 "transition-all duration-(--duration-long) ease-in-out",
-                "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color)",
+                "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
                 "dark:bg-(--surface-muted)",
                 className
             )}
@@ -61,7 +68,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 Search Products
             </label>
 
-            {/* 1. Leading Icon */}
             <div className="flex shrink-0 items-center pl-3">
                 <Icon
                     name="search"
@@ -71,7 +77,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 />
             </div>
 
-            {/* 2. Input Field */}
+            {/* 2. Responsive Input */}
             <input
                 id="global-search-input"
                 type="search"
@@ -80,24 +86,24 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder={placeholder}
                 className={clsx(
-                    "h-10 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
+                    "h-8 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
                     "placeholder:text-(--neutral-color)/50 focus:placeholder:opacity-30",
                     "[&::-webkit-search-cancel-button]:appearance-none"
                 )}
             />
 
-            {/* 3. Action Group: Clear Icon + Search Button */}
-            <div className="flex shrink-0 items-center gap-1 pr-1">
+            {/* 3. Pill Action Group */}
+            <div className="flex shrink-0 items-center gap-1 pr-0.5">
                 {inputValue && (
                     <Button
                         type="button"
-                        onClick={handleClear}
                         variant="ghost"
                         size="sm"
                         icon="close"
-                        ariaLabel="Clear search input"
-                        className="h-8 w-8 !p-0 text-(--neutral-color) hover:text-(--brand-color)"
-                        disableFocusRing // Fused container handles the ring
+                        onClick={handleClear}
+                        ariaLabel="Clear input"
+                        className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--brand-color)"
+                        disableFocusRing
                     />
                 )}
 
@@ -105,7 +111,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     type="submit"
                     variant="primary"
                     size="sm"
-                    className="h-8 rounded-lg px-4 text-xs font-semibold"
+                    className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
                     ariaLabel="Submit search"
                 >
                     Search

@@ -1,4 +1,5 @@
 // src/components/navigation/nav-links.ts
+
 import { type IconName } from '@/components/ui/icon/icon';
 
 export interface NavItem {
@@ -19,8 +20,8 @@ export const mainNavLinks: NavItem[] = [
 ];
 
 export const utilityNavLinks: UtilityNavItem[] = [
-  { id: 1, label: 'Search', iconName: 'search', href: '/search' },
-  { id: 2, label: 'Account', iconName: 'user', href: '/account' },
-  { id: 3, label: 'Wishlist', iconName: 'heart', href: '/wishlist' },
-  { id: 4, label: 'Cart', iconName: 'cart', href: '/cart' },
+  // { id: 4, label: 'Search', iconName: 'search', href: '/search' },
+  { id: 1, label: 'Account', iconName: 'user', href: '/account' },
+  { id: 2, label: 'Wishlist', iconName: 'heart', href: '/wishlist' },
+  { id: 3, label: 'Cart', iconName: 'cart', href: '/cart' },
 ];

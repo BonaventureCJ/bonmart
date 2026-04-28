@@ -4,29 +4,34 @@
 @import "tailwindcss";
 
 /* 2. Define primitive design tokens with the @theme directive. */
-/* This is the single source of truth for fundamental values. */
 @theme {
+  /* Layout Primitives */
+  --header-height: 7.25rem;
+
+  /* Brand Primitives */
   --color-brand-primary: #15803d;
   --color-brand-primary-light: #4ade80;
-  --color-neutral-text-light: #374151;
-  /* Darkened from #4b5563 for better contrast */
-  --color-neutral-text-dark: #d1d5db;
-  --color-neutral-bg-dark: #1f2937;
+
+  /* Neutral & Surface Primitives */
   --color-surface-light: #ffffff;
   --color-surface-dark: #0a0a0a;
+  --color-neutral-bg-dark: #1f2937;
+
+  /* Typography Primitives */
   --color-text-light: #171717;
   --color-text-dark: #ededed;
+  --color-neutral-text-light: #374151;
+  --color-neutral-text-dark: #d1d5db;
 
-  /* Status Primitives */
+  /* Status & Feedback Primitives */
   --color-error-light: #dc2626;
   --color-error-dark: #ef4444;
   --color-error-muted-light: #fee2e2;
   --color-error-muted-dark: #450a0a;
-  /* Solid color to ensure visibility on dark surfaces */
   --color-warning-amber: #fbbf24;
   --color-warning-dark: #92400e;
-  /* New: For text contrast in light mode */
 
+  /* UI Component Primitives */
   --color-focus-ring: var(--color-brand-primary);
   --color-focus-ring-dark: var(--color-brand-primary-light);
   --color-toggle-hover-light: #f3f4f6;
@@ -35,47 +40,51 @@
   --color-toggle-bg-dark: #2d3748;
   --color-toggle-bg-active-light: #d1d5db;
   --color-toggle-bg-active-dark: #4b5563;
+
+  /* Motion & Typography Settings */
   --font-family-sans: Arial, Helvetica, sans-serif;
   --transition-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --duration-long: 100ms;
-
-  /* 
-     Base Header Height: Defaults to stacked mobile layout.
-     Math: Row1 (4rem) + Row2 (2.5rem) + Padding (0.75rem) = 7.25rem 
-  */
-  --header-height: 7.25rem;
 }
 
 /* 3. Configure custom variants. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
-/* 4. Define semantic variables using native CSS custom properties. */
-/* These variables reference the tokens above and adapt to the current theme. */
+/* 4. Define semantic variables. */
 :root {
   color-scheme: light;
+
+  /* Core Surfaces */
   --background: var(--color-surface-light);
   --foreground: var(--color-text-light);
-  --brand-color: var(--color-brand-primary);
-  --neutral-color: var(--color-neutral-text-light);
-  --surface-muted: var(--color-toggle-hover-light);
   --surface-raised: var(--color-surface-light);
-  /* Base for light mode */
-  --text-on-image: #ffffff;
+  --surface-muted: var(--color-toggle-hover-light);
+  --overlay-bg: rgba(0, 0, 0, 0.4);
+
+  /* Branding & Accents */
+  --brand-color: var(--color-brand-primary);
+  --icon-hover-color: var(--color-brand-primary);
+  --text-on-brand: var(--color-surface-light);
+  --text-on-image: var(--color-surface-light);
+
+  /* Typography */
+  --neutral-color: var(--color-neutral-text-light);
+
+  /* UI Elements */
+  --toggle-bg: var(--color-toggle-bg-light);
+  --toggle-bg-active: var(--color-toggle-bg-active-light);
+  --toggle-container-bg: var(--color-toggle-bg-light);
+  --toggle-hover-bg: var(--color-toggle-hover-light);
+  --footer-border: var(--color-neutral-text-light);
+  --focus-ring: var(--color-focus-ring);
+  --ring-offset-color: var(--color-toggle-bg-active-light);
+
+  /* Status */
   --error: var(--color-error-light);
   --error-muted: var(--color-error-muted-light);
   --warning: var(--color-warning-dark);
-  /* Switched to dark amber for readability */
-  --toggle-hover-bg: var(--color-toggle-hover-light);
-  --toggle-container-bg: var(--color-toggle-bg-light);
-  --toggle-bg: var(--color-toggle-bg-light);
-  --toggle-bg-active: var(--color-toggle-bg-active-light);
-  --focus-ring: var(--color-focus-ring);
-  --ring-offset-color: var(--color-toggle-bg-active-light);
-  --footer-border: var(--color-neutral-text-light);
-  --overlay-bg: rgba(0, 0, 0, 0.4);
-  --icon-hover-color: var(--color-brand-primary);
 
-  /* Responsive Override: Reverts to single-row height (h-16) on laptops */
+  /* Responsive Logic */
   @media (min-width: 1024px) {
     --header-height: 4rem;
   }
@@ -83,38 +92,48 @@
 
 html.dark {
   color-scheme: dark;
+
+  /* Core Surfaces */
   --background: var(--color-surface-dark);
   --foreground: var(--color-text-dark);
-  --brand-color: var(--color-brand-primary-light);
-  --neutral-color: var(--color-neutral-text-dark);
-  --surface-muted: var(--color-neutral-bg-dark);
   --surface-raised: var(--color-neutral-bg-dark);
-  /* Slightly lifted for dark mode */
-  --text-on-image: #ffffff;
+  --surface-muted: var(--color-neutral-bg-dark);
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+
+  /* Branding & Accents */
+  --brand-color: var(--color-brand-primary-light);
+  --icon-hover-color: var(--color-brand-primary-light);
+  --text-on-brand: var(--color-surface-light);
+  --text-on-image: var(--color-surface-light);
+
+  /* Typography */
+  --neutral-color: var(--color-neutral-text-dark);
+
+  /* UI Elements */
+  --toggle-bg: var(--color-toggle-bg-dark);
+  --toggle-bg-active: var(--color-toggle-bg-active-dark);
+  --toggle-container-bg: var(--color-neutral-bg-dark);
+  --toggle-hover-bg: var(--color-toggle-hover-dark);
+  --footer-border: var(--color-neutral-text-dark);
+  --focus-ring: var(--color-focus-ring-dark);
+  --ring-offset-color: var(--color-toggle-bg-active-dark);
+
+  /* Status */
   --error: var(--color-error-dark);
   --error-muted: var(--color-error-muted-dark);
   --warning: var(--color-warning-amber);
-  --toggle-hover-bg: var(--color-toggle-hover-dark);
-  --toggle-container-bg: var(--color-neutral-bg-dark);
-  --toggle-bg: var(--color-toggle-bg-dark);
-  --toggle-bg-active: var(--color-toggle-bg-active-dark);
-  --focus-ring: var(--color-focus-ring-dark);
-  --ring-offset-color: var(--color-toggle-bg-active-dark);
-  --footer-border: var(--color-neutral-text-dark);
-  --overlay-bg: rgba(0, 0, 0, 0.6);
-  /* Reduced opacity for better visibility on dark bg */
-  --icon-hover-color: var(--color-brand-primary-light);
 }
 
-/* 5. Add custom base styles. */
+/* 5. Base Styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family-sans);
 }
 
-/* 6. Define focused utilities with the @utility directive. */
-/* Utilities that need custom logic, like focus-visible. */
+/* 6. Utility Directives */
+
+/* Interactive Utilities */
 @utility focus-ring {
   &:focus-visible {
     outline: 0;
@@ -122,16 +141,14 @@ body {
   }
 }
 
-/* 7. Other @utility directives. */
-
-/* Utility for checkout form inputs used in checkout/page.tsx */
+/* Form Utilities */
 @utility checkout-input {
   width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   border-radius: 0.75rem;
   border: 1px solid var(--toggle-bg);
   background-color: var(--surface-raised);
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
   outline: none;
 
   &:focus {
@@ -145,10 +162,10 @@ body {
   }
 }
 
-/* Utility for text truncation used in cart-item.tsx */
+/* Layout Utilities */
 @utility line-clamp-1 {
   display: -webkit-box;
+  overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
-  overflow: hidden;
 }

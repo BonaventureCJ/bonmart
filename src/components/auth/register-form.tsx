@@ -1,4 +1,4 @@
-//src/components/auth/register-form.tsx
+// src/components/auth/register-form.tsx
 
 "use client";
 
@@ -7,6 +7,7 @@ import { useId, type FormEvent } from "react";
 /**
  * RegisterForm Component
  * Handles client-side registration interactivity.
+ * Adheres to enterprise DRY principles and v4.1 variable shorthand.
  */
 export default function RegisterForm() {
     const nameId = useId();
@@ -21,40 +22,57 @@ export default function RegisterForm() {
     return (
         <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2 text-left">
-                <label htmlFor={nameId} className="text-sm font-medium">Full Name</label>
+                <label htmlFor={nameId} className="text-sm font-medium">
+                    Full Name
+                </label>
                 <input
                     id={nameId}
                     type="text"
                     placeholder="John Doe"
                     required
-                    className="focus-ring h-10 w-full rounded-md border border-[var(--footer-border)] bg-[var(--toggle-container-bg)] px-3 py-2 text-sm outline-none"
+                    autoComplete="name"
+                    className="checkout-input"
                 />
             </div>
+
             <div className="grid gap-2 text-left">
-                <label htmlFor={emailId} className="text-sm font-medium">Email</label>
+                <label htmlFor={emailId} className="text-sm font-medium">
+                    Email
+                </label>
                 <input
                     id={emailId}
                     type="email"
                     placeholder="name@example.com"
                     required
-                    className="focus-ring h-10 w-full rounded-md border border-[var(--footer-border)] bg-[var(--toggle-container-bg)] px-3 py-2 text-sm outline-none"
+                    autoComplete="email"
+                    className="checkout-input"
                 />
             </div>
+
             <div className="grid gap-2 text-left">
-                <label htmlFor={passwordId} className="text-sm font-medium">Password</label>
+                <label htmlFor={passwordId} className="text-sm font-medium">
+                    Password
+                </label>
                 <input
                     id={passwordId}
                     type="password"
                     required
-                    className="focus-ring h-10 w-full rounded-md border border-[var(--footer-border)] bg-[var(--toggle-container-bg)] px-3 py-2 text-sm outline-none"
+                    autoComplete="new-password"
+                    className="checkout-input"
                 />
             </div>
+
             <button
                 type="submit"
-                className="mt-2 h-10 w-full rounded-md bg-[var(--brand-color)] font-medium text-white transition-opacity hover:opacity-90"
+                className="focus-ring mt-2 h-10 w-full cursor-pointer rounded-md bg-(--brand-color) font-medium text-(--text-on-brand) transition-opacity hover:opacity-90"
             >
                 Create Account
             </button>
+
+            {/* Development-specific note within the form context */}
+            <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">
+                Dev Note: Registration logic and validation pending.
+            </p>
         </form>
     );
 }

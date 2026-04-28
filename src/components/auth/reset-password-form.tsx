@@ -3,11 +3,12 @@
 "use client";
 
 import { useId, type FormEvent } from "react";
+import { Button } from "@/components/ui/button/button";
 
 /**
  * ResetPasswordForm Component
  * Handles the client-side interaction for account recovery.
- * Utilizes enterprise-standard utilities
+ * Adheres to enterprise accessibility standards and mobile-first design.
  */
 export default function ResetPasswordForm() {
     const emailId = useId();
@@ -20,7 +21,10 @@ export default function ResetPasswordForm() {
     return (
         <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2 text-left">
-                <label htmlFor={emailId} className="text-sm font-medium">
+                <label
+                    htmlFor={emailId}
+                    className="text-sm font-medium text-(--foreground)"
+                >
                     Email Address
                 </label>
                 <input
@@ -33,12 +37,15 @@ export default function ResetPasswordForm() {
                 />
             </div>
 
-            <button
+            <Button
                 type="submit"
-                className="focus-ring mt-2 h-10 w-full cursor-pointer rounded-md bg-(--brand-color) font-medium text-(--text-on-brand) transition-opacity hover:opacity-90"
+                variant="primary"
+                fullWidth
+                size="md"
+                className="mt-2"
             >
                 Send Reset Link
-            </button>
+            </Button>
 
             {/* Development-specific note within the form context */}
             <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">

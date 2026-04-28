@@ -3,11 +3,12 @@
 "use client";
 
 import { useId, type FormEvent } from "react";
+import { Button } from "@/components/ui/button/button";
 
 /**
  * RegisterForm Component
  * Handles client-side registration interactivity.
- * Adheres to enterprise DRY principles and v4.1 variable shorthand.
+ * Adheres to enterprise DRY principles.
  */
 export default function RegisterForm() {
     const nameId = useId();
@@ -22,7 +23,7 @@ export default function RegisterForm() {
     return (
         <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2 text-left">
-                <label htmlFor={nameId} className="text-sm font-medium">
+                <label htmlFor={nameId} className="text-sm font-medium text-(--foreground)">
                     Full Name
                 </label>
                 <input
@@ -36,7 +37,7 @@ export default function RegisterForm() {
             </div>
 
             <div className="grid gap-2 text-left">
-                <label htmlFor={emailId} className="text-sm font-medium">
+                <label htmlFor={emailId} className="text-sm font-medium text-(--foreground)">
                     Email
                 </label>
                 <input
@@ -50,7 +51,7 @@ export default function RegisterForm() {
             </div>
 
             <div className="grid gap-2 text-left">
-                <label htmlFor={passwordId} className="text-sm font-medium">
+                <label htmlFor={passwordId} className="text-sm font-medium text-(--foreground)">
                     Password
                 </label>
                 <input
@@ -62,12 +63,15 @@ export default function RegisterForm() {
                 />
             </div>
 
-            <button
+            <Button
                 type="submit"
-                className="focus-ring mt-2 h-10 w-full cursor-pointer rounded-md bg-(--brand-color) font-medium text-(--text-on-brand) transition-opacity hover:opacity-90"
+                variant="primary"
+                fullWidth
+                size="md"
+                className="mt-2"
             >
                 Create Account
-            </button>
+            </Button>
 
             {/* Development-specific note within the form context */}
             <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">

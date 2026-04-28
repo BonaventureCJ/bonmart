@@ -1,4 +1,5 @@
 // src/components/ui/theme-switcher/theme-button.tsx
+
 import { forwardRef } from 'react';
 import { clsx } from 'clsx';
 import { Icon, type IconName } from '@/components/ui/icon/icon';
@@ -13,6 +14,13 @@ type ThemeButtonProps = {
     className?: string;
 };
 
+/**
+ * ThemeButton Component
+ * 
+ * NOTE: This uses a native <button> instead of <Button /> because it implements 
+ * a "Radio Group" pattern (WAI-ARIA). The specific selection rings and 
+ * tab-index management are specialized for the theme switcher UX.
+ */
 export const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(
     ({ theme, isSelected, iconName, label, onClick, className, ...rest }, ref) => {
         return (
@@ -23,10 +31,10 @@ export const ThemeButton = forwardRef<HTMLButtonElement, ThemeButtonProps>(
                 className={clsx(
                     'relative z-0 flex size-8 items-center justify-center rounded-full transition-colors',
                     'hover:bg-(--toggle-hover-bg)',
-                    'focus:focus-ring',
+                    'focus-ring',
                     'cursor-pointer',
                     isSelected
-                        ? 'text-(--brand-color) bg-(--toggle-bg-active) ring-[0.89px] ring-(--brand-color) ring-offset-[0.5px] ring-offset-(--ring-offset-color)'
+                        ? 'bg-(--toggle-bg-active) text-(--brand-color) ring-[0.89px] ring-(--brand-color) ring-offset-[0.5px] ring-offset-(--ring-offset-color)'
                         : 'text-(--neutral-color)',
                     className
                 )}

@@ -5,6 +5,7 @@
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Heading } from '@/components/ui/heading/heading';
+import { Button } from '@/components/ui/button/button';
 
 interface ProductReviewCardProps {
     author: string;
@@ -79,15 +80,23 @@ export function ProductReviewCard({
                 {comment}
             </p>
 
-            {/* Helpful Toggle - Enterprise micro-interaction placeholder */}
-            <div className="mt-2 flex items-center gap-4 border-t border-(--toggle-bg) pt-4">
-                <button className="flex items-center gap-1.5 text-xs font-medium text-(--neutral-color) transition-colors hover:text-(--brand-color) focus-ring rounded-sm p-1">
-                    <Icon name="plus" size={14} />
+            {/* Action Group: Leveraging Button component for standardized micro-interactions */}
+            <div className="mt-2 flex items-center gap-2 border-t border-(--toggle-bg) pt-4">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    icon="plus"
+                    className="text-xs text-(--neutral-color) hover:text-(--brand-color) !px-2"
+                >
                     Helpful
-                </button>
-                <button className="text-xs font-medium text-(--neutral-color) transition-colors hover:text-(--error) focus-ring rounded-sm p-1">
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-(--neutral-color) hover:text-(--error) !px-2"
+                >
                     Report
-                </button>
+                </Button>
             </div>
         </article>
     );

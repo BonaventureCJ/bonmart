@@ -17,7 +17,7 @@ export default function RegisterForm() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Registration logic will be integrated with Redux here
+        // Registration logic will be integrated here
     };
 
     return (
@@ -73,8 +73,9 @@ export default function RegisterForm() {
                 Create Account
             </Button>
 
-            <p className="mt-2 text-center text-[10px] tracking-wide text-(--neutral-color) uppercase opacity-60">
-                Secure enterprise account registration
+            {/* Development-specific note within the form context */}
+            <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">
+                Dev Note: Registration logic and validation pending.
             </p>
         </form>
     );

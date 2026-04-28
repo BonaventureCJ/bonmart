@@ -16,7 +16,7 @@ export default function LoginForm() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Integration with Redux/NextAuth logic to follow
+        // Authentication logic will be integrated with Redux/NextAuth here
     };
 
     return (
@@ -64,9 +64,9 @@ export default function LoginForm() {
                 Sign In
             </Button>
 
-            {/* Contextual Dev Note */}
-            <p className="mt-2 text-center text-[10px] tracking-wide text-(--neutral-color) uppercase opacity-60">
-                Authentication state managed via Redux Toolkit
+            {/* Development-specific note within the form context */}
+            <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">
+                Dev Note: Form validation and Redux state pending.
             </p>
         </form>
     );

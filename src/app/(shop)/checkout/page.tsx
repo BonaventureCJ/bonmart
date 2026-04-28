@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-// RTK Hooks and Actions
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart } from '@/features/cart/cart-slice';
-
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
+import { Button } from '@/components/ui/button/button';
 import { CartSummary } from '@/components/cart/cart-summary';
 import { CheckoutForm } from '@/components/checkout/checkout-form';
 import { PaymentForm } from '@/components/checkout/payment-form';
@@ -30,7 +29,6 @@ export default function CheckoutPage() {
    * Handles the order placement simulation.
    */
   const handlePlaceOrder = async () => {
-    // Prevent processing if cart is empty (safety check)
     if (items.length === 0) {
       router.push('/products');
       return;
@@ -42,11 +40,9 @@ export default function CheckoutPage() {
       // Simulate real-world payment API latency
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
-      // In a real app, this is where you'd call your API
       const isSuccessful = true;
 
       if (isSuccessful) {
-        // 3. Clear the cart state upon success before navigating
         dispatch(clearCart());
         router.push('/checkout/status?status=success');
       } else {
@@ -63,15 +59,18 @@ export default function CheckoutPage() {
   if (items.length === 0 && !isProcessing) {
     return (
       <PageContainer>
-        <div className="flex min-h-[60vh] flex-col items-center justify-center text-center">
+        <div className="flex min-h-[60vh] flex-col items-center justify-center text-center px-4">
           <Heading level={2} className="mb-4">Your bag is empty</Heading>
-          <p className="mb-8 text-(--neutral-color)">Add some eco-friendly items to your cart before checking out.</p>
-          <button
-            onClick={() => router.push('/products')}
-            className="rounded-full bg-(--brand-color) px-8 py-3 font-bold text-white transition-transform hover:scale-105"
+          <p className="mb-8 text-(--neutral-color) max-w-md">
+            Add some eco-friendly items to your cart before checking out.
+          </p>
+          <Button
+            href="/products"
+            size="lg"
+            variant="primary"
           >
             Go to Shop
-          </button>
+          </Button>
         </div>
       </PageContainer>
     );
@@ -81,14 +80,15 @@ export default function CheckoutPage() {
     <PageContainer>
       <main className="py-8 md:py-12">
         <header className="mb-10 flex items-center gap-4">
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={() => router.back()}
-            className="group flex h-10 w-10 items-center justify-center rounded-full border border-(--toggle-bg) transition-colors hover:bg-(--surface-muted)"
-            aria-label="Go back"
-          >
-            <Icon name="arrowLeft" size={20} className="group-hover:text-(--brand-color)" />
-          </button>
-          <Heading level={1} weight="bold">Secure Checkout</Heading>
+            icon="arrowLeft"
+            ariaLabel="Go back"
+            className="h-10 w-10 !p-0" // Specific override for circular icon-only style
+          />
+          <Heading level={1} weight="bold" align="left">Secure Checkout</Heading>
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
@@ -109,14 +109,17 @@ export default function CheckoutPage() {
                 buttonLabel="Place Order"
                 isProcessing={isProcessing}
               />
-              <div className="mt-4 flex flex-col items-center gap-2 px-2 opacity-60">
+              {/* Trust Badge Section */}
+              <div className="mt-6 flex flex-col items-center gap-3 px-2">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-(--brand-color)">
-                  <Icon name="check" size={12} />
-                  <span>Secure transaction</span>
+                  <Icon name="lock" size={12} />
+                  <span>Secure 256-bit SSL Encrypted</span>
                 </div>
-                <p className="text-[10px] text-(--neutral-color) uppercase tracking-widest">
-                  Powered by Bonmart Enterprise
-                </p>
+                <div className="flex items-center gap-4 opacity-40 grayscale transition-all hover:opacity-100 hover:grayscale-0">
+                  <p className="text-[10px] text-(--neutral-color) uppercase font-semibold tracking-tighter">
+                    Powered by Bonmart Enterprise
+                  </p>
+                </div>
               </div>
             </div>
           </aside>

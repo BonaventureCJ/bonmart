@@ -1,5 +1,5 @@
 // src/components/ui/theme-switcher/theme-switcher.tsx
-// src/components/ui/theme-switcher/theme-switcher.tsx
+
 'use client';
 
 import clsx from 'clsx';
@@ -12,20 +12,25 @@ import type { IconName } from '@/components/ui/icon/icon';
 
 const THEMES: Theme[] = ['system', 'light', 'dark'];
 
-// Accessible labels for each theme option.
 const themeLabels: Record<Theme, string> = {
     light: 'Light Theme',
     dark: 'Dark Theme',
     system: 'System Theme',
 };
 
-// Use the IconName type for the icon names.
 const themeIcons: Record<Theme, IconName> = {
     light: 'sun',
     dark: 'moon',
     system: 'monitor',
 };
 
+/**
+ * ThemeSwitcher Component
+ * 
+ * NOTE: The skeleton state uses native elements to ensure minimal hydration 
+ * footprint and prevent layout shifts. Interaction logic is managed via 
+ * a radio group pattern for WCAG compliance.
+ */
 export const ThemeSwitcher = () => {
     const dispatch = useAppDispatch();
     const activeTheme = useAppSelector((state) => state.theme.theme);
@@ -64,17 +69,13 @@ export const ThemeSwitcher = () => {
             case 'End':
                 newIndex = THEMES.length - 1;
                 break;
-            case ' ': // Spacebar
-            case 'Enter':
-                handleThemeChange(activeTheme);
-                return;
             default:
                 return;
         }
 
         event.preventDefault();
         const newTheme = THEMES[newIndex];
-        dispatch(setTheme(newTheme));
+        handleThemeChange(newTheme);
 
         const newButton = buttonRefs.current[newTheme];
         if (newButton) {
@@ -82,22 +83,19 @@ export const ThemeSwitcher = () => {
         }
     };
 
+    // Shared container classes
+    const containerClasses = clsx(
+        'flex rounded-full p-1',
+        'bg-(--toggle-container-bg)'
+    );
+
     if (!mounted) {
         return (
-            <div
-                className={clsx(
-                    'flex rounded-full p-1',
-                    'bg-(--toggle-container-bg)',
-                )}
-                role="radiogroup"
-                aria-label="Theme Switcher"
-            >
+            <div className={containerClasses} role="presentation">
                 {THEMES.map((theme) => (
-                    <button
+                    <div
                         key={theme}
-                        type="button"
-                        className="flex size-8 items-center justify-center rounded-full"
-                        disabled
+                        className="size-8 rounded-full bg-transparent"
                         aria-hidden="true"
                     />
                 ))}
@@ -107,17 +105,14 @@ export const ThemeSwitcher = () => {
 
     return (
         <div
-            className={clsx(
-                'flex rounded-full p-1',
-                'bg-(--toggle-container-bg)',
-            )}
+            className={containerClasses}
             role="radiogroup"
-            aria-label="Theme Switcher"
-            aria-describedby="theme-switcher-description"
+            aria-label="Theme Selection"
+            aria-describedby="theme-switcher-desc"
             onKeyDown={handleKeyDown}
         >
-            <span id="theme-switcher-description" className="sr-only">
-                Choose a theme for the website.
+            <span id="theme-switcher-desc" className="sr-only">
+                Switch between light, dark, and system themes.
             </span>
             {THEMES.map((theme) => {
                 const isSelected = activeTheme === theme;
@@ -138,4 +133,3 @@ export const ThemeSwitcher = () => {
         </div>
     );
 };
-

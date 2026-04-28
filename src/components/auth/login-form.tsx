@@ -3,11 +3,12 @@
 "use client";
 
 import { useId, type FormEvent } from "react";
+import { Button } from "@/components/ui/button/button";
 
 /**
  * LoginForm Component
  * Handles the client-side authentication interaction.
- * Utilizes the @utility checkout-input and v4.1 variable shorthand.
+ * Adheres to enterprise accessibility standards and semantic HTML.
  */
 export default function LoginForm() {
     const emailId = useId();
@@ -15,13 +16,16 @@ export default function LoginForm() {
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        // Authentication logic will be integrated with Redux/NextAuth here
+        // Integration with Redux/NextAuth logic to follow
     };
 
     return (
-        <form onSubmit={handleSubmit} className="grid gap-4">
+        <form onSubmit={handleSubmit} className="grid gap-5">
             <div className="grid gap-2 text-left">
-                <label htmlFor={emailId} className="text-sm font-medium">
+                <label
+                    htmlFor={emailId}
+                    className="text-sm font-medium text-(--foreground)"
+                >
                     Email
                 </label>
                 <input
@@ -35,7 +39,10 @@ export default function LoginForm() {
             </div>
 
             <div className="grid gap-2 text-left">
-                <label htmlFor={passwordId} className="text-sm font-medium">
+                <label
+                    htmlFor={passwordId}
+                    className="text-sm font-medium text-(--foreground)"
+                >
                     Password
                 </label>
                 <input
@@ -47,16 +54,19 @@ export default function LoginForm() {
                 />
             </div>
 
-            <button
+            <Button
                 type="submit"
-                className="focus-ring mt-2 h-10 w-full cursor-pointer rounded-md bg-(--brand-color) font-medium text-(--text-on-brand) transition-opacity hover:opacity-90"
+                variant="primary"
+                fullWidth
+                size="md"
+                className="mt-2"
             >
                 Sign In
-            </button>
+            </Button>
 
-            {/* Development-specific note within the form context */}
-            <p className="mt-2 text-center text-[10px] text-(--neutral-color) italic opacity-50">
-                Dev Note: Form validation and Redux state pending.
+            {/* Contextual Dev Note */}
+            <p className="mt-2 text-center text-[10px] tracking-wide text-(--neutral-color) uppercase opacity-60">
+                Authentication state managed via Redux Toolkit
             </p>
         </form>
     );

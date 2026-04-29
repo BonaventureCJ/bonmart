@@ -18,10 +18,15 @@ export const metadata: Metadata = {
 export default function ResetPasswordPage() {
   return (
     <PageContainer>
-      <div className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-between py-12 md:py-20">
+      {/* 
+        Spacing Strategy:
+        - min-h: Dynamically calculated to account for header and global page padding.
+        - justify-between: Maintains consistent vertical distribution.
+      */}
+      <div className="flex min-h-[calc(100vh-var(--header-height)-var(--page-padding-y)*2)] flex-col items-center justify-between">
 
         {/* Reset Password Form Section */}
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+        <div className="mx-auto flex w-full flex-1 flex-col justify-center space-y-6 sm:w-[350px]">
           <header className="flex flex-col space-y-2 text-center">
             <Heading level={1} weight="semibold" className="text-2xl">
               Reset your password
@@ -43,12 +48,12 @@ export default function ResetPasswordPage() {
           </p>
         </div>
 
-        {/* Development Placeholder Note */}
-        <footer className="w-full max-w-md border-t border-(--toggle-bg) pt-8 text-center">
+        {/* Development Placeholder Note: */}
+        <div className="mt-12 w-full max-w-md border-t border-(--toggle-bg) pt-8 text-center">
           <p className="text-xs font-medium text-(--neutral-color) italic opacity-60">
             Note: Password recovery and email triggers are placeholders for the BonMart development phase.
           </p>
-        </footer>
+        </div>
       </div>
     </PageContainer>
   );

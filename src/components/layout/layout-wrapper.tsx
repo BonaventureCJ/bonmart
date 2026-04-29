@@ -19,9 +19,9 @@ type LayoutWrapperProps = {
  * Enterprise Layout Wrapper.
  * 
  * Architecture:
- * - Uses CSS Grid (auto_1fr_auto) to manage header/content/footer flow without pt offsets.
- * - Implements fluid vertical and horizontal padding for a premium UI feel.
- * - Ensures semantic integrity and proper overlay management.
+ * - Uses CSS Grid (auto_1fr_auto) for sticky footer management.
+ * - Implements standardized vertical rhythm via the page-section utility.
+ * - Handles mobile navigation state and accessibility overlays.
  */
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     const isMobileMenuOpen = useAppSelector(
@@ -39,7 +39,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
         <>
             <Header />
 
-            {/* Mobile Overlay */}
+            {/* Mobile Overlay: Theme-aware via globals.css variable */}
             {isMobileMenuOpen && (
                 <div
                     className="bg-(--overlay-bg) fixed inset-0 z-40 transition-opacity duration-300 md:hidden"
@@ -58,18 +58,17 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 aria-hidden={isMobileMenuOpen}
             >
                 {/* 
-                  1. Semantic Main: No pt offset needed as it's the second row in the grid.
-                  2. Padding: Fluid py (vertical) and px (horizontal) for premium spacing.
+                  Semantic Main:
+                  - page-section: Applies standardized py based on enterprise tokens.
+                  - px: Responsive horizontal gutters.
                 */}
                 <main
                     className={clsx(
                         "flex w-full flex-col overflow-x-hidden",
-                        "px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12"
+                        "page-section px-4 sm:px-6 lg:px-8"
                     )}
                 >
-                    <div className="mx-auto w-full max-w-7xl">
-                        {children}
-                    </div>
+                    {children}
                 </main>
 
                 <Footer />

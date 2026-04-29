@@ -12,46 +12,46 @@ export const metadata: Metadata = {
 export default function AccountPage() {
   return (
     <PageContainer>
-      <div className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center gap-8 py-8 pb-12 md:py-12">
+      <div className="flex min-h-[calc(100vh-var(--header-height)-var(--page-padding-y)*2)] flex-col items-center gap-12">
 
-        {/* Main Content: flex-1 pushes the footer down */}
-        <div className="flex w-full flex-1 flex-col items-center gap-8">
-          <header className="text-center">
-            <Heading level={1} weight="bold">
-              Account Dashboard
+        {/* Page Header: Essential for SEO and user orientation */}
+        <header className="text-center">
+          <Heading level={1} weight="bold">
+            Account Dashboard
+          </Heading>
+          <p className="mt-2 text-(--neutral-color)">
+            Welcome back! Manage your eco-friendly shopping experience here.
+          </p>
+        </header>
+
+        {/* Dashboard Grid */}
+        <div className="grid w-full max-w-4xl flex-1 grid-cols-1 gap-6 sm:grid-cols-2">
+          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
+            <Heading level={2} weight="semibold" align="left" className="text-lg">
+              Profile Information
             </Heading>
-            <p className="mt-2 text-(--neutral-color)">
-              Welcome back! Manage your eco-friendly shopping experience here.
+            <p className="mt-1 text-sm text-(--neutral-color)">
+              Update your name, email, and personal details.
             </p>
-          </header>
+          </section>
 
-          <div className="grid w-full max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2">
-            <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
-              <Heading level={2} weight="semibold" align="left" className="text-lg">
-                Profile Information
-              </Heading>
-              <p className="mt-1 text-sm text-(--neutral-color)">
-                Update your name, email, and personal details.
-              </p>
-            </section>
-
-            <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
-              <Heading level={2} weight="semibold" align="left" className="text-lg">
-                Security & Privacy
-              </Heading>
-              <p className="mt-1 text-sm text-(--neutral-color)">
-                Change your password and manage two-factor authentication.
-              </p>
-            </section>
-          </div>
+          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
+            <Heading level={2} weight="semibold" align="left" className="text-lg">
+              Security & Privacy
+            </Heading>
+            <p className="mt-1 text-sm text-(--neutral-color)">
+              Change your password and manage two-factor authentication.
+            </p>
+          </section>
         </div>
 
-        <footer className="w-full max-w-4xl border-t border-(--toggle-bg) pt-8 text-center">
+        {/* Contextual Dev Note: */}
+        <div className="w-full max-w-4xl border-t border-(--toggle-bg) pt-8 text-center">
           <p className="mx-auto max-w-md text-xs font-medium text-(--neutral-color) italic opacity-60">
             Note: This dashboard is currently a placeholder for the BonMart development phase.
             Functionality will be implemented in upcoming iterations.
           </p>
-        </footer>
+        </div>
       </div>
     </PageContainer>
   );

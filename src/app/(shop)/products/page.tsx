@@ -19,11 +19,19 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * ProductsPage Component
+ * Optimized for consistent vertical rhythm and semantic structure.
+ */
 export default function ProductsPage() {
-
     return (
         <PageContainer>
-            <main className="flex flex-col">
+            <div className="flex flex-col">
+                {/* 
+                  Header Section:
+                  - Spacing: Uses semantic border colors and consistent padding.
+                  - Typography: Leverages standardized Heading and neutral color tokens.
+                */}
                 <header className="mb-10 flex flex-col items-center gap-4 border-b border-(--toggle-bg) pb-10 text-center">
                     <div className="max-w-2xl">
                         <Heading level={1} weight="bold" className="mb-3">
@@ -35,15 +43,15 @@ export default function ProductsPage() {
                     </div>
 
                     <div className="flex items-center justify-center gap-4">
-                        <span className="text-xs font-bold uppercase tracking-widest text-(--brand-color) opacity-80">
+                        <span className="text-xs font-bold tracking-widest text-(--brand-color)">
                             Showing all available results
                         </span>
                     </div>
                 </header>
 
-                {/* Client-side state managed grid */}
+                {/* Main Product Feed: Client-side state managed grid */}
                 <ProductListClient />
-            </main>
+            </div>
         </PageContainer>
     );
 }

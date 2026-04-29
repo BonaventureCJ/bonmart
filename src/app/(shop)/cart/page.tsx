@@ -1,11 +1,10 @@
-//src/app/(shop)/cart/page.tsx
+// src/app/(shop)/cart/page.tsx
 
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { removeFromCart, updateQuantity } from '@/features/cart/cart-slice';
-
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
@@ -13,14 +12,16 @@ import { Icon } from '@/components/ui/icon/icon';
 import { CartItem } from '@/components/cart/cart-item';
 import { CartSummary } from '@/components/cart/cart-summary';
 
+/**
+ * CartPage Component
+ * Optimized for consistent vertical rhythm and enterprise state management.
+ */
 export default function CartPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  // Access live items from Redux
   const items = useAppSelector((state) => state.cart.items);
 
-  // Enterprise logic: Calculate totals based on current store state
   const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
   const shippingFee = subtotal > 200 || items.length === 0 ? 0 : 15.0;
   const tax = subtotal * 0.08;
@@ -37,11 +38,12 @@ export default function CartPage() {
     dispatch(removeFromCart(id));
   };
 
+  // Empty State View: Centered within the LayoutWrapper's page-section
   if (items.length === 0) {
     return (
       <PageContainer>
         <section
-          className="flex min-h-[60vh] flex-col items-center justify-center text-center"
+          className="flex min-h-[50vh] flex-col items-center justify-center text-center"
           aria-labelledby="empty-cart-heading"
         >
           <div className="mb-6 rounded-full bg-(--surface-muted) p-6">
@@ -53,7 +55,7 @@ export default function CartPage() {
           <p className="mb-8 text-(--neutral-color)">
             Looks like you haven&apos;t added any sustainable goodies yet.
           </p>
-          <Button variant="primary" size="lg" onClick={() => router.push('/products')}>
+          <Button variant="primary" size="lg" href="/products">
             Start Shopping
           </Button>
         </section>
@@ -63,15 +65,17 @@ export default function CartPage() {
 
   return (
     <PageContainer>
-      <main className="py-8 md:py-12">
-        <header className="mb-10 flex flex-col gap-1">
+      <div className="flex flex-col">
+        {/* Header: Centered counter with standardized spacing */}
+        <header className="mb-10 flex flex-col gap-2 text-center">
           <Heading level={1} weight="bold">Shopping Cart</Heading>
-          <p className="text-sm font-medium text-(--brand-color)">
+          <p className="text-sm font-medium text-(--brand-color) tracking-wider">
             {totalItems} {totalItems === 1 ? 'item' : 'items'} ready for checkout
           </p>
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+          {/* Cart Items List */}
           <section className="lg:col-span-7 xl:col-span-8">
             <div className="flex flex-col border-t border-(--toggle-bg)" role="list">
               {items.map((item) => (
@@ -85,6 +89,7 @@ export default function CartPage() {
             </div>
           </section>
 
+          {/* Sticky Summary Aside */}
           <aside className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <CartSummary
@@ -97,7 +102,7 @@ export default function CartPage() {
             </div>
           </aside>
         </div>
-      </main>
+      </div>
     </PageContainer>
   );
 }

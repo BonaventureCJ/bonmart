@@ -7,6 +7,11 @@
 @theme {
   /* Layout Primitives */
   --header-height: 7.25rem;
+  /* NEW: Enterprise Spacing Scale */
+  --spacing-section-sm: 2rem;    /* 32px */
+  --spacing-section-md: 3rem;    /* 48px */
+  --spacing-section-lg: 5rem;    /* 80px */
+  --spacing-section-xl: 8rem;    /* 128px */
 
   /* Brand Primitives */
   --color-brand-primary: #15803d;
@@ -61,6 +66,10 @@
   --surface-muted: var(--color-toggle-hover-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
 
+  /* NEW: Semantic Spacing */
+  --page-padding-y: var(--spacing-section-md);
+  --section-gap: var(--spacing-section-lg);
+
   /* Branding & Accents */
   --brand-color: var(--color-brand-primary);
   --icon-hover-color: var(--color-brand-primary);
@@ -87,6 +96,7 @@
   /* Responsive Logic */
   @media (min-width: 1024px) {
     --header-height: 4rem;
+    --page-padding-y: var(--spacing-section-lg);
   }
 }
 
@@ -168,4 +178,10 @@ body {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+}
+
+/* NEW: Enterprise Layout Utility */
+@utility page-section {
+  padding-top: var(--page-padding-y);
+  padding-bottom: var(--page-padding-y);
 }

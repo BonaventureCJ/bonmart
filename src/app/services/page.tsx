@@ -20,11 +20,15 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * ServicesPage Component
+ * Optimized for consistent vertical rhythm and enterprise layout standards.
+ */
 export default function ServicesPage() {
     return (
         <PageContainer>
-            <article className="mx-auto max-w-5xl py-12 md:py-24">
-                {/* Header Section */}
+            <article className="mx-auto max-w-5xl">
+                {/* Header Section: Padding managed by LayoutWrapper */}
                 <header className="mb-16 flex flex-col items-center text-center md:mb-32">
                     <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-(--brand-color)/10 px-4 py-1.5 text-[10px] font-bold tracking-widest text-(--brand-color) uppercase">
                         <Icon name="star" size={14} />
@@ -48,9 +52,9 @@ export default function ServicesPage() {
                     {SERVICES_DATA.map((service) => (
                         <div
                             key={service.id}
-                            className="flex flex-col items-center text-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8"
+                            className="flex flex-col items-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center"
                         >
-                            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-(--brand-color) text-(--text-on-image)">
+                            <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-(--brand-color) text-(--text-on-brand)">
                                 <Icon name={service.icon} size={28} />
                             </div>
                             <Heading level={3} weight="bold" className="mb-4">
@@ -66,7 +70,7 @@ export default function ServicesPage() {
                 {/* Feature Highlight Section */}
                 <section className="rounded-3xl border border-(--toggle-bg) bg-(--surface-muted) p-8 md:p-16">
                     <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-2 lg:gap-20">
-                        <div className="space-y-6">
+                        <div className="space-y-6 text-left">
                             <Heading level={2} weight="bold" align="left">
                                 Real-Time Impact <br />
                                 <span className="text-(--brand-color)">Analytics</span>
@@ -91,8 +95,8 @@ export default function ServicesPage() {
                         <div className="relative aspect-video overflow-hidden rounded-2xl bg-(--surface-raised) shadow-sm">
                             <div className="flex h-full w-full flex-col items-center justify-center p-8 text-center text-(--neutral-color) opacity-20">
                                 <Icon name="monitor" size={80} className="mb-4" />
-                                <div className="h-2 w-32 rounded-full bg-(--neutral-color) mb-2" />
-                                <div className="h-2 w-24 rounded-full bg-(--neutral-color)" />
+                                <div className="mb-2 h-2 w-32 rounded-full bg-current" />
+                                <div className="h-2 w-24 rounded-full bg-current" />
                             </div>
                         </div>
                     </div>
@@ -111,7 +115,6 @@ export default function ServicesPage() {
                         href="/contact"
                         variant="secondary"
                         size="lg"
-                        className="bg-(--surface-muted) text-(--foreground) hover:bg-(--toggle-bg)"
                     >
                         Contact Support
                     </Button>
@@ -120,4 +123,3 @@ export default function ServicesPage() {
         </PageContainer>
     );
 }
-

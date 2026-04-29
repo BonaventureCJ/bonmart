@@ -1,3 +1,5 @@
+// src/app/page.tsx
+
 import { Hero } from "@/components/sections/hero";
 import PageContainer from "@/components/layout/page-container";
 

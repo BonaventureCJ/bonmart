@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import PageContainer from "@/components/layout/page-container";
 import ResetPasswordForm from "@/components/auth/reset-password-form";
+import { Heading } from "@/components/ui/heading/heading";
 
 export const metadata: Metadata = {
   title: "Reset Password | BonMart",
@@ -17,18 +18,14 @@ export const metadata: Metadata = {
 export default function ResetPasswordPage() {
   return (
     <PageContainer>
-      {/* 
-        Flex container using dynamic header height to ensure the 
-        development note is pinned to the bottom of the viewport.
-      */}
       <div className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-between py-12 md:py-20">
 
         {/* Reset Password Form Section */}
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <header className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <Heading level={1} weight="semibold" className="text-2xl">
               Reset your password
-            </h1>
+            </Heading>
             <p className="text-sm text-(--neutral-color)">
               Enter your email and we&apos;ll send you a link to get back into your account.
             </p>

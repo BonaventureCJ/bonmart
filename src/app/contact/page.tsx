@@ -6,6 +6,9 @@ import { ContactHeader } from '@/components/contact/contact-header';
 import { ContactInfo } from '@/components/contact/contact-info';
 import { ContactForm } from '@/components/contact/contact-form';
 
+/**
+ * Enterprise SEO Metadata for the Contact Page.
+ */
 export const metadata: Metadata = {
     title: 'Contact Us | Bonmart Support',
     description: 'Get in touch with the Bonmart team regarding sustainability, orders, or partnerships.',
@@ -16,11 +19,21 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * ContactPage Component
+ * Optimized for consistent vertical rhythm and enterprise layout standards.
+ */
 export default function ContactPage() {
     return (
         <PageContainer>
-            <article className="mx-auto max-w-5xl py-12 md:py-24">
+            <article className="mx-auto max-w-5xl">
+                {/* 
+                  Layout Strategy:
+                  - Vertical rhythm managed by LayoutWrapper (page-section utility).
+                  - Responsive grid handles information and form distribution.
+                */}
                 <ContactHeader />
+
                 <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-20">
                     <ContactInfo />
                     <ContactForm />

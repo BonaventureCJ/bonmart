@@ -43,7 +43,7 @@ export default function ProductsPage() {
                     </div>
 
                     <div className="flex items-center justify-center gap-4">
-                        <span className="text-xs font-bold uppercase tracking-widest text-(--brand-color)">
+                        <span className="text-xs font-bold tracking-widest text-(--brand-color)">
                             Showing all available results
                         </span>
                     </div>

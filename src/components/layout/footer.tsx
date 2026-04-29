@@ -1,4 +1,5 @@
 // src/components/layout/footer.tsx
+
 import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
@@ -13,7 +14,7 @@ export function Footer() {
 
   return (
     <footer
-      className="w-full border-t border-t-(--footer-border) p-6 md:p-8"
+      className="w-full border-t border-(--footer-border) p-6 md:p-8"
       role="contentinfo"
     >
       <div className="mx-auto flex max-w-7xl flex-col gap-6 md:gap-8">
@@ -31,14 +32,14 @@ export function Footer() {
               <li>
                 <a
                   className={clsx(
-                    'flex items-center gap-2 transition-colors duration-300',
+                    'flex items-center gap-2 transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
                     'text-(--neutral-color) hover:text-(--brand-color)',
                     'focus-ring rounded-md p-1 -m-1',
                   )}
-                  href="bonaventurecj.github.io"
+                  href="https://bonaventurecj.github.io/portfolio"
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label="Visit BonaventureCJ's portfolio website (opens in a new tab)"
+                  aria-label="Visit BonaventureCJ's portfolio (opens in a new tab)"
                 >
                   <Icon name="globe" className="size-4" />
                   BonaventureCJ&apos;s Portfolio
@@ -47,7 +48,7 @@ export function Footer() {
               <li>
                 <Link
                   className={clsx(
-                    'transition-colors duration-300',
+                    'transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
                     'text-(--neutral-color) hover:text-(--brand-color)',
                     'focus-ring rounded-md p-1 -m-1',
                   )}
@@ -63,7 +64,7 @@ export function Footer() {
           <div className="text-center md:text-right">
             <p className="text-sm text-(--neutral-color)">
               &copy; {currentYear}{' '}
-              <span className="font-semibold">Bonaventure C.J. Ugwu</span>. All
+              <span className="font-semibold text-(--foreground)">Bonaventure C.J. Ugwu</span>. All
               rights reserved.
             </p>
           </div>

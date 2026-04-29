@@ -45,7 +45,7 @@ export default function AccountPage() {
           </section>
         </div>
 
-        {/* Contextual Dev Note: Changed from footer to div for semantic clarity */}
+        {/* Contextual Dev Note: */}
         <div className="w-full max-w-4xl border-t border-(--toggle-bg) pt-8 text-center">
           <p className="mx-auto max-w-md text-xs font-medium text-(--neutral-color) italic opacity-60">
             Note: This dashboard is currently a placeholder for the BonMart development phase.

@@ -1,42 +1,40 @@
-//src/app/(shop)/wishlist/page.tsx
+// src/app/(shop)/wishlist/page.tsx
+
 'use client';
 
-import Link from 'next/link';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
 import { addToCart } from '@/features/cart/cart-slice';
 import type { Product } from '@/data/mock-products';
-
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { WishlistItem } from '@/components/wishlist/wishlist-item';
 
+/**
+ * WishlistPage Component
+ * Optimized for standardized vertical rhythm and enterprise state management.
+ */
 export default function WishlistPage() {
   const dispatch = useAppDispatch();
-
-  // Access items directly from the Redux store
   const { items } = useAppSelector((state) => state.wishlist);
 
   const handleRemove = (product: Product) => {
-    // toggleWishlist removes the item if it already exists in state
     dispatch(toggleWishlist(product));
   };
 
   const handleMoveToCart = (product: Product) => {
-    // Add to cart with a default quantity of 1
     dispatch(addToCart({ ...product, quantity: 1 }));
-    // Remove from wishlist after moving
     dispatch(toggleWishlist(product));
   };
 
-  // Empty State View
+  // Empty State View: Leveraging min-height to center content within the page-section
   if (items.length === 0) {
     return (
       <PageContainer>
         <section
-          className="flex min-h-[60vh] flex-col items-center justify-center text-center"
+          className="flex min-h-[50vh] flex-col items-center justify-center text-center"
           aria-labelledby="empty-wishlist-heading"
         >
           <div className="mb-6 rounded-full bg-(--surface-muted) p-6">
@@ -48,11 +46,9 @@ export default function WishlistPage() {
           <p className="mb-8 text-(--neutral-color)">
             Save items you love to find them easily later.
           </p>
-          <Link href="/products" className="focus-ring rounded-lg">
-            <Button variant="primary" size="lg">
-              Browse Products
-            </Button>
-          </Link>
+          <Button href="/products" variant="primary" size="lg">
+            Browse Products
+          </Button>
         </section>
       </PageContainer>
     );
@@ -60,15 +56,17 @@ export default function WishlistPage() {
 
   return (
     <PageContainer>
-      <main className="mx-auto max-w-4xl py-8 md:py-12">
+      <div className="mx-auto max-w-4xl">
+        {/* Header: Simplified spacing as LayoutWrapper handles page-section padding */}
         <header className="mb-10 flex flex-col gap-2">
           <Heading level={1} weight="bold">
             My Wishlist
           </Heading>
-          <p className="text-sm font-medium text-(--brand-color)">
+          <p className="text-center text-sm font-medium text-(--brand-color) tracking-wider">
             {items.length} {items.length === 1 ? 'item' : 'items'} saved for later
           </p>
         </header>
+
 
         {/* Wishlist Items List */}
         <section
@@ -79,13 +77,12 @@ export default function WishlistPage() {
             <WishlistItem
               key={item.id}
               item={item}
-              // These callbacks now receive correctly typed Product objects
               onRemove={() => handleRemove(item)}
               onMoveToCart={() => handleMoveToCart(item)}
             />
           ))}
         </section>
-      </main>
+      </div>
     </PageContainer>
   );
 }

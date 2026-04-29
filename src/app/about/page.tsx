@@ -19,11 +19,15 @@ export const metadata: Metadata = {
     },
 };
 
+/**
+ * AboutPage Component
+ * Optimized for standardized vertical rhythm and enterprise consistency.
+ */
 export default function AboutPage() {
     return (
         <PageContainer>
-            <article className="mx-auto max-w-5xl py-12 md:py-24">
-                {/* Hero Section */}
+            <article className="mx-auto max-w-5xl">
+                {/* Hero Section: Spacing optimized for standardized page-section wrapper */}
                 <header className="mb-16 flex flex-col items-center text-center md:mb-32">
                     <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-(--brand-color)/10 px-4 py-1.5 text-[10px] font-bold tracking-widest text-(--brand-color) uppercase">
                         <Icon name="globe" size={14} />
@@ -95,12 +99,12 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* Page-Specific CTA */}
-                <section className="mt-20 rounded-3xl bg-(--brand-color) p-8 text-center text-(--text-on-image) md:mt-40 md:p-16">
-                    <Heading level={2} weight="bold" className="mb-4 text-(--text-on-image)">
+                {/* Page-Specific CTA: Using semantic variables for high-contrast block */}
+                <section className="mt-20 rounded-3xl bg-(--brand-color) p-8 text-center text-(--text-on-brand) md:mt-40 md:p-16">
+                    <Heading level={2} weight="bold" className="mb-4 text-(--text-on-brand)">
                         Ready to make a difference?
                     </Heading>
-                    <p className="mb-10 text-base text-(--text-on-image) md:text-lg">
+                    <p className="mb-10 text-base text-(--text-on-brand) md:text-lg">
                         Join thousands of eco-conscious shoppers worldwide.
                     </p>
                     <div className="flex justify-center">
@@ -110,7 +114,6 @@ export default function AboutPage() {
                             size="lg"
                             icon="arrowRight"
                             iconPlacement="right"
-                            className="bg-(--surface-raised) text-(--brand-color) hover:bg-(--surface-muted)"
                         >
                             Shop Sustainable
                         </Button>

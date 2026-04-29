@@ -1,7 +1,9 @@
 // src/app/not-found.tsx
-import Link from 'next/link';
+
 import { Metadata } from 'next';
 import PageContainer from '@/components/layout/page-container';
+import { Heading } from '@/components/ui/heading/heading';
+import { Button } from '@/components/ui/button/button';
 
 export const metadata: Metadata = {
   title: '404: Page Not Found - BonMart',
@@ -9,36 +11,46 @@ export const metadata: Metadata = {
 };
 
 /**
- * Custom 404 "Not Found" page. Renders within the main site layout,
- * including the header and footer, to maintain a consistent user experience.
+ * Custom 404 "Not Found" page.
+ * Standardized using Heading and Button components for enterprise consistency.
  */
 export default function NotFound(): React.JSX.Element {
   return (
     <PageContainer>
-      <div className="flex flex-col items-center justify-center text-(--foreground)">
+      <main className="flex min-h-[70vh] flex-col items-center justify-center py-12 text-(--foreground)">
         <div className="space-y-6">
-          <h1 className="text-6xl font-bold tracking-tight text-(--brand-color) sm:text-7xl">
+          <Heading
+            level={1}
+            weight="bold"
+            className="text-6xl sm:text-7xl text-(--brand-color)"
+          >
             404
-          </h1>
+          </Heading>
+
           <p
-            className="text-xl sm:text-2xl font-medium"
+            className="text-xl font-medium sm:text-2xl"
             aria-live="polite"
           >
             Page Not Found
           </p>
-          <p className="text-base sm:text-lg max-w-xl text-(--neutral-color)">
-            We&apos;re sorry, but the page you requested could not be found. It may have been moved, deleted, or you may have mistyped the address.
+
+          <p className="mx-auto max-w-xl text-base text-(--neutral-color) sm:text-lg">
+            We&apos;re sorry, but the page you requested could not be found.
+            It may have been moved, deleted, or you may have mistyped the address.
           </p>
+
           <div className="mt-8">
-            <Link
+            <Button
               href="/"
-              className="inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold text-(--surface-light) bg-(--brand-color) hover:bg-(--brand-color)/90 transition-colors duration-(--duration-long) focus-ring"
+              variant="primary"
+              size="lg"
+              icon="home"
             >
               Go Back to Homepage
-            </Link>
+            </Button>
           </div>
         </div>
-      </div>
+      </main>
     </PageContainer>
   );
 }

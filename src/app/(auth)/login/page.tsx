@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import PageContainer from "@/components/layout/page-container";
 import LoginForm from "@/components/auth/login-form";
 import Link from "next/link";
+import { Heading } from "@/components/ui/heading/heading";
 
 export const metadata: Metadata = {
     title: "Login | BonMart",
@@ -17,18 +18,14 @@ export const metadata: Metadata = {
 export default function LoginPage() {
     return (
         <PageContainer>
-            {/* 
-        Container ensures the login card stays centered while pushing 
-        the development note to the bottom of the viewport.
-      */}
             <div className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-between py-12 md:py-20">
 
                 {/* Login Card Section */}
                 <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
                     <header className="flex flex-col space-y-2 text-center">
-                        <h1 className="text-2xl font-semibold tracking-tight">
+                        <Heading level={1} weight="semibold" className="text-2xl">
                             Welcome back
-                        </h1>
+                        </Heading>
                         <p className="text-sm text-(--neutral-color)">
                             Enter your credentials to access your account
                         </p>
@@ -47,7 +44,7 @@ export default function LoginPage() {
                     </p>
                 </div>
 
-                {/* Development Placeholder Note: Centered at the bottom */}
+                {/* Development Placeholder Note */}
                 <footer className="w-full max-w-md border-t border-(--toggle-bg) pt-8 text-center">
                     <p className="text-xs font-medium text-(--neutral-color) italic opacity-60">
                         Note: Authentication logic is currently a placeholder for the BonMart development phase.

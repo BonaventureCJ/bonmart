@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import PageContainer from "@/components/layout/page-container";
 import RegisterForm from "@/components/auth/register-form";
+import { Heading } from "@/components/ui/heading/heading";
 
 export const metadata: Metadata = {
   title: "Create an Account | BonMart",
@@ -17,18 +18,14 @@ export const metadata: Metadata = {
 export default function RegisterPage() {
   return (
     <PageContainer>
-      {/* 
-        Ensures consistent vertical spacing and footer pinning 
-        using the dynamic --header-height variable.
-      */}
       <div className="flex min-h-[calc(100vh-var(--header-height))] flex-col items-center justify-between py-12 md:py-20">
 
         {/* Registration Card */}
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]">
           <header className="flex flex-col space-y-2 text-center">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <Heading level={1} weight="semibold" className="text-2xl">
               Create an account
-            </h1>
+            </Heading>
             <p className="text-sm text-(--neutral-color)">
               Enter your details below to get started
             </p>

@@ -26,8 +26,14 @@ import {
   Printer,
   Trash2,
   ExternalLink,
+  RefreshCw, // Added for "Try Again" recovery actions
 } from 'lucide-react';
 
+/**
+ * Centralized Icon Registry for Bonmart.
+ * Maps semantic names to Lucide component icons.
+ * This ensures consistency and makes it easy to swap icon sets globally.
+ */
 export const appIcons = {
   arrowRight: ArrowRight,
   arrowLeft: ArrowLeft,
@@ -53,9 +59,17 @@ export const appIcons = {
   lock: Lock,
   printer: Printer,
   trash: Trash2,
-  externalLink: ExternalLink, // Registered
+  externalLink: ExternalLink,
+  refresh: RefreshCw, // Registered for use in Error boundaries and refresh actions
 } as const;
 
+/**
+ * Type derived from the keys of our icon registry.
+ * Provides full IntelliSense when using the Icon component.
+ */
 export type IconName = keyof typeof appIcons;
 
+/**
+ * Type Guard to verify if a string is a valid IconName at runtime.
+ */
 export const isValidIconName = (name: string): name is IconName => name in appIcons;

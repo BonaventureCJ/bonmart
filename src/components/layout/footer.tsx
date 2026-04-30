@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { clsx } from 'clsx';
-import { Icon } from '@/components/ui/icon/icon';
 import { ThemeSwitcher } from '@/components/ui/theme-switcher/theme-switcher';
 import { Brand } from '@/components/branding/brand';
+import { Attribution } from '@/components/branding/attribution';
 
 /**
  * Renders the responsive and accessible footer component for the application.
@@ -30,20 +30,11 @@ export function Footer() {
           <nav aria-label="Footer navigation">
             <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm md:justify-start">
               <li>
-                <a
-                  className={clsx(
-                    'flex items-center gap-2 transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
-                    'text-(--neutral-color) hover:text-(--brand-color)',
-                    'focus-ring rounded-md p-1 -m-1',
-                  )}
-                  href="https://bonaventurecj.github.io/portfolio"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit BonaventureCJ's portfolio (opens in a new tab)"
-                >
-                  <Icon name="globe" className="size-4" />
-                  BonaventureCJ&apos;s Portfolio
-                </a>
+                {/* 
+                  Reusable attribution containing the BonaCJIcon 
+                  and semantic external anchor tag.
+                */}
+                <Attribution />
               </li>
               <li>
                 <Link
@@ -51,12 +42,14 @@ export function Footer() {
                     'transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
                     'text-(--neutral-color) hover:text-(--brand-color)',
                     'focus-ring rounded-md p-1 -m-1',
+                    'underline-offset-4 hover:underline'
                   )}
                   href="/privacy"
                 >
                   Privacy Policy
                 </Link>
               </li>
+
             </ul>
           </nav>
 
@@ -64,8 +57,10 @@ export function Footer() {
           <div className="text-center md:text-right">
             <p className="text-sm text-(--neutral-color)">
               &copy; {currentYear}{' '}
-              <span className="font-semibold text-(--foreground)">Bonaventure C.J. Ugwu</span>. All
-              rights reserved.
+              <span className="font-semibold text-(--foreground)">
+                Bonaventure C.J. Ugwu
+              </span>
+              . All rights reserved.
             </p>
           </div>
         </div>

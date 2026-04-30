@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useEffect, useTransition } from 'react'; // Added useTransition
+import { useEffect, useTransition } from 'react';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
@@ -18,36 +18,20 @@ export default function Error({
     const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
-        // Enterprise Logging (Sentry/LogRocket/Datadog)
         console.error('Bonmart System Error:', error);
     }, [error]);
-
-    const handleReset = () => {
-        startTransition(() => {
-            reset();
-        });
-    };
 
     return (
         <PageContainer>
             <section
-                className="page-section flex min-h-[60vh] flex-col items-center justify-center px-4 text-center"
+                className="flex min-h-[65vh] flex-col items-center justify-center text-center"
                 aria-labelledby="error-heading"
             >
-                {/* 
-                   Using your @theme variables. 
-                   Note: ensure animate-pulse is used sparingly for WCAG (prefers-reduced-motion) 
-                */}
                 <div className="mb-8 rounded-full bg-(--error-muted) p-6 motion-safe:animate-pulse">
-                    <Icon
-                        name="alertCircle"
-                        size={64}
-                        className="text-(--error)"
-                        aria-hidden="true"
-                    />
+                    <Icon name="alertCircle" size={64} className="text-(--error)" aria-hidden="true" />
                 </div>
 
-                <header className="max-w-2xl space-y-4">
+                <div className="max-w-2xl space-y-4">
                     <Heading level={1} weight="bold" id="error-heading">
                         Unexpected System Interruption
                     </Heading>
@@ -58,38 +42,29 @@ export default function Error({
                     </p>
 
                     {error.digest && (
-                        <p className="font-mono text-[10px] tracking-tighter uppercase opacity-40 text-(--neutral-color)">
+                        <p className="font-mono text-[10px] uppercase opacity-40 text-(--neutral-color) tracking-tighter">
                             Error Reference: <span className="select-all">{error.digest}</span>
                         </p>
                     )}
-                </header>
+                </div>
 
                 <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row">
                     <Button
                         variant="primary"
                         size="lg"
-                        onClick={handleReset}
-                        icon={isPending ? "loader" : "refresh"} // Context-aware icon
-                        iconPlacement="left"
-                        disabled={isPending}
+                        onClick={() => startTransition(() => reset())}
+                        icon={isPending ? 'loader' : 'refresh'}
+                        loading={isPending}
                     >
                         {isPending ? 'Attempting Recovery...' : 'Try Again'}
                     </Button>
 
-                    <Button
-                        href="/"
-                        variant="secondary"
-                        size="lg"
-                        icon="home"
-                    >
+                    <Button href="/" variant="secondary" size="lg" icon="home">
                         Return Home
                     </Button>
                 </div>
-
-                <p className="mt-8 text-xs italic opacity-60 text-(--neutral-color)">
-                    Our environmental specialists have been notified of this disruption.
-                </p>
             </section>
         </PageContainer>
     );
 }
+

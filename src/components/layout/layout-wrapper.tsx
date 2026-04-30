@@ -10,6 +10,7 @@ import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { HeaderScrollContainer } from '@/components/layout/header-scroll-container';
 
 type LayoutWrapperProps = {
     children: ReactNode;
@@ -39,8 +40,13 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
 
     return (
         <>
-            {/* Pass isMobile to Header so it knows whether to use scroll-hide logic */}
-            <Header isMobile={isMobile} />
+            {/* 
+                Wrap Header in the Scroll Container. 
+                Header remains a Server Component passed as a child. 
+            */}
+            <HeaderScrollContainer isMobile={isMobile}>
+                <Header />
+            </HeaderScrollContainer>
 
             {isMobileMenuOpen && (
                 <div

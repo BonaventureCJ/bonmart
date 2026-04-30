@@ -1,45 +1,24 @@
 // src/components/layout/header.tsx
 
-'use client';
-
 import { FC, Suspense } from 'react';
-import { clsx } from 'clsx';
 import { Brand } from '@/components/branding/brand';
 import { UtilityNav } from '@/components/navigation/utility-nav';
 import { MenuToggle } from '@/components/navigation/menu-toggle';
 import { DesktopNav } from '@/components/navigation/desktop-nav';
 import { SearchForm } from '@/components/search/search-form';
-import { useScrollDirection } from '@/hooks/use-scroll-direction';
-
-interface HeaderProps {
-    isMobile?: boolean;
-}
 
 /**
  * Enterprise Header Component.
  * 
  * Behavior:
- * - Mobile: Slides up when scrolling down, slides down when scrolling up.
- * - Desktop: Remains fixed at the top for persistent navigation.
- * - Performance: Uses CSS hardware acceleration (translate-y) for 60fps transitions.
+ * - Optimized as a Server Component for reduced bundle size and better SEO.
+ * - Structure remains consistent while animation is handled by a parent container.
+ * - Performance: HTML is streamed immediately to the browser.
  */
-export const Header: FC<HeaderProps> = ({ isMobile = false }) => {
-    // Hook activates scroll tracking logic only if on a mobile device
-    const scrollDirection = useScrollDirection(isMobile);
-
-    // Logic: Only hide if we are on mobile AND the user is scrolling down
-    const isHidden = isMobile && scrollDirection === 'down';
-
+export const Header: FC = () => {
     return (
         <header
-            className={clsx(
-                // Core Layout & Transition
-                'fixed inset-x-0 top-0 z-60 w-full transition-transform duration-300 ease-(--transition-ease-in-out)',
-                // Theming & Border
-                'bg-(--background) border-b border-b-(--footer-border) backdrop-blur-md bg-opacity-95',
-                // Dynamic Visibility
-                isHidden ? '-translate-y-full' : 'translate-y-0'
-            )}
+            className="bg-(--background) border-b border-b-(--footer-border) backdrop-blur-md bg-opacity-95"
         >
             <div className="mx-auto flex w-full max-w-7xl flex-col px-2 md:px-6">
 

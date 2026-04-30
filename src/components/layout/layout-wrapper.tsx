@@ -2,7 +2,7 @@
 
 'use client';
 
-import type { FC, ReactNode } from 'react';
+import { useState, useEffect, type FC, type ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { MobileNav } from '@/components/navigation/mobile-nav';
@@ -15,19 +15,21 @@ type LayoutWrapperProps = {
     children: ReactNode;
 };
 
-/**
- * Enterprise Layout Wrapper.
- * 
- * Architecture:
- * - Uses CSS Grid (auto_1fr_auto) for sticky footer management.
- * - Implements standardized vertical rhythm via the page-section utility.
- * - Handles mobile navigation state and accessibility overlays.
- */
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
-    const isMobileMenuOpen = useAppSelector(
-        (state) => state.navigation.isMobileMenuOpen,
-    );
+    const isMobileMenuOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
     const dispatch = useAppDispatch();
+
+    // Enterprise Pattern: Detect mobile via matchMedia to align with Tailwind breakpoints
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const mediaQuery = window.matchMedia('(max-width: 1023px)'); // Matches Tailwind's lg breakpoint
+        setIsMobile(mediaQuery.matches);
+
+        const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+        mediaQuery.addEventListener('change', handler);
+        return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
 
     useMobileMenuHeight();
 
@@ -37,9 +39,9 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
 
     return (
         <>
-            <Header />
+            {/* Pass isMobile to Header so it knows whether to use scroll-hide logic */}
+            <Header isMobile={isMobile} />
 
-            {/* Mobile Overlay: Theme-aware via globals.css variable */}
             {isMobileMenuOpen && (
                 <div
                     className="bg-(--overlay-bg) fixed inset-0 z-40 transition-opacity duration-300 md:hidden"
@@ -50,27 +52,15 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
 
             <div
                 className={clsx(
-                    'grid min-h-screen grid-rows-[auto_1fr_auto]',
-                    {
-                        'pointer-events-none md:pointer-events-auto': isMobileMenuOpen,
-                    },
+                    'grid min-h-screen grid-rows-[1fr_auto]',
+                    'pt-(--header-height)', // Standard offset
+                    { 'pointer-events-none md:pointer-events-auto': isMobileMenuOpen }
                 )}
                 aria-hidden={isMobileMenuOpen}
             >
-                {/* 
-                  Semantic Main:
-                  - page-section: Applies standardized py based on enterprise tokens.
-                  - px: Responsive horizontal gutters.
-                */}
-                <main
-                    className={clsx(
-                        "flex w-full flex-col overflow-x-hidden",
-                        "page-section px-4 sm:px-6 lg:px-8"
-                    )}
-                >
+                <main className="page-section flex w-full flex-col overflow-x-hidden px-4 sm:px-6 lg:px-8">
                     {children}
                 </main>
-
                 <Footer />
             </div>
 

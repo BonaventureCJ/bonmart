@@ -1,4 +1,5 @@
 // src/components/branding/brand-logo.tsx
+
 import type { FC } from 'react';
 import BonMartLogo from '@/assets/icons/bonmart-logo.svg';
 import clsx from 'clsx';
@@ -14,7 +15,12 @@ const sizeClasses = {
   lg: 'size-12',
 };
 
-// Server Component
+/**
+ * BrandLogo Component
+ * Renders the primary BonMart e-commerce identity logo.
+ * Uses SVGR for React component transformation and maintains
+ * brand color consistency via CSS variables.
+ */
 export const BrandLogo: FC<BrandLogoProps> = ({
   size = 'md',
   className,

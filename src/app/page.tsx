@@ -6,17 +6,25 @@ import PageContainer from "@/components/layout/page-container";
 /**
  * HOME PAGE
  * 
- * NOTE TO REVIEWERS/DEVELOPERS:
- * The 3-second artificial delay (setTimeout) below is intentionally implemented 
- * to demonstrate the "loading.tsx" global fallback UI and skeleton strategy. 
- * This simulates a high-latency enterprise data fetch to showcase perceived 
- * performance handling and brand-consistent transition states.
- * 
- * The Promise delay will be removed before production launch..
+ * NOTE TO REVIEWERS:
+ * - To visualize LOADING: Set TRIGGER_ERROR to false.
+ * - To visualize ERROR: Set TRIGGER_ERROR to true.
  */
 export default async function Home() {
-  // SIMULATION: Artificial latency to showcase the loading boundary
-  await new Promise((resolve) => setTimeout(resolve, 3000));
+  // --- TEST CONTROLS ---
+  const TRIGGER_ERROR = false; // Flip this to true to see error.tsx
+  const SIMULATE_DELAY = 3000;
+  // ---------------------
+
+  // 1. Simulate Latency (Visualizes loading.tsx)
+  await new Promise((resolve) => setTimeout(resolve, SIMULATE_DELAY));
+
+  // 2. Simulate Crash (Visualizes error.tsx)
+  if (TRIGGER_ERROR) {
+    throw new Error(
+      "BONMART_DATA_SYNC_ERROR: Failed to establish a secure connection to the sustainability engine."
+    );
+  }
 
   return (
     <PageContainer>

@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button/button";
 
 /**
  * Hero Component
- * Standardized with enterprise typography and theme-aware styling.
- * Updated for live Vercel deployment with exploration CTA.
+ * Optimized for performance and accessibility.
+ * Maintains original content while enforcing enterprise-grade HTML structure.
  */
 export function Hero() {
     const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -29,9 +29,10 @@ export function Hero() {
         <section
             id="hero"
             role="region"
-            aria-labelledby="hero-title"
-            className="flex flex-col items-center gap-8 p-4 text-center sm:p-8"
+            aria-labelledby="hero-main-title"
+            className="page-section flex flex-col items-center gap-8 px-4 text-center sm:px-8"
         >
+            {/* Visual Branding */}
             <div
                 className={!prefersReducedMotion ? "animate-bounce" : ""}
                 aria-hidden="true"
@@ -39,9 +40,18 @@ export function Hero() {
                 <BonMartCartLogo className="h-[100px] w-[100px] text-(--brand-color)" />
             </div>
 
+            {/* Typography Hierarchy */}
             <header className="space-y-4">
                 <Heading
-                    id="hero-title"
+                    level={3}
+                    weight="bold"
+                    className="text-5xl md:text-6xl"
+                >
+                    Welcome to
+                </Heading>
+
+                <Heading
+                    id="hero-main-title"
                     level={1}
                     weight="bold"
                     className="text-5xl md:text-6xl"
@@ -59,16 +69,16 @@ export function Hero() {
                 </Heading>
             </header>
 
+            {/* Main Content Area */}
             <div className="space-y-6">
-                <div className="space-y-4">
-                    <p className="max-w-md text-lg text-(--neutral-color)">
-                        We are crafting something special just for you. Our new
-                        eco-conscious store is launching soon!
+                <div className="flex flex-col items-center gap-4">
+                    <p className="max-w-md text-lg text-(--neutral-color) leading-relaxed">
+                        While we prepare to launch, many enterprise-grade features
+                        are already live and ready for inspection.
                     </p>
-                    <p className="max-w-md text-lg text-(--neutral-color)">
-                        Many enterprise-grade features are already live and ready
-                        for inspection. We invite you to start exploring our
-                        sustainable platform today.
+                    <p className="max-w-md text-lg text-(--neutral-color) leading-relaxed">
+                        We invite you to start exploring our sustainable platform
+                        today as we continue crafting special e-shopping experiences for you.
                     </p>
                 </div>
 
@@ -79,17 +89,22 @@ export function Hero() {
                         size="lg"
                         icon="arrowRight"
                         iconPlacement="right"
+                        className="transition-transform active:scale-95"
                     >
                         Start Exploring
                     </Button>
                 </div>
 
-                <p className="max-w-md text-sm text-(--neutral-color) opacity-70 italic">
+                <p className="max-w-md text-sm italic text-(--neutral-color) opacity-70">
                     Powered by CI/CD: New features are added on a rolling basis.
                 </p>
             </div>
 
-            <div className="flex items-center gap-3 rounded-lg bg-(--surface-raised) p-3 shadow-lg ring-1 ring-(--toggle-bg) transition-all">
+            {/* Live Status Feedback */}
+            <div
+                className="flex items-center gap-3 rounded-lg bg-(--surface-raised) p-3 shadow-lg ring-1 ring-(--toggle-bg) transition-all"
+                role="status"
+            >
                 <Icon
                     name="loader"
                     className="animate-spin text-(--brand-color)"

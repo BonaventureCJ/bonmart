@@ -2,11 +2,11 @@
 
 'use client';
 
-import React, { useState, useEffect, type FormEvent } from 'react';
+import React, { useState, useEffect, type FormEvent, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useAppDispatch } from '@/store/hooks';
-import { setQuery, clearSearch } from '@/features/search/search-slice';
+import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 
@@ -15,6 +15,10 @@ interface SearchFormProps {
     placeholder?: string;
 }
 
+/**
+ * Enterprise-grade Search Form
+ * Features: URL-driven state, Redux persistence for history, and Responsive Design.
+ */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
@@ -23,21 +27,30 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
 
+    // Local state for immediate typing feedback
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
 
+    // Sync: URL -> Local State & Redux
     useEffect(() => {
         const queryInUrl = searchParams.get('q') || '';
         setInputValue(queryInUrl);
         dispatch(setQuery(queryInUrl));
     }, [searchParams, dispatch]);
 
-    const handleSearchAction = (query: string) => {
+    const handleSearchAction = useCallback((query: string) => {
         const trimmedQuery = query.trim();
+
         if (trimmedQuery) {
+            // 1. Update Redux (History & Global Query)
             dispatch(setQuery(trimmedQuery));
-            router.push(`/search?q=${encodeURIComponent(trimmedQuery)}`);
+            dispatch(addRecentSearch(trimmedQuery));
+
+            // 2. Update URL (SEO & Shareability)
+            const params = new URLSearchParams();
+            params.set('q', trimmedQuery);
+            router.push(`/search?${params.toString()}`);
         }
-    };
+    }, [dispatch, router]);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -77,7 +90,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 />
             </div>
 
-            {/* 2. Responsive Input */}
             <input
                 id="global-search-input"
                 type="search"
@@ -92,7 +104,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 )}
             />
 
-            {/* 3. Pill Action Group */}
             <div className="flex shrink-0 items-center gap-1 pr-0.5">
                 {inputValue && (
                     <Button

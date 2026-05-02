@@ -2,40 +2,46 @@
 
 'use client';
 
+import { useLayoutEffect, useCallback } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '@/store/store';
-import { useLayoutEffect } from 'react';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from '@/store/store';
 import { useAppSelector } from '@/store/hooks';
 
+/**
+ * ThemeApplier handles the synchronization of the theme state 
+ * with the DOM and localStorage.
+ */
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
   const { theme } = useAppSelector((state) => state.theme);
 
+  const applyTheme = useCallback(() => {
+    const root = document.documentElement;
+    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const shouldBeDark = theme === 'dark' || (theme === 'system' && isSystemDark);
+
+    if (shouldBeDark) {
+      root.classList.add('dark');
+      root.classList.remove('light');
+    } else {
+      root.classList.remove('dark');
+      root.classList.add('light');
+    }
+
+    // Sync with localStorage for the head script (prevents FOUC on next reload)
+    if (theme === 'system') {
+      localStorage.removeItem('theme');
+    } else {
+      localStorage.setItem('theme', theme);
+    }
+  }, [theme]);
+
   useLayoutEffect(() => {
-    const applyTheme = () => {
-      const root = document.documentElement;
-      const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-      if (theme === 'dark' || (theme === 'system' && isSystemDark)) {
-        root.classList.add('dark');
-        root.classList.remove('light');
-        localStorage.setItem('theme', 'dark');
-      } else {
-        root.classList.remove('dark');
-        root.classList.add('light');
-        localStorage.setItem('theme', 'light');
-      }
-
-      if (theme === 'system') {
-        localStorage.removeItem('theme');
-      }
-    };
-
     applyTheme();
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const listener = (e: MediaQueryListEvent) => {
+    const handleSystemChange = (e: MediaQueryListEvent) => {
       if (theme === 'system') {
-        // Corrected assignment/function call logic
         if (e.matches) {
           document.documentElement.classList.add('dark');
         } else {
@@ -44,18 +50,23 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
       }
     };
 
-    mediaQuery.addEventListener('change', listener);
-    return () => mediaQuery.removeEventListener('change', listener);
-  }, [theme]);
+    mediaQuery.addEventListener('change', handleSystemChange);
+    return () => mediaQuery.removeEventListener('change', handleSystemChange);
+  }, [theme, applyTheme]);
 
   return <>{children}</>;
 };
 
+/**
+ * Enterprise ReduxProvider including Persistence and Theme synchronization.
+ * PersistGate delays rendering until the stored state is rehydrated.
+ */
 export function ReduxProvider({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      <ThemeApplier>{children}</ThemeApplier>
+      <PersistGate loading={null} persistor={persistor}>
+        <ThemeApplier>{children}</ThemeApplier>
+      </PersistGate>
     </Provider>
   );
 }
-

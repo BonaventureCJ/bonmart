@@ -37,7 +37,7 @@ const persistConfig = {
   key: 'bonmart-root',
   storage,
   // Only these slices will be saved to localStorage
-  whitelist: ['cart', 'wishlist', 'theme'],
+  whitelist: ['cart', 'wishlist', 'theme', 'search'],
 };
 
 // 3. Create a persisted reducer

@@ -206,10 +206,19 @@ Adherence to high-quality code and design standards is non-negotiable.
   * **Light-Dark Themes:** A comprehensive light/dark theme is implemented using the Tailwind CSS `dark:` variant and CSS variables. This ensures the design is accessible and user-friendly in all lighting conditions.
   * **Utility-First:** Styling is primarily managed through Tailwind CSS classes, reducing the need for custom CSS and promoting consistency.
 
-### State Management
+### State Management & Persistence
 
-  * **Redux Toolkit:** The centralized state is managed using Redux Toolkit, following the **FLUX pattern**. State is organized into **Slices** based on domain (e.g., `theme-slice`, `navigation-slice`).
-  * **TypeScript Best Practices:** All Redux actions, state, and selectors are fully typed, ensuring type safety throughout the state layer.
+The application employs a robust, hybrid state management architecture designed for data durability, SEO optimization, and seamless hydration in a Next.js environment.
+
+*   **Redux Toolkit (Centralized State):** Managed via the **FLUX pattern** with domain-driven **Slices** (e.g., `cart`, `wishlist`, `theme`).
+*   **Enterprise Persistence Layer:**
+    *   **Redux Persist:** Critical user data (Cart, Wishlist, Theme, and Search History) is whitelisted and persisted to `localStorage`, ensuring data survives page refreshes and browser sessions.
+    *   **Next.js Hydration Safety:** Implements `PersistGate` within the `ReduxProvider` to prevent UI flickering and "Hydration Mismatch" errors by delaying rendering until the persisted state is fully rehydrated.
+*   **URL-Driven State (Search):**
+    *   Following SEO best practices, the active **Search Query** is synchronized with URL parameters (`?q=`).
+    *   This ensures search results are **shareable**, **bookmarkable**, and fully accessible via the browser's back/forward navigation.
+*   **Type-Safe Architecture:** Full TypeScript integration across the state layer, including typed hooks (`useAppSelector`, `useAppDispatch`) and exhaustive state interfaces for total maintainability.
+
 
 ### Accessibility (A11Y) & SEO
 

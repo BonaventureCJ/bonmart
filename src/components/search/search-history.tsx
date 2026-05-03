@@ -17,7 +17,8 @@ interface SearchHistoryProps {
 
 /**
  * Enterprise-grade Search History Dropdown
- * Fully accessible with keyboard navigation support (WCAG compliant).
+ * Fixed: Explicit background hover logic for delete action with 
+ * improved contrast for both light and dark modes.
  */
 export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisible, onClose }) => {
     const dispatch = useAppDispatch();
@@ -71,13 +72,14 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
                 <span className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                     Recent Searches
                 </span>
-                <button
-                    type="button"
+                <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => dispatch(clearRecentSearches())}
-                    className="text-xs font-medium text-(--brand-color) hover:underline focus:outline-none focus:text-(--brand-color)"
+                    className="h-auto !p-0 text-xs font-medium text-(--brand-color) hover:bg-transparent hover:underline"
                 >
                     Clear All
-                </button>
+                </Button>
             </div>
 
             <ul role="listbox" aria-label="Recent searches history" className="py-2">
@@ -87,29 +89,30 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
                         role="option"
                         aria-selected={focusedIndex === index}
                         className={clsx(
-                            "group flex items-center justify-between px-4 py-2 cursor-pointer transition-colors",
+                            "group flex items-center justify-between px-4 py-1.5 cursor-pointer transition-colors",
                             focusedIndex === index ? "bg-(--toggle-hover-bg)" : "hover:bg-(--toggle-hover-bg)"
                         )}
                     >
-                        <button
-                            type="button"
-                            tabIndex={-1} // Handled by manual keyboard nav
+                        <Button
+                            variant="ghost"
+                            icon="history"
+                            iconPlacement="left"
+                            className={clsx(
+                                "flex-1 !justify-start !p-0 px-4 font-normal transition-colors",
+                                focusedIndex === index ? "text-(--brand-color)" : "text-(--foreground)",
+                                "hover:bg-transparent"
+                            )}
                             onClick={() => onSelect(term)}
-                            className="flex flex-1 items-center gap-3 text-left text-sm text-(--foreground) focus:outline-none"
+                            disableFocusRing
+                            tabIndex={-1}
                         >
-                            <Icon
-                                name="history"
-                                size={16}
-                                variant={focusedIndex === index ? "primary" : "neutral"}
-                                className="transition-colors"
-                            />
                             <span className={clsx(
                                 "line-clamp-1",
-                                focusedIndex === index && "text-(--brand-color) font-medium"
+                                focusedIndex === index && "font-medium"
                             )}>
                                 {term}
                             </span>
-                        </button>
+                        </Button>
 
                         <Button
                             variant="ghost"
@@ -121,7 +124,9 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
                             }}
                             ariaLabel={`Remove ${term} from history`}
                             className={clsx(
-                                "size-7 !p-0 text-(--error) transition-opacity",
+                                "mr-2 size-8 !p-0 rounded-full transition-all",
+                                "text-(--neutral-color) hover:text-(--error)",
+                                "hover:!bg-(--toggle-bg)",
                                 focusedIndex === index ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                             )}
                         />

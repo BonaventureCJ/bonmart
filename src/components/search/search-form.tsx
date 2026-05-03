@@ -19,6 +19,7 @@ interface SearchFormProps {
 /**
  * Enterprise-grade Search Form
  * Features: URL-driven state, Redux persistence for history, and Responsive Design.
+ * Optimized with WCAG-compliant keyboard navigation and focus management.
  */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
@@ -40,7 +41,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         dispatch(setQuery(queryInUrl));
     }, [searchParams, dispatch]);
 
-    // Close history when clicking outside
+    // Close history when clicking outside the form area
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (formRef.current && !formRef.current.contains(event.target as Node)) {
@@ -49,6 +50,14 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    /**
+     * Closes the history dropdown.
+     * Passed to SearchHistory to handle the Escape key.
+     */
+    const handleCloseHistory = useCallback(() => {
+        setIsHistoryVisible(false);
     }, []);
 
     const handleSearchAction = useCallback((query: string) => {
@@ -119,6 +128,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     autoComplete="off"
                     value={inputValue}
                     onFocus={() => setIsHistoryVisible(true)}
+                    onClick={() => !inputValue && setIsHistoryVisible(true)}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder={placeholder}
                     className={clsx(
@@ -154,9 +164,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 </div>
             </div>
 
+            {/* Accessible Search History Dropdown */}
             <SearchHistory
                 isVisible={isHistoryVisible}
                 onSelect={handleHistorySelect}
+                onClose={handleCloseHistory}
             />
         </form>
     );

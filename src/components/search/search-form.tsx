@@ -2,13 +2,14 @@
 
 'use client';
 
-import React, { useState, useEffect, type FormEvent, useCallback } from 'react';
+import React, { useState, useEffect, type FormEvent, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
+import { SearchHistory } from './search-history';
 
 interface SearchFormProps {
     className?: string;
@@ -18,6 +19,7 @@ interface SearchFormProps {
 /**
  * Enterprise-grade Search Form
  * Features: URL-driven state, Redux persistence for history, and Responsive Design.
+ * Optimized with WCAG-compliant keyboard navigation and focus management.
  */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
@@ -26,6 +28,8 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const router = useRouter();
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
+    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const formRef = useRef<HTMLFormElement>(null);
 
     // Local state for immediate typing feedback
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
@@ -37,6 +41,25 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         dispatch(setQuery(queryInUrl));
     }, [searchParams, dispatch]);
 
+    // Close history when clicking outside the form area
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (formRef.current && !formRef.current.contains(event.target as Node)) {
+                setIsHistoryVisible(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    /**
+     * Closes the history dropdown.
+     * Passed to SearchHistory to handle the Escape key.
+     */
+    const handleCloseHistory = useCallback(() => {
+        setIsHistoryVisible(false);
+    }, []);
+
     const handleSearchAction = useCallback((query: string) => {
         const trimmedQuery = query.trim();
 
@@ -44,6 +67,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             // 1. Update Redux (History & Global Query)
             dispatch(setQuery(trimmedQuery));
             dispatch(addRecentSearch(trimmedQuery));
+            setIsHistoryVisible(false);
 
             // 2. Update URL (SEO & Shareability)
             const params = new URLSearchParams();
@@ -65,69 +89,87 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         }
     };
 
+    const handleHistorySelect = (query: string) => {
+        setInputValue(query);
+        handleSearchAction(query);
+    };
+
     return (
         <form
+            ref={formRef}
             role="search"
             onSubmit={handleSubmit}
-            className={clsx(
-                "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
-                "transition-all duration-(--duration-long) ease-in-out",
-                "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
-                "dark:bg-(--surface-muted)",
-                className
-            )}
+            className={clsx("relative w-full", className)}
         >
-            <label htmlFor="global-search-input" className="sr-only">
-                Search Products
-            </label>
-
-            <div className="flex shrink-0 items-center pl-3">
-                <Icon
-                    name="search"
-                    size={18}
-                    variant="neutral"
-                    className="group-focus-within:text-(--brand-color) transition-colors"
-                />
-            </div>
-
-            <input
-                id="global-search-input"
-                type="search"
-                autoComplete="off"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={placeholder}
+            <div
                 className={clsx(
-                    "h-8 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
-                    "placeholder:text-(--neutral-color)/50 focus:placeholder:opacity-30",
-                    "[&::-webkit-search-cancel-button]:appearance-none"
+                    "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
+                    "transition-all duration-(--duration-long) ease-in-out",
+                    "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
+                    "dark:bg-(--surface-muted)"
                 )}
-            />
+            >
+                <label htmlFor="global-search-input" className="sr-only">
+                    Search Products
+                </label>
 
-            <div className="flex shrink-0 items-center gap-1 pr-0.5">
-                {inputValue && (
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        icon="close"
-                        onClick={handleClear}
-                        ariaLabel="Clear input"
-                        className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--brand-color)"
-                        disableFocusRing
+                <div className="flex shrink-0 items-center pl-3">
+                    <Icon
+                        name="search"
+                        size={18}
+                        variant="neutral"
+                        className="group-focus-within:text-(--brand-color) transition-colors"
                     />
-                )}
+                </div>
 
-                <Button
-                    type="submit"
-                    variant="primary"
-                    size="sm"
-                    className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
-                    ariaLabel="Submit search"
-                >
-                    Search
-                </Button>
+                <input
+                    id="global-search-input"
+                    type="search"
+                    autoComplete="off"
+                    value={inputValue}
+                    onFocus={() => setIsHistoryVisible(true)}
+                    onClick={() => !inputValue && setIsHistoryVisible(true)}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder={placeholder}
+                    className={clsx(
+                        "h-8 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
+                        "placeholder:text-(--neutral-color)/50 focus:placeholder:opacity-30",
+                        "[&::-webkit-search-cancel-button]:appearance-none"
+                    )}
+                />
+
+                <div className="flex shrink-0 items-center gap-1 pr-0.5">
+                    {inputValue && (
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            icon="close"
+                            onClick={handleClear}
+                            ariaLabel="Clear input"
+                            className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--brand-color)"
+                            disableFocusRing
+                        />
+                    )}
+
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="sm"
+                        className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
+                        ariaLabel="Submit search"
+                    >
+                        Search
+                    </Button>
+                </div>
             </div>
+
+            {/* Accessible Search History Dropdown */}
+            <SearchHistory
+                isVisible={isHistoryVisible}
+                onSelect={handleHistorySelect}
+                onClose={handleCloseHistory}
+            />
         </form>
     );
 };

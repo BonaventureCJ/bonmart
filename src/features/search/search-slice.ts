@@ -29,10 +29,17 @@ const searchSlice = createSlice({
         },
         addRecentSearch: (state, action: PayloadAction<string>) => {
             const newSearch = action.payload.trim();
-            if (newSearch && !state.recentSearches.includes(newSearch)) {
-                // Keep only the last 5 searches for UX and performance
-                state.recentSearches = [newSearch, ...state.recentSearches].slice(0, 5);
+            if (newSearch) {
+                // Move existing search to top and limit to 5
+                const filtered = state.recentSearches.filter(s => s !== newSearch);
+                state.recentSearches = [newSearch, ...filtered].slice(0, 5);
             }
+        },
+        removeRecentSearch: (state, action: PayloadAction<string>) => {
+            state.recentSearches = state.recentSearches.filter(s => s !== action.payload);
+        },
+        clearRecentSearches: (state) => {
+            state.recentSearches = [];
         },
         clearSearch: (state) => {
             state.query = '';
@@ -45,6 +52,8 @@ export const {
     toggleSearch,
     setSearchOpen,
     addRecentSearch,
+    removeRecentSearch,
+    clearRecentSearches,
     clearSearch
 } = searchSlice.actions;
 

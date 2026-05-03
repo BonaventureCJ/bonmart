@@ -26,7 +26,9 @@ import {
   Printer,
   Trash2,
   ExternalLink,
-  RefreshCw, // Added for "Try Again" recovery actions
+  RefreshCw,
+  History,
+  Clock,
 } from 'lucide-react';
 
 /**
@@ -60,7 +62,9 @@ export const appIcons = {
   printer: Printer,
   trash: Trash2,
   externalLink: ExternalLink,
-  refresh: RefreshCw, // Registered for use in Error boundaries and refresh actions
+  refresh: RefreshCw,
+  history: History,
+  clock: Clock,
 } as const;
 
 /**

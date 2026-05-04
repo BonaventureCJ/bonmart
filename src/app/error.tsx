@@ -3,32 +3,52 @@
 'use client';
 
 import { useEffect, useTransition } from 'react';
+import * as Sentry from "@sentry/nextjs";
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 
-export default function Error({
-    error,
-    reset,
-}: {
+interface ErrorProps {
     error: Error & { digest?: string };
     reset: () => void;
-}) {
+}
+
+/**
+ * Enterprise Error Boundary for Bonmart
+ * Logic: Captured by Sentry (All envs), Console Logged (Dev only)
+ * Principles: Semantic HTML, WCAG Accessibilty, SRP
+ */
+export default function Error({ error, reset }: ErrorProps) {
     const [isPending, startTransition] = useTransition();
 
     useEffect(() => {
-        console.error('Bonmart System Error:', error);
+        // Log to Sentry for enterprise-grade observability
+        Sentry.captureException(error, {
+            extra: { digest: error.digest },
+        });
+        
+        // Clean console for production: only log in development mode
+        if (process.env.NODE_ENV === 'development') {
+            console.error('Bonmart System Error [DEV]:', error);
+        }
     }, [error]);
 
     return (
         <PageContainer>
             <section
-                className="flex min-h-[65vh] flex-col items-center justify-center text-center"
+                className="flex min-h-[65vh] flex-col items-center justify-center text-center page-section"
                 aria-labelledby="error-heading"
+                role="alert"
             >
+                {/* Visual Feedback using Tailwind 4 Variables */}
                 <div className="mb-8 rounded-full bg-(--error-muted) p-6 motion-safe:animate-pulse">
-                    <Icon name="alertCircle" size={64} className="text-(--error)" aria-hidden="true" />
+                    <Icon 
+                        name="alertCircle" 
+                        size={64} 
+                        className="text-(--error)" 
+                        aria-hidden="true" 
+                    />
                 </div>
 
                 <div className="max-w-2xl space-y-4">
@@ -55,11 +75,18 @@ export default function Error({
                         onClick={() => startTransition(() => reset())}
                         icon={isPending ? 'loader' : 'refresh'}
                         loading={isPending}
+                        className="focus-ring"
                     >
                         {isPending ? 'Attempting Recovery...' : 'Try Again'}
                     </Button>
 
-                    <Button href="/" variant="secondary" size="lg" icon="home">
+                    <Button 
+                        href="/" 
+                        variant="secondary" 
+                        size="lg" 
+                        icon="home"
+                        className="focus-ring"
+                    >
                         Return Home
                     </Button>
                 </div>
@@ -67,4 +94,3 @@ export default function Error({
         </PageContainer>
     );
 }
-

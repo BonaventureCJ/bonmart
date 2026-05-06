@@ -6,7 +6,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { clsx } from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { removeRecentSearch, clearRecentSearches } from '@/features/search/search-slice';
-import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 
 interface SearchHistoryProps {

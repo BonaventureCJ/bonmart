@@ -4,6 +4,7 @@
 
 import { useEffect } from "react";
 import * as Sentry from "@sentry/nextjs";
+import Link from "next/link"; // Import Link component
 
 /**
  * Global Error Boundary (Last Resort)
@@ -26,15 +27,15 @@ export default function GlobalError({
       <body className="flex min-h-screen flex-col items-center justify-center p-6 text-center font-sans bg-white text-[#171717]">
         {/* Hardcoded SVG instead of Icon component for maximum stability */}
         <div className="mb-6 rounded-full bg-[#fee2e2] p-6 text-[#dc2626]">
-          <svg 
-            xmlns="http://w3.org" 
-            width="64" 
-            height="64" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            stroke="currentColor" 
-            strokeWidth="2" 
-            strokeLinecap="round" 
+          <svg
+            xmlns="http://w3.org"
+            width="64"
+            height="64"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
             strokeLinejoin="round"
           >
             <circle cx="12" cy="12" r="10" />
@@ -48,7 +49,7 @@ export default function GlobalError({
         </h1>
 
         <p className="mb-8 max-w-md text-lg text-[#374151]">
-          A core system error occurred. We have been notified and are 
+          A core system error occurred. We have been notified and are
           investigating the interruption to your sustainable shopping.
         </p>
 
@@ -59,13 +60,13 @@ export default function GlobalError({
           >
             Recover System
           </button>
-          
-          <a
+
+          <Link
             href="/"
             className="rounded-xl border border-[#e5e7eb] px-8 py-3 font-semibold text-[#171717] transition-colors hover:bg-[#f3f4f6]"
           >
             Return Home
-          </a>
+          </Link>
         </div>
 
         {error.digest && (

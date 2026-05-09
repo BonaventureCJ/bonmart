@@ -7,10 +7,12 @@ import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { toggleMobileMenu } from '@/features/navigation/navigation-slice';
+import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
 
 /**
  * MenuToggle Component
  * 
+ * Refactored to use memoized selectors for performance.
  * NOTE: This component intentionally uses a native <button> element instead of the 
  * reusable <Button /> component. This is due to specific UI/UX requirements for 
  * the mobile navigation state management and to prevent layout shifts or 
@@ -18,7 +20,9 @@ import { toggleMobileMenu } from '@/features/navigation/navigation-slice';
  */
 export const MenuToggle: FC = () => {
   const dispatch = useAppDispatch();
-  const isOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
+
+  // Memoized Selector Integration
+  const isOpen = useAppSelector(selectIsMobileMenuOpen);
 
   const handleToggle = () => {
     dispatch(toggleMobileMenu());

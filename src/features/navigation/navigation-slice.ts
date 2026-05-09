@@ -1,4 +1,5 @@
 // src/features/navigation/navigation-slice.ts
+
 import { createSlice } from '@reduxjs/toolkit';
 
 export interface NavigationState {

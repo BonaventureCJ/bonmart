@@ -4,30 +4,27 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
 import { mainNavLinks } from './nav-links';
 
-/**
- * Mobile navigation component that displays a 3/4 width, slide-in menu on small devices.
- * Uses memoized selectors for enterprise-grade performance.
- */
 export const MobileNav = () => {
   const dispatch = useAppDispatch();
-
-  // Memoized Selector Integration
   const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);
-
   const pathname = usePathname();
 
-  // Close the menu if the route changes (UX best practice)
+  // Track previous pathname to prevent effect running on initial mount
+  const prevPathname = useRef(pathname);
+
   useEffect(() => {
-    if (isMobileMenuOpen) {
+    // Only dispatch close if the menu is open AND the path has actually changed
+    if (isMobileMenuOpen && prevPathname.current !== pathname) {
       dispatch(closeMobileMenu());
     }
+    prevPathname.current = pathname;
   }, [pathname, dispatch, isMobileMenuOpen]);
 
   const handleLinkClick = () => {
@@ -47,8 +44,7 @@ export const MobileNav = () => {
         },
       )}
       role="dialog"
-      aria-modal="true"
-      aria-hidden={!isMobileMenuOpen}
+      aria-modal={isMobileMenuOpen}
       id="mobile-menu"
       tabIndex={isMobileMenuOpen ? 0 : -1}
     >

@@ -3,8 +3,12 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { removeFromCart, updateQuantity } from '@/features/cart/cart-slice';
+import { useAppSelector } from '@/store/hooks';
+import {
+  selectCartItems,
+  selectCartTotalQuantity,
+  selectCartSubtotal
+} from '@/features/cart/cart-selectors';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
@@ -14,31 +18,21 @@ import { CartSummary } from '@/components/cart/cart-summary';
 
 /**
  * CartPage Component
- * Optimized for consistent vertical rhythm and enterprise state management.
+ * Uses memoized selectors for enterprise-grade performance.
  */
 export default function CartPage() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
-  const items = useAppSelector((state) => state.cart.items);
+  // Memoized state selection for business logic
+  const items = useAppSelector(selectCartItems);
+  const totalItems = useAppSelector(selectCartTotalQuantity);
+  const subtotal = useAppSelector(selectCartSubtotal);
 
-  const subtotal = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  // UI logic
   const shippingFee = subtotal > 200 || items.length === 0 ? 0 : 15.0;
   const tax = subtotal * 0.08;
-  const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
 
-  const handleUpdateQuantity = (id: number, currentQty: number, delta: number) => {
-    const newQuantity = currentQty + delta;
-    if (newQuantity > 0) {
-      dispatch(updateQuantity({ id, quantity: newQuantity }));
-    }
-  };
-
-  const handleRemove = (id: number) => {
-    dispatch(removeFromCart(id));
-  };
-
-  // Empty State View: Centered within the LayoutWrapper's page-section
+  // Empty State View
   if (items.length === 0) {
     return (
       <PageContainer>
@@ -66,10 +60,9 @@ export default function CartPage() {
   return (
     <PageContainer>
       <div className="flex flex-col">
-        {/* Header: Centered counter with standardized spacing */}
         <header className="mb-10 flex flex-col gap-2 text-center">
           <Heading level={1} weight="bold">Shopping Cart</Heading>
-          <p className="text-sm font-medium text-(--brand-color) tracking-wider">
+          <p className="text-sm font-medium text-(--brand-color) tracking-wider uppercase">
             {totalItems} {totalItems === 1 ? 'item' : 'items'} ready for checkout
           </p>
         </header>
@@ -82,8 +75,7 @@ export default function CartPage() {
                 <CartItem
                   key={item.id}
                   item={item}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemove={handleRemove}
+                // Internal logic for update/remove is now handled within CartItem via useAppDispatch
                 />
               ))}
             </div>
@@ -93,7 +85,6 @@ export default function CartPage() {
           <aside className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <CartSummary
-                subtotal={subtotal}
                 shippingFee={shippingFee}
                 tax={tax}
                 onAction={() => router.push('/checkout')}

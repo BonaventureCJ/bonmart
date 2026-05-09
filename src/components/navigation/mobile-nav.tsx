@@ -1,4 +1,5 @@
 // src/components/navigation/mobile-nav.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -7,23 +8,27 @@ import { useEffect } from 'react';
 import clsx from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
+import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
 import { mainNavLinks } from './nav-links';
 
 /**
  * Mobile navigation component that displays a 3/4 width, slide-in menu on small devices.
- * @returns {JSX.Element} The MobileNav component.
+ * Uses memoized selectors for enterprise-grade performance.
  */
 export const MobileNav = () => {
   const dispatch = useAppDispatch();
-  const isMobileMenuOpen = useAppSelector(
-    (state) => state.navigation.isMobileMenuOpen,
-  );
+
+  // Memoized Selector Integration
+  const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);
+
   const pathname = usePathname();
 
-  // Close the menu if the route changes
+  // Close the menu if the route changes (UX best practice)
   useEffect(() => {
-    dispatch(closeMobileMenu());
-  }, [pathname, dispatch]);
+    if (isMobileMenuOpen) {
+      dispatch(closeMobileMenu());
+    }
+  }, [pathname, dispatch, isMobileMenuOpen]);
 
   const handleLinkClick = () => {
     dispatch(closeMobileMenu());
@@ -42,7 +47,8 @@ export const MobileNav = () => {
         },
       )}
       role="dialog"
-      aria-modal={isMobileMenuOpen}
+      aria-modal="true"
+      aria-hidden={!isMobileMenuOpen}
       id="mobile-menu"
       tabIndex={isMobileMenuOpen ? 0 : -1}
     >
@@ -67,9 +73,7 @@ export const MobileNav = () => {
                         'text-(--foreground)': !isActive,
                       },
                     )}
-                    aria-current={
-                      isActive ? 'page' : undefined
-                    }
+                    aria-current={isActive ? 'page' : undefined}
                   >
                     {link.label}
                   </Link>

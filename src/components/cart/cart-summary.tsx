@@ -6,9 +6,10 @@ import { clsx } from 'clsx';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
+import { useAppSelector } from '@/store/hooks';
+import { selectCartSubtotal, selectEcoFriendlyCartCount } from '@/features/cart/cart-selectors';
 
 interface CartSummaryProps {
-    subtotal: number;
     shippingFee: number;
     tax: number;
     onAction: () => void;
@@ -18,7 +19,6 @@ interface CartSummaryProps {
 }
 
 export function CartSummary({
-    subtotal,
     shippingFee,
     tax,
     onAction,
@@ -26,16 +26,19 @@ export function CartSummary({
     isProcessing = false,
     className,
 }: CartSummaryProps) {
+    // Memoized Selectors
+    const subtotal = useAppSelector(selectCartSubtotal);
+    const ecoCount = useAppSelector(selectEcoFriendlyCartCount);
+
     const total = subtotal + shippingFee + tax;
-    // Enterprise check: Disable action if cart has been emptied while on the page
+    // Enterprise check: Disable action if cart has been emptied
     const isCartEmpty = subtotal === 0;
 
     return (
         <section
             aria-labelledby="summary-heading"
             className={clsx(
-                'flex flex-col gap-6 rounded-3xl border border-(--toggle-bg) p-6 sm:p-8',
-                'bg-(--surface-raised) shadow-sm transition-all duration-(--duration-long)',
+                'flex flex-col gap-6 rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-6 shadow-sm transition-all duration-(--duration-long) sm:p-8',
                 className
             )}
         >
@@ -46,12 +49,14 @@ export function CartSummary({
             <div className="flex flex-col gap-4 border-b border-(--toggle-bg) pb-6">
                 <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-(--neutral-color)">Subtotal</span>
-                    <span className="font-semibold text-(--foreground)">${subtotal.toFixed(2)}</span>
+                    <span className="font-semibold text-(--foreground) tabular-nums">
+                        ${subtotal.toFixed(2)}
+                    </span>
                 </div>
                 <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-(--neutral-color)">Estimated Shipping</span>
                     <span className={clsx(
-                        "font-semibold",
+                        "font-semibold tabular-nums",
                         shippingFee === 0 ? "text-(--brand-color)" : "text-(--foreground)"
                     )}>
                         {shippingFee === 0 ? 'Free' : `$${shippingFee.toFixed(2)}`}
@@ -59,25 +64,46 @@ export function CartSummary({
                 </div>
                 <div className="flex justify-between text-sm sm:text-base">
                     <span className="text-(--neutral-color)">Tax</span>
-                    <span className="font-semibold text-(--foreground)">${tax.toFixed(2)}</span>
+                    <span className="font-semibold text-(--foreground) tabular-nums">
+                        ${tax.toFixed(2)}
+                    </span>
                 </div>
             </div>
 
             <div className="flex items-center justify-between" aria-live="polite">
                 <span className="text-lg font-bold">Total</span>
-                <span className="text-2xl font-black text-(--foreground)">
+                <span className="text-2xl font-black text-(--foreground) tabular-nums">
                     ${total.toFixed(2)}
                 </span>
             </div>
 
-            {/* Bonmart Brand Trust Area */}
-            <div className="flex items-start gap-3 rounded-2xl bg-(--brand-color)/5 p-4 ring-1 ring-(--brand-color)/10">
-                <Icon name="globe" size={20} className="shrink-0 text-(--brand-color)" />
-                <p className="text-xs leading-relaxed text-(--neutral-color)">
-                    By completing this order, you&apos;re supporting
-                    <span className="font-bold text-(--brand-color)"> carbon-neutral </span>
-                    shipping and eco-conscious manufacturers.
-                </p>
+            {/* Bonmart Brand Trust Area - Dynamic Green Initiative Badge */}
+            <div className={clsx(
+                "flex items-start gap-3 rounded-2xl p-4 ring-1 transition-colors duration-500",
+                ecoCount > 0
+                    ? "bg-(--brand-color)/10 ring-(--brand-color)/20"
+                    : "bg-(--surface-muted)/30 ring-(--toggle-bg)"
+            )}>
+                <Icon
+                    name={ecoCount > 0 ? "leaf" : "globe"}
+                    size={20}
+                    className={clsx("shrink-0", ecoCount > 0 ? "text-(--brand-color)" : "text-(--neutral-color)")}
+                />
+                <div className="flex flex-col gap-1">
+                    <p className="text-xs leading-relaxed text-(--neutral-color)">
+                        {ecoCount > 0 ? (
+                            <>
+                                You have <span className="font-bold text-(--brand-color)">{ecoCount} eco-friendly</span> items! Your purchase supports sustainable manufacturing.
+                            </>
+                        ) : (
+                            <>
+                                By completing this order, you&apos;re supporting
+                                <span className="font-bold text-(--brand-color)"> carbon-neutral </span>
+                                shipping.
+                            </>
+                        )}
+                    </p>
+                </div>
             </div>
 
             <div className="flex flex-col gap-3">
@@ -88,7 +114,7 @@ export function CartSummary({
                     icon={isProcessing ? "loader" : "arrowRight"}
                     iconPlacement="right"
                     onClick={onAction}
-                    disabled={isProcessing || isCartEmpty} // Safety check
+                    disabled={isProcessing || isCartEmpty}
                     className={clsx(isProcessing && "opacity-80")}
                 >
                     {isProcessing ? "Processing..." : buttonLabel}

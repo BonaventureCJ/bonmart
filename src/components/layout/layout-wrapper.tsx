@@ -7,6 +7,7 @@ import { clsx } from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { MobileNav } from '@/components/navigation/mobile-nav';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
+import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
 import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
@@ -17,7 +18,8 @@ type LayoutWrapperProps = {
 };
 
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
-    const isMobileMenuOpen = useAppSelector((state) => state.navigation.isMobileMenuOpen);
+    // Memoized Selector
+    const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);
     const dispatch = useAppDispatch();
 
     // Enterprise Pattern: Detect mobile via matchMedia to align with Tailwind breakpoints
@@ -31,6 +33,16 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
         mediaQuery.addEventListener('change', handler);
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
+
+    // Effect to handle body scroll lock for accessibility
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isMobileMenuOpen]);
 
     useMobileMenuHeight();
 
@@ -48,9 +60,10 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 <Header />
             </HeaderScrollContainer>
 
+            {/* Optimized Overlay using memoized state */}
             {isMobileMenuOpen && (
                 <div
-                    className="bg-(--overlay-bg) fixed inset-0 z-40 transition-opacity duration-300 md:hidden"
+                    className="fixed inset-0 z-40 bg-(--overlay-bg) transition-opacity duration-300 lg:hidden"
                     aria-hidden="true"
                     onClick={handleOverlayClick}
                 />
@@ -59,8 +72,8 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[1fr_auto]',
-                    'pt-(--header-height)', // Standard offset
-                    { 'pointer-events-none md:pointer-events-auto': isMobileMenuOpen }
+                    'pt-(--header-height)', // Standard offset from globals.css
+                    { 'pointer-events-none lg:pointer-events-auto': isMobileMenuOpen }
                 )}
                 aria-hidden={isMobileMenuOpen}
             >

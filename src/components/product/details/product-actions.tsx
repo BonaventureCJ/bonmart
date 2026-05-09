@@ -8,9 +8,15 @@ import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/features/cart/cart-slice';
+import { selectIsItemInCart } from '@/features/cart/cart-selectors';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
+import { selectIsProductWishlisted } from '@/features/wishlist/wishlist-selectors';
 import type { Product } from '@/data/mock-products';
 
+/**
+ * Enterprise Product Actions Component.
+ * Optimized with memoized selectors to sync Cart and Wishlist states.
+ */
 export function ProductActions({ product }: { product: Product }) {
     const dispatch = useAppDispatch();
 
@@ -18,13 +24,12 @@ export function ProductActions({ product }: { product: Product }) {
     const [quantity, setQuantity] = useState(1);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    // Redux selectors for source of truth
-    const isInCart = useAppSelector((state) =>
-        state.cart.items.some((item) => item.id === product.id)
-    );
-    const isFavourite = useAppSelector((state) =>
-        state.wishlist.items.some((item) => item.id === product.id)
-    );
+    /** 
+     * Memoized Selectors (Parameterized)
+     * Performance: Replaces direct array scanning with referentially stable lookups.
+     */
+    const isInCart = useAppSelector(selectIsItemInCart(product.id));
+    const isFavourite = useAppSelector(selectIsProductWishlisted(product.id));
 
     // Reset animation feedback after 2 seconds
     useEffect(() => {
@@ -45,8 +50,8 @@ export function ProductActions({ product }: { product: Product }) {
 
     return (
         <div className="mb-10 flex flex-col gap-4 sm:flex-row">
-            {/* Quantity Selector - flex-shrink-0 prevents it from being squashed */}
-            <div className="flex shrink-0 items-center justify-between rounded-full border border-(--toggle-bg) bg-(--background) p-1.5 w-full sm:w-36">
+            {/* Quantity Selector */}
+            <div className="flex w-full shrink-0 items-center justify-between rounded-full border border-(--toggle-bg) bg-(--background) p-1.5 sm:w-36">
                 <Button
                     variant="ghost"
                     size="sm"
@@ -55,7 +60,7 @@ export function ProductActions({ product }: { product: Product }) {
                     onClick={() => handleUpdateQuantity('dec')}
                     disabled={quantity <= 1}
                 />
-                <span className="w-10 text-center font-bold text-(--foreground)" aria-live="polite">
+                <span className="w-10 text-center font-bold tabular-nums text-(--foreground)" aria-live="polite">
                     {quantity}
                 </span>
                 <Button
@@ -67,7 +72,7 @@ export function ProductActions({ product }: { product: Product }) {
                 />
             </div>
 
-            {/* Add to Cart Button - min-width covers "Added to Cart!" length */}
+            {/* Add to Cart Button */}
             <Button
                 variant={isAnimating || isInCart ? "secondary" : "primary"}
                 size="lg"
@@ -84,14 +89,14 @@ export function ProductActions({ product }: { product: Product }) {
                 }
             </Button>
 
-            {/* Favourites Toggle - min-width covers "Saved to Favourites" length */}
+            {/* Favourites Toggle */}
             <Button
                 variant="secondary"
                 size="lg"
                 ariaLabel={isFavourite ? "Remove from wishlist" : "Add to wishlist"}
                 onClick={() => dispatch(toggleWishlist(product))}
                 className={clsx(
-                    "flex items-center transition-all active:scale-95 sm:px-6 sm:min-w-[220px]",
+                    "flex items-center transition-all active:scale-95 sm:min-w-[220px] sm:px-6",
                     isFavourite && "bg-(--brand-color)/10"
                 )}
             >
@@ -101,11 +106,10 @@ export function ProductActions({ product }: { product: Product }) {
                     filled={isFavourite}
                     className="text-(--brand-color)"
                 />
-                <span className="inline-block ml-2 text-sm font-bold text-(--brand-color)">
+                <span className="ml-2 inline-block text-sm font-bold text-(--brand-color)">
                     {isFavourite ? "Saved to Favourites" : "Add to Favourites"}
                 </span>
             </Button>
-
         </div>
     );
 }

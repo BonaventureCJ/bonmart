@@ -1,4 +1,5 @@
 // src/components/navigation/utility-nav.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -7,11 +8,15 @@ import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { useAppSelector } from '@/store/hooks';
 import { selectCartTotalQuantity } from '@/features/cart/cart-selectors';
+import { selectWishlistCount } from '@/features/wishlist/wishlist-selectors';
 import { utilityNavLinks } from './nav-links';
 
 export const UtilityNav = () => {
   const pathname = usePathname();
+
+  // Memoized Selectors
   const cartCount = useAppSelector(selectCartTotalQuantity);
+  const wishlistCount = useAppSelector(selectWishlistCount);
 
   return (
     <nav aria-label="Utility navigation">
@@ -19,6 +24,11 @@ export const UtilityNav = () => {
         {utilityNavLinks.map((item) => {
           const isActive = pathname === item.href;
           const isCart = item.iconName === 'cart';
+          const isWishlist = item.iconName === 'heart';
+
+          // Determine the appropriate count for the badge
+          const count = isCart ? cartCount : isWishlist ? wishlistCount : 0;
+          const hasBadge = count > 0;
 
           return (
             <li key={item.id} className="relative">
@@ -32,7 +42,7 @@ export const UtilityNav = () => {
                   { 'bg-(--toggle-bg-active)': isActive }
                 )}
                 aria-current={isActive ? 'page' : undefined}
-                aria-label={isCart ? `${item.label}, ${cartCount} items` : item.label}
+                aria-label={hasBadge ? `${item.label}, ${count} items` : item.label}
               >
                 <Icon
                   name={item.iconName}
@@ -44,8 +54,8 @@ export const UtilityNav = () => {
                   )}
                 />
 
-                {/* Dynamic Notification Badge for Cart */}
-                {isCart && cartCount > 0 && (
+                {/* Dynamic Notification Badge for Cart and Wishlist */}
+                {hasBadge && (
                   <span
                     className={clsx(
                       "absolute top-1 right-1 flex h-4.5 min-w-[1.125rem] items-center justify-center rounded-full px-1",
@@ -54,7 +64,7 @@ export const UtilityNav = () => {
                     )}
                     aria-hidden="true"
                   >
-                    {cartCount > 99 ? '99+' : cartCount}
+                    {count > 99 ? '99+' : count}
                   </span>
                 )}
 

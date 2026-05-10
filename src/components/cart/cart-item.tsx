@@ -8,17 +8,27 @@ import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
-import type { CartItem as CartItemType } from '@/features/cart/cart-slice';
+import { useAppDispatch } from '@/store/hooks';
+import { removeFromCart, updateQuantity, type CartItem as CartItemType } from '@/features/cart/cart-slice';
 
 interface CartItemProps {
     item: CartItemType;
-    onUpdateQuantity: (id: number, currentQty: number, delta: number) => void;
-    onRemove: (id: number) => void;
     className?: string;
 }
 
-export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartItemProps) {
+export function CartItem({ item, className }: CartItemProps) {
     const { id, name, price, imageUrl, slug, quantity, isEcoFriendly } = item;
+    const dispatch = useAppDispatch();
+
+    // Optimized Handlers using Dispatch
+    const handleUpdateQuantity = (delta: number) => {
+        const newQty = quantity + delta;
+        if (newQty > 0) {
+            dispatch(updateQuantity({ id, quantity: newQty }));
+        }
+    };
+
+    const handleRemove = () => dispatch(removeFromCart(id));
 
     return (
         <article
@@ -55,13 +65,13 @@ export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartIt
                         icon="trash"
                         className="-mr-2 -mt-1 shrink-0 text-(--neutral-color) hover:text-(--error)"
                         ariaLabel={`Remove ${name} from cart`}
-                        onClick={() => onRemove(id)}
+                        onClick={handleRemove}
                     />
                 </div>
 
                 {isEcoFriendly && (
                     <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-(--brand-color)">
-                        <Icon name="globe" size={10} />
+                        <Icon name="leaf" size={10} />
                         <span>Eco Choice</span>
                     </div>
                 )}
@@ -86,7 +96,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartIt
                             className="h-7 w-7 rounded-full"
                             disabled={quantity <= 1}
                             ariaLabel="Decrease quantity"
-                            onClick={() => onUpdateQuantity(id, quantity, -1)}
+                            onClick={() => handleUpdateQuantity(-1)}
                         />
                         <span className="min-w-6 text-center text-xs font-bold" aria-live="polite">
                             {quantity}
@@ -97,7 +107,7 @@ export function CartItem({ item, onUpdateQuantity, onRemove, className }: CartIt
                             icon="plus"
                             className="h-7 w-7 rounded-full"
                             ariaLabel="Increase quantity"
-                            onClick={() => onUpdateQuantity(id, quantity, 1)}
+                            onClick={() => handleUpdateQuantity(1)}
                         />
                     </div>
                 </div>

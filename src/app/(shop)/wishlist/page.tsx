@@ -2,35 +2,19 @@
 
 'use client';
 
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
-import { addToCart } from '@/features/cart/cart-slice';
-import type { Product } from '@/data/mock-products';
+import { useAppSelector } from '@/store/hooks';
+import { selectWishlistItems, selectWishlistCount } from '@/features/wishlist/wishlist-selectors';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { WishlistItem } from '@/components/wishlist/wishlist-item';
 
-/**
- * WishlistPage Component
- * Optimized for standardized vertical rhythm and enterprise state management.
- */
 export default function WishlistPage() {
-  const dispatch = useAppDispatch();
-  const { items } = useAppSelector((state) => state.wishlist);
+  const items = useAppSelector(selectWishlistItems);
+  const totalCount = useAppSelector(selectWishlistCount);
 
-  const handleRemove = (product: Product) => {
-    dispatch(toggleWishlist(product));
-  };
-
-  const handleMoveToCart = (product: Product) => {
-    dispatch(addToCart({ ...product, quantity: 1 }));
-    dispatch(toggleWishlist(product));
-  };
-
-  // Empty State View: Leveraging min-height to center content within the page-section
-  if (items.length === 0) {
+  if (totalCount === 0) {
     return (
       <PageContainer>
         <section
@@ -57,28 +41,24 @@ export default function WishlistPage() {
   return (
     <PageContainer>
       <div className="mx-auto max-w-4xl">
-        {/* Header: Simplified spacing as LayoutWrapper handles page-section padding */}
-        <header className="mb-10 flex flex-col gap-2">
+        <header className="mb-10 flex flex-col gap-2 text-center">
           <Heading level={1} weight="bold">
             My Wishlist
           </Heading>
-          <p className="text-center text-sm font-medium text-(--brand-color) tracking-wider">
-            {items.length} {items.length === 1 ? 'item' : 'items'} saved for later
+          <p className="text-sm font-medium text-(--brand-color) uppercase tracking-wider">
+            <span className="tabular-nums">{totalCount}</span> {totalCount === 1 ? 'item' : 'items'} saved for later
           </p>
         </header>
 
-
-        {/* Wishlist Items List */}
         <section
           className="flex flex-col border-t border-(--toggle-bg)"
+          role="list"
           aria-label="Wishlist items"
         >
           {items.map((item) => (
             <WishlistItem
               key={item.id}
               item={item}
-              onRemove={() => handleRemove(item)}
-              onMoveToCart={() => handleMoveToCart(item)}
             />
           ))}
         </section>

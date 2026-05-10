@@ -47,8 +47,10 @@ export function ProductReviewCard({
                             <div
                                 className="flex items-center gap-1 text-(--brand-color)"
                                 title="Verified Purchase"
+                                role="note"
                             >
-                                <Icon name="check" size={14} className="rounded-full bg-(--brand-color)/10 p-0.5" />
+                                {/* Replaced check with leaf to unify Green initiative branding */}
+                                <Icon name="leaf" size={14} className="rounded-full bg-(--brand-color)/10 p-0.5" />
                                 <span className="text-[10px] font-bold uppercase tracking-tight">Verified</span>
                             </div>
                         )}
@@ -58,18 +60,19 @@ export function ProductReviewCard({
                     </time>
                 </div>
 
-                {/* Dynamic Star Rating */}
+                {/* Dynamic Star Rating - Accessible Implementation */}
                 <div
                     className="flex items-center gap-0.5"
+                    role="img"
                     aria-label={`Rated ${rating} out of 5 stars`}
                 >
-                    {Array.from({ length: 5 }).map((_, index) => (
+                    {[...Array(5)].map((_, index) => (
                         <Icon
                             key={index}
                             name="star"
                             size={16}
                             className={clsx(
-                                index < rating ? 'text-(--warning) fill-(--warning)' : 'text-(--toggle-bg)'
+                                index < rating ? 'text-(--warning) fill-current' : 'text-(--toggle-bg)'
                             )}
                         />
                     ))}
@@ -80,20 +83,22 @@ export function ProductReviewCard({
                 {comment}
             </p>
 
-            {/* Action Group: Leveraging Button component for standardized micro-interactions */}
+            {/* Action Group */}
             <div className="mt-2 flex items-center gap-2 border-t border-(--toggle-bg) pt-4">
                 <Button
                     variant="ghost"
                     size="sm"
                     icon="plus"
-                    className="text-xs text-(--neutral-color) hover:text-(--brand-color) !px-2"
+                    className="!px-2 text-xs text-(--neutral-color) hover:text-(--brand-color)"
+                    ariaLabel="Mark this review as helpful"
                 >
                     Helpful
                 </Button>
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs text-(--neutral-color) hover:text-(--error) !px-2"
+                    className="!px-2 text-xs text-(--neutral-color) hover:text-(--error)"
+                    ariaLabel="Report this review"
                 >
                     Report
                 </Button>

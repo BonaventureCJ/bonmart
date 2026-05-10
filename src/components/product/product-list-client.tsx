@@ -5,10 +5,11 @@
 import { useAppSelector } from '@/store/hooks';
 import { ProductCard } from '@/components/product/product-card';
 import { Heading } from '@/components/ui/heading/heading';
+import { selectFilteredProducts } from '@/features/products/product-selectors';
 
 export function ProductListClient() {
-    // Select only the data needed to prevent unnecessary re-renders
-    const { filteredItems } = useAppSelector((state) => state.products);
+    // Memoized Selector for filtered results
+    const filteredItems = useAppSelector(selectFilteredProducts);
     const hasProducts = filteredItems.length > 0;
 
     if (!hasProducts) {

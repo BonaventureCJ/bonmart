@@ -5,17 +5,16 @@
 import { clsx } from 'clsx';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
-// Import the CartItem type to ensure data structure alignment
 import type { CartItem } from '@/features/cart/cart-slice';
 
 /**
  * Enterprise Order Summary Card for Bonmart.
- * Used for post-purchase receipts and Order History.
+ * Optimized for post-purchase receipts and Order History lists.
+ * This component remains mostly presentational to handle historical (immutible) data.
  */
 export interface OrderSummaryCardProps {
     orderNumber: string;
     date: string;
-    // Aligning with our RTK CartItem structure for easier data passing
     items: Array<Pick<CartItem, 'id' | 'name' | 'quantity' | 'price'>>;
     subtotal: number;
     shipping: number;
@@ -89,8 +88,8 @@ export function OrderSummaryCard({
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-(--neutral-color)">Eco-Neutral Shipping</span>
-                        <span className="text-(--brand-color) font-bold tracking-tight">
-                            {shipping === 0 ? 'COMPLIMENTARY' : `$${shipping.toFixed(2)}`}
+                        <span className="text-(--brand-color) font-bold tracking-tight uppercase">
+                            {shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)}`}
                         </span>
                     </div>
                     <div className="flex justify-between text-sm">
@@ -109,12 +108,12 @@ export function OrderSummaryCard({
                     </span>
                 </div>
 
-                {/* Brand Mission Badge */}
+                {/* Brand Mission Badge - Updated to use 'leaf' icon */}
                 <div
                     className="flex items-center gap-3 rounded-2xl bg-(--brand-color)/10 p-4 text-(--brand-color) ring-1 ring-(--brand-color)/20"
                     role="status"
                 >
-                    <Icon name="check" size={20} className="shrink-0" variant="success" />
+                    <Icon name="leaf" size={20} className="shrink-0" />
                     <p className="text-[11px] font-semibold leading-relaxed">
                         Order Impact: This purchase offset <span className="underline decoration-2 underline-offset-4 font-bold">2.4kg of CO2</span> via our reforestation partners.
                     </p>

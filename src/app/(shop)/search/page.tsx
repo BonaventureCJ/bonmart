@@ -2,41 +2,30 @@
 
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useAppSelector } from '@/store/hooks';
-import { MOCK_PRODUCTS } from '@/data/mock-products';
+import { selectFilteredProducts } from '@/features/products/product-selectors';
+import { selectSearchQuery } from '@/features/search/search-selectors';
 import { ProductCardHorizontal } from '@/components/product/product-card-horizontal';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
 import PageContainer from '@/components/layout/page-container';
 
 /**
- * Enterprise Search Results Page for Bonmart (Compact Version).
- * 
- * Optimizations:
- * - Reduced vertical margins (mb-6 instead of mb-10).
- * - Tightened typography spacing.
- * - Minimalist results meta row.
+ * Enterprise Search Results Page for Bonmart.
+ * Uses memoized selectors to sync URL-driven search with the product feed.
  */
 export default function SearchPage() {
-    const query = useAppSelector((state) => state.search.query);
+    // Memoized Selectors
+    const query = useAppSelector(selectSearchQuery);
+    const filteredProducts = useAppSelector(selectFilteredProducts);
 
-    const filteredProducts = useMemo(() => {
-        const trimmedQuery = query.trim().toLowerCase();
-        if (!trimmedQuery) return MOCK_PRODUCTS;
-
-        return MOCK_PRODUCTS.filter(
-            (product) =>
-                product.name.toLowerCase().includes(trimmedQuery) ||
-                product.category.toLowerCase().includes(trimmedQuery) ||
-                product.description.toLowerCase().includes(trimmedQuery)
-        );
-    }, [query]);
+    const hasResults = filteredProducts.length > 0;
 
     return (
         <PageContainer>
-            {/* 1. Compact Page Intro - Reduced bottom margin and spacing */}
-            <div className="mb-6 w-full max-w-2xl space-y-1 text-center mx-auto">
+            {/* 1. Compact Page Intro */}
+            <header className="mx-auto mb-6 w-full max-w-2xl space-y-1 text-center">
                 <Heading
                     level={1}
                     weight="bold"
@@ -45,28 +34,28 @@ export default function SearchPage() {
                 >
                     {query ? `Results for "${query}"` : 'All Products'}
                 </Heading>
-                <p className="text-(--neutral-color) text-xs md:text-sm">
+                <p className="text-xs text-(--neutral-color) md:text-sm">
                     {query
                         ? `Found ${filteredProducts.length} items.`
                         : "Our premium eco-friendly collection."
                     }
                 </p>
-            </div>
+            </header>
 
-            {/* 2. Minimalist Meta Row - Reduced padding and border-b spacing */}
+            {/* 2. Minimalist Meta Row */}
             <div className="mb-4 flex items-center justify-between border-b border-(--toggle-bg) pb-2">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-(--neutral-color) opacity-70">
+                <span className="text-[11px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-70">
                     Search Results
                 </span>
-                <span className="text-xs font-medium text-(--neutral-color)">
+                <span className="text-xs font-medium tabular-nums text-(--neutral-color)">
                     {filteredProducts.length} {filteredProducts.length === 1 ? 'item' : 'items'}
                 </span>
             </div>
 
-            {/* 3. Products List - Maintains gap-4 for density */}
+            {/* 3. Products List */}
             <div className="w-full space-y-4">
-                {filteredProducts.length > 0 ? (
-                    <div className="flex flex-col gap-4 text-left">
+                {hasResults ? (
+                    <div className="flex flex-col gap-4 text-left" role="list">
                         {filteredProducts.map((product) => (
                             <ProductCardHorizontal
                                 key={product.id}
@@ -76,25 +65,24 @@ export default function SearchPage() {
                     </div>
                 ) : (
                     /* 4. Semantic Empty State */
-                    <div
-                        className="mt-4 flex flex-col items-center justify-center rounded-2xl bg-(--surface-muted)/20 py-12 px-6 text-center"
+                    <section
+                        className="mt-4 flex flex-col items-center justify-center rounded-2xl bg-(--surface-muted)/20 px-6 py-12 text-center"
                         role="status"
                     >
-                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-(--surface-muted)">
+                        <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-(--surface-muted)/50">
                             <Icon
                                 name="search"
                                 size={24}
-                                variant="neutral"
-                                label="No results found"
+                                className="text-(--neutral-color) opacity-40"
                             />
                         </div>
                         <Heading level={2} weight="semibold" align="center" className="mb-1">
-                            No results
+                            No results found
                         </Heading>
-                        <p className="text-(--neutral-color) text-sm max-w-xs mx-auto">
-                            Nothing matched &quot;{query}&quot;. Try the search bar above.
+                        <p className="mx-auto max-w-xs text-sm text-(--neutral-color)">
+                            Nothing matched &quot;{query}&quot;. Try adjusting your search criteria.
                         </p>
-                    </div>
+                    </section>
                 )}
             </div>
         </PageContainer>

@@ -16,11 +16,6 @@ interface SearchFormProps {
     placeholder?: string;
 }
 
-/**
- * Enterprise-grade Search Form
- * Features: URL-driven state, Redux persistence for history, and Responsive Design.
- * Optimized with WCAG-compliant keyboard navigation and focus management.
- */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
@@ -28,20 +23,20 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const router = useRouter();
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
+
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
     // Local state for immediate typing feedback
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
 
-    // Sync: URL -> Local State & Redux
+    // Sync: URL -> Local State
     useEffect(() => {
         const queryInUrl = searchParams.get('q') || '';
         setInputValue(queryInUrl);
-        dispatch(setQuery(queryInUrl));
-    }, [searchParams, dispatch]);
+    }, [searchParams]);
 
-    // Close history when clicking outside the form area
+    // Close history when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (formRef.current && !formRef.current.contains(event.target as Node)) {
@@ -52,24 +47,16 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    /**
-     * Closes the history dropdown.
-     * Passed to SearchHistory to handle the Escape key.
-     */
-    const handleCloseHistory = useCallback(() => {
-        setIsHistoryVisible(false);
-    }, []);
+    const handleCloseHistory = useCallback(() => setIsHistoryVisible(false), []);
 
     const handleSearchAction = useCallback((query: string) => {
         const trimmedQuery = query.trim();
 
         if (trimmedQuery) {
-            // 1. Update Redux (History & Global Query)
             dispatch(setQuery(trimmedQuery));
             dispatch(addRecentSearch(trimmedQuery));
             setIsHistoryVisible(false);
 
-            // 2. Update URL (SEO & Shareability)
             const params = new URLSearchParams();
             params.set('q', trimmedQuery);
             router.push(`/search?${params.toString()}`);
@@ -104,7 +91,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             <div
                 className={clsx(
                     "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
-                    "transition-all duration-(--duration-long) ease-in-out",
+                    "transition-all duration-(--duration-long) ease-(--transition-ease-in-out)",
                     "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
                     "dark:bg-(--surface-muted)"
                 )}
@@ -115,10 +102,9 @@ export const SearchForm: React.FC<SearchFormProps> = ({
 
                 <div className="flex shrink-0 items-center pl-3">
                     <Icon
-                        name="search"
+                        name={inputValue ? "leaf" : "search"}
                         size={18}
-                        variant="neutral"
-                        className="group-focus-within:text-(--brand-color) transition-colors"
+                        className="group-focus-within:text-(--brand-color) transition-colors text-(--neutral-color)"
                     />
                 </div>
 
@@ -133,7 +119,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     placeholder={placeholder}
                     className={clsx(
                         "h-8 w-full bg-transparent px-3 text-sm font-normal text-(--foreground) outline-none",
-                        "placeholder:text-(--neutral-color)/50 focus:placeholder:opacity-30",
+                        "placeholder:text-(--neutral-color) placeholder:opacity-50 focus:placeholder:opacity-30",
                         "[&::-webkit-search-cancel-button]:appearance-none"
                     )}
                 />
@@ -146,8 +132,8 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                             size="sm"
                             icon="close"
                             onClick={handleClear}
-                            ariaLabel="Clear input"
-                            className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--brand-color)"
+                            ariaLabel="Clear search input"
+                            className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--error)"
                             disableFocusRing
                         />
                     )}
@@ -157,14 +143,13 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                         variant="primary"
                         size="sm"
                         className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
-                        ariaLabel="Submit search"
+                        ariaLabel="Execute search"
                     >
                         Search
                     </Button>
                 </div>
             </div>
 
-            {/* Accessible Search History Dropdown */}
             <SearchHistory
                 isVisible={isHistoryVisible}
                 onSelect={handleHistorySelect}

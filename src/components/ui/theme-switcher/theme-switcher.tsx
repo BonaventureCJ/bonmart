@@ -5,6 +5,7 @@
 import clsx from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setTheme, type Theme } from '@/features/theme/theme-slice';
+import { selectCurrentTheme } from '@/features/theme/theme-selectors';
 import { useState, useEffect, useRef } from 'react';
 import { ThemeButton } from './theme-button';
 import type React from 'react';
@@ -27,13 +28,15 @@ const themeIcons: Record<Theme, IconName> = {
 /**
  * ThemeSwitcher Component
  * 
- * NOTE: The skeleton state uses native elements to ensure minimal hydration 
- * footprint and prevent layout shifts. Interaction logic is managed via 
- * a radio group pattern for WCAG compliance.
+ * Optimized with memoized selectors to prevent layout-wide re-renders.
+ * Implements accessible Radio Group keyboard navigation and hydration safety.
  */
 export const ThemeSwitcher = () => {
     const dispatch = useAppDispatch();
-    const activeTheme = useAppSelector((state) => state.theme.theme);
+
+    // Memoized Selector Integration
+    const activeTheme = useAppSelector(selectCurrentTheme);
+
     const [mounted, setMounted] = useState(false);
     const buttonRefs = useRef<Record<Theme, HTMLButtonElement | null>>(
         THEMES.reduce(
@@ -83,12 +86,13 @@ export const ThemeSwitcher = () => {
         }
     };
 
-    // Shared container classes
+    // Shared container classes using semantic design tokens
     const containerClasses = clsx(
         'flex rounded-full p-1',
         'bg-(--toggle-container-bg)'
     );
 
+    // Skeleton State: Prevents hydration mismatch and layout shifts
     if (!mounted) {
         return (
             <div className={containerClasses} role="presentation">

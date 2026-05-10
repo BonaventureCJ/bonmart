@@ -3,15 +3,14 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useMemo } from 'react';
-import Link from 'next/link';
+import { Suspense } from 'react';
+import { useAppSelector } from '@/store/hooks';
+import { selectLatestOrder } from '@/features/orders/orders-selectors';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { OrderSummaryCard } from '@/components/cart/order-summary-card';
-// Import the actual CartItem type for strict checking
-import type { CartItem } from '@/features/cart/cart-slice';
 
 function StatusContent() {
     const searchParams = useSearchParams();
@@ -19,45 +18,22 @@ function StatusContent() {
     const isSuccess = status === 'success';
 
     /**
-     * Enterprise Logic: 
-     * We type this specifically as an array of CartItem picks to 
-     * ensure it satisfies the OrderSummaryCard requirements.
+     * Memoized Selector: Fetch the real order details from the store.
+     * This ensures the success page displays the actual items purchased.
      */
-    const orderDetails = useMemo(() => {
-        // Defining the shape clearly to avoid 'id' type mismatch
-        const items: Pick<CartItem, 'id' | 'name' | 'quantity' | 'price'>[] = [
-            { id: 1, name: 'Fjallraven - Foldsack No. 1', quantity: 1, price: 109.95 },
-            { id: 2, name: 'Mens Casual Premium T-Shirt', quantity: 2, price: 22.30 },
-        ];
-
-        return {
-            orderNumber: 'BM-8829-01',
-            date: new Date().toLocaleDateString('en-NG', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
-            }),
-            items,
-            shipping: 0,
-            tax: 12.40,
-        };
-    }, []);
-
-    const subtotal = orderDetails.items.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const total = subtotal + orderDetails.tax + orderDetails.shipping;
+    const latestOrder = useAppSelector(selectLatestOrder);
 
     return (
         <main className="mx-auto max-w-3xl py-12 md:py-20">
             <header className="mb-12 flex flex-col items-center">
                 <div
                     className={`mb-6 flex h-20 w-20 items-center justify-center rounded-full transition-colors ${isSuccess
-                        ? 'bg-(--brand-color)/10 text-(--brand-color)'
-                        : 'bg-(--error)/10 text-(--error)'
+                            ? 'bg-(--brand-color)/10 text-(--brand-color)'
+                            : 'bg-(--error)/10 text-(--error)'
                         }`}
                     role="img"
                     aria-label={isSuccess ? "Success icon" : "Error icon"}
                 >
-                    {/* Updated to use variant="success" for the checkmark */}
                     <Icon
                         name={isSuccess ? "check" : "alertCircle"}
                         size={40}
@@ -76,18 +52,19 @@ function StatusContent() {
                 </p>
             </header>
 
-            {isSuccess ? (
+            {/* Display Order Summary only if success AND we have order data */}
+            {isSuccess && latestOrder ? (
                 <OrderSummaryCard
-                    orderNumber={orderDetails.orderNumber}
-                    date={orderDetails.date}
-                    items={orderDetails.items}
-                    subtotal={subtotal}
-                    shipping={orderDetails.shipping}
-                    tax={orderDetails.tax}
-                    total={total}
+                    orderNumber={latestOrder.id}
+                    date={latestOrder.date}
+                    items={latestOrder.items}
+                    subtotal={latestOrder.subtotal}
+                    shipping={latestOrder.shipping}
+                    tax={latestOrder.tax}
+                    total={latestOrder.total}
                     className="shadow-xl"
                 />
-            ) : (
+            ) : !isSuccess && (
                 <section
                     className="rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center"
                     aria-labelledby="failure-reasons"
@@ -110,19 +87,22 @@ function StatusContent() {
                         </li>
                     </ul>
                     <div className="flex justify-center">
-                        <Link href="/checkout" className="focus-ring rounded-lg">
-                            <Button variant="primary" size="lg">Return to Checkout</Button>
-                        </Link>
+                        <Button href="/checkout" variant="primary" size="lg">
+                            Return to Checkout
+                        </Button>
                     </div>
                 </section>
             )}
 
             <nav className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Link href="/products" className="focus-ring rounded-lg">
-                    <Button variant={isSuccess ? "secondary" : "ghost"} size="lg">
-                        {isSuccess ? "Continue Shopping" : "Back to Shop"}
-                    </Button>
-                </Link>
+                <Button
+                    href="/products"
+                    variant={isSuccess ? "secondary" : "ghost"}
+                    size="lg"
+                >
+                    {isSuccess ? "Continue Shopping" : "Back to Shop"}
+                </Button>
+
                 {isSuccess && (
                     <Button
                         variant="ghost"

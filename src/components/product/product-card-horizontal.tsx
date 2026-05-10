@@ -12,7 +12,9 @@ import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/features/cart/cart-slice';
+import { selectIsItemInCart } from '@/features/cart/cart-selectors';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
+import { selectIsProductWishlisted } from '@/features/wishlist/wishlist-selectors';
 
 interface ProductCardHorizontalProps {
     product: Product;
@@ -21,11 +23,7 @@ interface ProductCardHorizontalProps {
 
 /**
  * Enterprise-grade Compact Horizontal Product Card.
- * 
- * Features:
- * - Ultra-dense mobile view (approx 1/3 of standard height).
- * - Full-featured desktop view with "Add More" logic.
- * - Persistent horizontal layout across all breakpoints.
+ * Refactored to use memoized selectors for optimal performance.
  */
 export function ProductCardHorizontal({
     product,
@@ -36,13 +34,12 @@ export function ProductCardHorizontal({
 
     const [isAnimating, setIsAnimating] = useState(false);
 
-    // Track global state to show "Add More" logic
-    const isInCart = useAppSelector((state) =>
-        state.cart.items.some((item) => item.id === id)
-    );
-    const isFavourite = useAppSelector((state) =>
-        state.wishlist.items.some((item) => item.id === id)
-    );
+    /** 
+     * Memoized Selectors (Parameterized)
+     * Performance: Prevents re-scanning the entire items array on every state change.
+     */
+    const isInCart = useAppSelector(selectIsItemInCart(id));
+    const isFavourite = useAppSelector(selectIsProductWishlisted(id));
 
     useEffect(() => {
         if (isAnimating) {
@@ -83,7 +80,7 @@ export function ProductCardHorizontal({
 
                 {isEcoFriendly && (
                     <div className="absolute top-1 left-1 z-10 flex items-center rounded-full bg-(--brand-color) p-0.5 sm:px-2 sm:py-0.5">
-                        <Icon name="globe" size={10} className="text-(--text-on-image)" />
+                        <Icon name="leaf" size={10} className="text-(--text-on-image)" />
                         <span className="ml-1 hidden text-[9px] font-bold uppercase text-(--text-on-image) sm:inline">
                             Eco Choice
                         </span>
@@ -108,13 +105,16 @@ export function ProductCardHorizontal({
                             <Icon
                                 name="heart"
                                 size={16}
-                                variant={isFavourite ? "error" : "neutral"}
                                 filled={isFavourite}
+                                className={clsx(
+                                    "transition-colors",
+                                    isFavourite ? "text-(--brand-color)" : "text-(--neutral-color)"
+                                )}
                             />
                         </Button>
                     </div>
 
-                    <Link href={`/products/${slug}`} className="focus-ring mt-0.5 block rounded-sm">
+                    <Link href={`/products/${slug}`} className="focus-ring mt-0.5 block rounded-sm outline-offset-4">
                         <Heading
                             level={3}
                             weight="semibold"
@@ -128,15 +128,15 @@ export function ProductCardHorizontal({
                     <div className="mt-1 flex items-center gap-2 text-[10px] sm:text-xs">
                         <div className="flex items-center gap-0.5 text-(--warning)">
                             <Icon name="star" size={12} variant="warning" filled />
-                            <span>{rating.rate}</span>
+                            <span className="font-bold tabular-nums">{rating.rate}</span>
                         </div>
-                        <span className="text-(--neutral-color) opacity-50">({rating.count})</span>
+                        <span className="text-(--neutral-color) opacity-50 tabular-nums">({rating.count})</span>
                     </div>
                 </div>
 
                 {/* 3. Action Footer: Responsive Labeling */}
                 <div className="mt-2 flex items-center justify-between gap-4">
-                    <span className="text-sm font-bold text-(--foreground) sm:text-2xl">
+                    <span className="text-sm font-bold text-(--foreground) tabular-nums sm:text-2xl">
                         ${price.toFixed(2)}
                     </span>
 

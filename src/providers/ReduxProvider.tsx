@@ -7,15 +7,19 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '@/store/store';
 import { useAppSelector } from '@/store/hooks';
+import { selectCurrentTheme } from '@/features/theme/theme-selectors';
 
 /**
  * ThemeApplier handles the synchronization of the theme state 
- * with the DOM and localStorage.
+ * with the DOM and localStorage using memoized selectors.
  */
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
-  const { theme } = useAppSelector((state) => state.theme);
+  // Memoized Selector Integration
+  const theme = useAppSelector(selectCurrentTheme);
 
   const applyTheme = useCallback(() => {
+    if (typeof window === 'undefined') return;
+
     const root = document.documentElement;
     const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const shouldBeDark = theme === 'dark' || (theme === 'system' && isSystemDark);
@@ -40,12 +44,17 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
     applyTheme();
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+    // Optimized listener for system-level theme shifts
     const handleSystemChange = (e: MediaQueryListEvent) => {
       if (theme === 'system') {
+        const root = document.documentElement;
         if (e.matches) {
-          document.documentElement.classList.add('dark');
+          root.classList.add('dark');
+          root.classList.remove('light');
         } else {
-          document.documentElement.classList.remove('dark');
+          root.classList.remove('dark');
+          root.classList.add('light');
         }
       }
     };
@@ -70,3 +79,4 @@ export function ReduxProvider({ children }: { children: React.ReactNode }) {
     </Provider>
   );
 }
+

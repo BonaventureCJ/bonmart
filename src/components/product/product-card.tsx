@@ -12,7 +12,9 @@ import { Heading } from '@/components/ui/heading/heading';
 import type { Product } from '@/data/mock-products';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { addToCart } from '@/features/cart/cart-slice';
+import { selectIsItemInCart } from '@/features/cart/cart-selectors';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
+import { selectIsProductWishlisted } from '@/features/wishlist/wishlist-selectors';
 
 interface ProductCardProps {
     product: Product;
@@ -25,13 +27,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
     const [isAnimating, setIsAnimating] = useState(false);
 
-    const isInCart = useAppSelector((state) =>
-        state.cart.items.some((item) => item.id === id)
-    );
-
-    const isFavourite = useAppSelector((state) =>
-        state.wishlist.items.some((item) => item.id === id)
-    );
+    /** 
+     * Memoized Selectors (Parameterized)
+     * Performance: These only re-evaluate if the items array in Redux changes,
+     * and only trigger a re-render if the boolean result for this specific ID flips.
+     */
+    const isInCart = useAppSelector(selectIsItemInCart(id));
+    const isFavourite = useAppSelector(selectIsProductWishlisted(id));
 
     useEffect(() => {
         if (isAnimating) {
@@ -74,7 +76,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
                             name="heart"
                             size={18}
                             filled={isFavourite}
-                            className="text-(--brand-color) transition-transform active:scale-125"
+                            className={clsx(
+                                "transition-transform active:scale-125",
+                                isFavourite ? "text-(--brand-color)" : "text-(--neutral-color)"
+                            )}
                         />
                     </Button>
                 </div>
@@ -84,7 +89,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                         className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) md:top-2 md:left-2 md:px-2 md:text-[9px] md:tracking-wider"
                         aria-label="Eco-friendly product"
                     >
-                        <Icon name="globe" size={10} />
+                        <Icon name="leaf" size={10} />
                         <span>Eco Choice</span>
                     </div>
                 )}
@@ -98,6 +103,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     priority={id <= 6}
                 />
 
+                {/* Desktop Add to Cart Overlay */}
                 <div className="absolute inset-x-0 bottom-0 hidden translate-y-full bg-gradient-to-t from-(--overlay-bg) to-transparent p-3 transition-transform duration-300 group-hover:translate-y-0 md:block">
                     <Button
                         variant={isAnimating || isInCart ? 'secondary' : 'primary'}
@@ -136,10 +142,11 @@ export function ProductCard({ product, className }: ProductCardProps) {
                 </Link>
 
                 <div className="mt-2 flex items-center justify-between">
-                    <span className="text-sm font-bold text-(--foreground) md:text-base">
+                    <span className="text-sm font-bold text-(--foreground) md:text-base tabular-nums">
                         ${price.toFixed(2)}
                     </span>
 
+                    {/* Mobile Quick Add */}
                     <div className="md:hidden">
                         <Button
                             variant={isAnimating || isInCart ? 'secondary' : 'primary'}

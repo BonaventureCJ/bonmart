@@ -10,25 +10,49 @@ interface Badge {
     desc: string;
 }
 
+/**
+ * TrustBadges Component
+ * 
+ * Displays brand value propositions using semantic tokens 
+ * and standardized Green initiative iconography.
+ */
 const badges: Badge[] = [
-    { icon: 'globe', title: 'Carbon Neutral', desc: 'Offsetting every delivery' },
-    { icon: 'check', title: 'Quality Guaranteed', desc: '30-day money-back policy' }
+    {
+        icon: 'leaf', // Standardized for Carbon Neutral/Eco branding
+        title: 'Carbon Neutral',
+        desc: 'Offsetting every delivery'
+    },
+    {
+        icon: 'check',
+        title: 'Quality Guaranteed',
+        desc: '30-day money-back policy'
+    }
 ];
 
 export function TrustBadges() {
     return (
-        <div className="grid grid-cols-1 gap-4 rounded-2xl bg-(--surface-muted)/20 p-6 sm:grid-cols-2">
+        <section
+            aria-label="Trust and sustainability commitments"
+            className="grid grid-cols-1 gap-4 rounded-2xl bg-(--surface-muted)/20 p-6 sm:grid-cols-2"
+        >
             {badges.map((badge) => (
                 <div key={badge.title} className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-(--brand-color)/10 text-(--brand-color)">
+                    <div
+                        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-(--brand-color)/10 text-(--brand-color)"
+                        aria-hidden="true"
+                    >
                         <Icon name={badge.icon} size={24} />
                     </div>
-                    <div>
-                        <Heading level={6} weight="bold" className="text-sm">{badge.title}</Heading>
-                        <p className="text-xs text-(--neutral-color)">{badge.desc}</p>
+                    <div className="flex flex-col gap-0.5">
+                        <Heading level={6} weight="bold" className="text-sm">
+                            {badge.title}
+                        </Heading>
+                        <p className="text-xs leading-tight text-(--neutral-color)">
+                            {badge.desc}
+                        </p>
                     </div>
                 </div>
             ))}
-        </div>
+        </section>
     );
 }

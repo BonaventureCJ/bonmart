@@ -2,14 +2,16 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
+import { selectSearchQuery } from '@/features/search/search-selectors';
 
 /**
  * Base Selector
+ * Isolates the product slice from the root state.
  */
 const selectProductState = (state: RootState) => state.products;
 
 /**
- * Selects all products from the store
+ * Selects the master list of all products.
  */
 export const selectAllProducts = createSelector(
     [selectProductState],
@@ -17,15 +19,38 @@ export const selectAllProducts = createSelector(
 );
 
 /**
- * Selects currently filtered products
+ * Specialized Search Results Selector
+ * Used ONLY by the Search Results page. 
+ * Reactively filters products based on the global search query.
  */
-export const selectFilteredProducts = createSelector(
-    [selectProductState],
-    (products) => products.filteredItems
+export const selectSearchResults = createSelector(
+    [selectAllProducts, selectSearchQuery],
+    (items, query) => {
+        const trimmedQuery = query.trim().toLowerCase();
+
+        if (!trimmedQuery) return items;
+
+        return items.filter(
+            (product) =>
+                product.name.toLowerCase().includes(trimmedQuery) ||
+                product.category.toLowerCase().includes(trimmedQuery) ||
+                product.description.toLowerCase().includes(trimmedQuery)
+        );
+    }
 );
 
 /**
- * Selects loading state
+ * General Product Feed Selector
+ * Used by the main Products Page.
+ * Decoupled from the search query so the shop always displays the full catalog.
+ */
+export const selectFilteredProducts = createSelector(
+    [selectAllProducts],
+    (items) => items
+);
+
+/**
+ * Selects loading state.
  */
 export const selectProductsLoading = createSelector(
     [selectProductState],
@@ -33,7 +58,7 @@ export const selectProductsLoading = createSelector(
 );
 
 /**
- * Selects error state
+ * Selects error state.
  */
 export const selectProductsError = createSelector(
     [selectProductState],
@@ -41,8 +66,7 @@ export const selectProductsError = createSelector(
 );
 
 /**
- * Memoized Category List
- * Derived from items to ensure unique categories for UI filters
+ * Derived List: All unique product categories.
  */
 export const selectProductCategories = createSelector(
     [selectAllProducts],
@@ -50,8 +74,7 @@ export const selectProductCategories = createSelector(
 );
 
 /**
- * Parameterized Selector: Find a specific product by ID
- * Handles both string and number ID comparison safely
+ * Parameterized Selector: Find a specific product by ID.
  */
 export const selectProductById = (productId: string | number) =>
     createSelector([selectAllProducts], (items) =>
@@ -59,8 +82,7 @@ export const selectProductById = (productId: string | number) =>
     );
 
 /**
- * Parameterized Selector: Get item count for a specific category
- * Optimized for reuse in CategoryCards and Sidebars
+ * Parameterized Selector: Get item count for a specific category.
  */
 export const selectProductCountByCategory = (categoryName: string) =>
     createSelector(

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import { useAppSelector } from '@/store/hooks';
-import { selectFilteredProducts } from '@/features/products/product-selectors';
+import { selectSearchResults } from '@/features/products/product-selectors';
 import { selectSearchQuery } from '@/features/search/search-selectors';
 import { ProductCardHorizontal } from '@/components/product/product-card-horizontal';
 import { Heading } from '@/components/ui/heading/heading';
@@ -13,12 +13,12 @@ import PageContainer from '@/components/layout/page-container';
 
 /**
  * Enterprise Search Results Page for Bonmart.
- * Uses memoized selectors to sync URL-driven search with the product feed.
+ * Consumes selectSearchResults to isolate search logic from the main shop feed.
  */
 export default function SearchPage() {
     // Memoized Selectors
     const query = useAppSelector(selectSearchQuery);
-    const filteredProducts = useAppSelector(selectFilteredProducts);
+    const filteredProducts = useAppSelector(selectSearchResults);
 
     const hasResults = filteredProducts.length > 0;
 

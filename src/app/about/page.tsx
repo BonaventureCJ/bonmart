@@ -27,10 +27,10 @@ export default function AboutPage() {
     return (
         <PageContainer>
             <article className="mx-auto max-w-5xl">
-                {/* Hero Section: Spacing optimized for standardized page-section wrapper */}
+                {/* Hero Section: Updated iconography to 'leaf' for the Green initiative */}
                 <header className="mb-16 flex flex-col items-center text-center md:mb-32">
                     <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-(--brand-color)/10 px-4 py-1.5 text-[10px] font-bold tracking-widest text-(--brand-color) uppercase">
-                        <Icon name="globe" size={14} />
+                        <Icon name="leaf" size={14} />
                         <span>Our Mission</span>
                     </div>
                     <Heading level={1} weight="bold" className="mb-6">
@@ -48,7 +48,7 @@ export default function AboutPage() {
                 <section className="mb-20 grid grid-cols-1 gap-6 sm:grid-cols-2 md:mb-40">
                     <div className="flex flex-col items-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center">
                         <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-(--brand-color) text-(--text-on-image)">
-                            <Icon name="check" size={24} />
+                            <Icon name="leaf" size={24} />
                         </div>
                         <Heading level={3} weight="bold" align="center" className="mb-3">
                             Eco-Certified Sourcing
@@ -62,7 +62,7 @@ export default function AboutPage() {
 
                     <div className="flex flex-col items-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center">
                         <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-(--brand-color) text-(--text-on-image)">
-                            <Icon name="monitor" size={24} />
+                            <Icon name="lock" size={24} />
                         </div>
                         <Heading level={3} weight="bold" align="center" className="mb-3">
                             Radical Transparency
@@ -78,8 +78,8 @@ export default function AboutPage() {
                 {/* Narrative Section */}
                 <section className="flex flex-col items-center gap-12 text-center">
                     <div className="relative aspect-video w-full overflow-hidden rounded-3xl bg-(--surface-muted) md:max-w-3xl">
-                        <div className="flex h-full w-full items-center justify-center text-(--neutral-color) opacity-20">
-                            <Icon name="globe" size={120} />
+                        <div className="flex h-full w-full items-center justify-center text-(--brand-color) opacity-10">
+                            <Icon name="leaf" size={120} />
                         </div>
                     </div>
 
@@ -99,7 +99,7 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* Page-Specific CTA: Using semantic variables for high-contrast block */}
+                {/* Page-Specific CTA */}
                 <section className="mt-20 rounded-3xl bg-(--brand-color) p-8 text-center text-(--text-on-brand) md:mt-40 md:p-16">
                     <Heading level={2} weight="bold" className="mb-4 text-(--text-on-brand)">
                         Ready to make a difference?

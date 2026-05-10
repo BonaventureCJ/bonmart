@@ -5,9 +5,8 @@
 import React, { useState, useEffect, type FormEvent, useCallback, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { clsx } from 'clsx';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
-import { selectSearchQuery } from '@/features/search/search-selectors';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { SearchHistory } from './search-history';
@@ -17,10 +16,6 @@ interface SearchFormProps {
     placeholder?: string;
 }
 
-/**
- * Enterprise-grade Search Form
- * Optimized with memoized selectors and URL-driven state synchronization.
- */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
@@ -29,21 +24,16 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
 
-    // Memoized Selector for Redux Query state
-    const reduxQuery = useAppSelector(selectSearchQuery);
-
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
     // Local state for immediate typing feedback
     const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
 
-    // Sync: URL/Redux -> Local State
+    // Sync: URL -> Local State
     useEffect(() => {
         const queryInUrl = searchParams.get('q') || '';
-        if (queryInUrl !== inputValue) {
-            setInputValue(queryInUrl);
-        }
+        setInputValue(queryInUrl);
     }, [searchParams]);
 
     // Close history when clicking outside

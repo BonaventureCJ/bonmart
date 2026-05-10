@@ -5,14 +5,12 @@ import { MOCK_PRODUCTS, Product } from '@/data/mock-products';
 
 interface ProductState {
     items: Product[];
-    filteredItems: Product[];
     isLoading: boolean;
     error: string | null;
 }
 
 const initialState: ProductState = {
     items: MOCK_PRODUCTS,
-    filteredItems: MOCK_PRODUCTS,
     isLoading: false,
     error: null,
 };
@@ -21,25 +19,30 @@ const productSlice = createSlice({
     name: 'products',
     initialState,
     reducers: {
-        // Reducers handle the "How the state changes"
+        /**
+         * Updates the master product list.
+         * Useful for API integrations or inventory refreshes.
+         */
         setProducts: (state, action: PayloadAction<Product[]>) => {
             state.items = action.payload;
         },
-        filterEcoFriendly: (state, action: PayloadAction<boolean>) => {
-            state.filteredItems = action.payload
-                ? state.items.filter((p) => p.isEcoFriendly)
-                : state.items;
+        /**
+         * Sets the loading state for product operations.
+         */
+        setLoading: (state, action: PayloadAction<boolean>) => {
+            state.isLoading = action.payload;
         },
-        searchProducts: (state, action: PayloadAction<string>) => {
-            const query = action.payload.toLowerCase();
-            state.filteredItems = state.items.filter(
-                (p) =>
-                    p.name.toLowerCase().includes(query) ||
-                    p.category.toLowerCase().includes(query)
-            );
+        /**
+         * Captures error messages from failed product actions.
+         */
+        setError: (state, action: PayloadAction<string | null>) => {
+            state.error = action.payload;
         },
     },
 });
 
-export const { filterEcoFriendly, searchProducts, setProducts } = productSlice.actions;
+// Export clean actions
+export const { setProducts, setLoading, setError } = productSlice.actions;
+
+// Default export for the store configuration
 export default productSlice.reducer;

@@ -1,48 +1,44 @@
 // src/features/products/product-slice.ts
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { MOCK_PRODUCTS, Product } from '@/data/mock-products';
+import {
+    createEntityAdapter,
+    createSlice,
+    PayloadAction,
+    EntityState
+} from '@reduxjs/toolkit';
+import { MOCK_PRODUCTS, type Product } from '@/data/mock-products';
 
-interface ProductState {
-    items: Product[];
+export const productsAdapter = createEntityAdapter<Product, number>({
+    selectId: (product) => product.id,
+    sortComparer: (a, b) => a.name.localeCompare(b.name),
+});
+
+interface ProductState extends EntityState<Product, number> {
     isLoading: boolean;
     error: string | null;
 }
 
-const initialState: ProductState = {
-    items: MOCK_PRODUCTS,
+const initialState: ProductState = productsAdapter.getInitialState({
     isLoading: false,
     error: null,
-};
+});
+
+const populatedInitialState = productsAdapter.setAll(initialState, MOCK_PRODUCTS);
 
 const productSlice = createSlice({
     name: 'products',
-    initialState,
+    initialState: populatedInitialState,
     reducers: {
-        /**
-         * Updates the master product list.
-         * Useful for API integrations or inventory refreshes.
-         */
-        setProducts: (state, action: PayloadAction<Product[]>) => {
-            state.items = action.payload;
-        },
-        /**
-         * Sets the loading state for product operations.
-         */
+        setProducts: productsAdapter.setAll,
+        updateProduct: productsAdapter.upsertOne,
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.isLoading = action.payload;
         },
-        /**
-         * Captures error messages from failed product actions.
-         */
         setError: (state, action: PayloadAction<string | null>) => {
             state.error = action.payload;
         },
     },
 });
 
-// Export clean actions
-export const { setProducts, setLoading, setError } = productSlice.actions;
-
-// Default export for the store configuration
+export const { setProducts, updateProduct, setLoading, setError } = productSlice.actions;
 export default productSlice.reducer;

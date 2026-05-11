@@ -1,17 +1,32 @@
 // src/features/search/search-slice.ts
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import {
+    createEntityAdapter,
+    createSlice,
+    PayloadAction,
+    EntityState
+} from '@reduxjs/toolkit';
+
+/**
+ * 1. Define the Adapter for Recent Searches
+ * Since searches are strings, the entity is a string and the ID is the string itself.
+ */
+export const searchAdapter = createEntityAdapter<string, string>({
+    selectId: (search) => search,
+    // No sortComparer needed as we want to maintain "Recent" order (manual insertion)
+});
 
 interface SearchState {
     query: string;
     isSearchOpen: boolean;
-    recentSearches: string[];
+    // normalized collection of recent search strings
+    recentSearches: EntityState<string, string>;
 }
 
 const initialState: SearchState = {
     query: '',
     isSearchOpen: false,
-    recentSearches: [],
+    recentSearches: searchAdapter.getInitialState(),
 };
 
 const searchSlice = createSlice({
@@ -27,19 +42,30 @@ const searchSlice = createSlice({
         setSearchOpen: (state, action: PayloadAction<boolean>) => {
             state.isSearchOpen = action.payload;
         },
+        /**
+         * Optimized addRecentSearch
+         * createEntityAdapter handles the "move to top" and uniqueness via addOne/removeOne logic.
+         */
         addRecentSearch: (state, action: PayloadAction<string>) => {
             const newSearch = action.payload.trim();
-            if (newSearch) {
-                // Move existing search to top and limit to 5
-                const filtered = state.recentSearches.filter(s => s !== newSearch);
-                state.recentSearches = [newSearch, ...filtered].slice(0, 5);
+            if (!newSearch) return;
+
+            // Ensure uniqueness by removing if it exists, then adding to the front
+            searchAdapter.removeOne(state.recentSearches, newSearch);
+
+            // We manually manage the limit of 5 using the 'ids' array
+            const currentIds = state.recentSearches.ids;
+            if (currentIds.length >= 5) {
+                searchAdapter.removeOne(state.recentSearches, currentIds[currentIds.length - 1]);
             }
+
+            searchAdapter.addOne(state.recentSearches, newSearch);
         },
         removeRecentSearch: (state, action: PayloadAction<string>) => {
-            state.recentSearches = state.recentSearches.filter(s => s !== action.payload);
+            searchAdapter.removeOne(state.recentSearches, action.payload);
         },
         clearRecentSearches: (state) => {
-            state.recentSearches = [];
+            searchAdapter.removeAll(state.recentSearches);
         },
         clearSearch: (state) => {
             state.query = '';
@@ -54,7 +80,7 @@ export const {
     addRecentSearch,
     removeRecentSearch,
     clearRecentSearches,
-    clearSearch
+    clearSearch,
 } = searchSlice.actions;
 
 export default searchSlice.reducer;

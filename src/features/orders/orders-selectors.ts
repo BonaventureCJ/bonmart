@@ -2,23 +2,19 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
+import { ordersAdapter } from './orders-slice';
 
-/**
- * Base Selector
- */
 const selectOrdersState = (state: RootState) => state.orders;
 
-/**
- * Selects the entire order history array
- */
-export const selectOrderHistory = createSelector(
-    [selectOrdersState],
-    (orders) => orders.history
-);
+export const {
+    selectAll: selectOrderHistory,
+    selectById: selectOrderById,
+    selectIds: selectOrderIds,
+} = ordersAdapter.getSelectors(selectOrdersState);
 
 /**
  * Selects the most recent order.
- * Useful for the Order Confirmation/Success page.
+ * Since sortComparer handles date sorting, index 0 is always the latest.
  */
 export const selectLatestOrder = createSelector(
     [selectOrderHistory],
@@ -26,8 +22,8 @@ export const selectLatestOrder = createSelector(
 );
 
 /**
- * Selects orders by their delivery status.
- * Prevents re-filtering the entire array on every render.
+ * Selects orders by status.
+ * Memoized to prevent re-filtering on every re-render.
  */
 export const selectOrdersByStatus = (status: 'processing' | 'shipped' | 'delivered') =>
     createSelector([selectOrderHistory], (history) =>
@@ -36,17 +32,8 @@ export const selectOrdersByStatus = (status: 'processing' | 'shipped' | 'deliver
 
 /**
  * Enterprise Metric: Lifetime Value (LTV)
- * Calculates the total amount the customer has spent on the platform.
  */
 export const selectOrdersTotalSpent = createSelector(
     [selectOrderHistory],
     (history) => history.reduce((total, order) => total + order.total, 0)
 );
-
-/**
- * Parameterized Selector: Find a specific order by ID
- */
-export const selectOrderById = (orderId: string) =>
-    createSelector([selectOrderHistory], (history) =>
-        history.find((order) => order.id === orderId)
-    );

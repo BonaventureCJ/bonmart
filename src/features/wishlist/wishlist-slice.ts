@@ -1,30 +1,45 @@
 // src/features/wishlist/wishlist-slice.ts
 
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Product } from '@/data/mock-products';
+import {
+    createEntityAdapter,
+    createSlice,
+    PayloadAction,
+    EntityState
+} from '@reduxjs/toolkit';
+import { type Product } from '@/data/mock-products';
 
-interface WishlistState {
-    items: Product[];
-}
+export const wishlistAdapter = createEntityAdapter<Product, number>({
+    selectId: (product) => product.id,
+    // We keep the order products were added (default behavior)
+});
 
-const initialState: WishlistState = {
-    items: [],
-};
+interface WishlistState extends EntityState<Product, number> { }
+
+const initialState: WishlistState = wishlistAdapter.getInitialState();
 
 const wishlistSlice = createSlice({
     name: 'wishlist',
     initialState,
     reducers: {
+        /**
+         * Optimized Toggle Logic
+         * Uses O(1) lookup to decide whether to add or remove.
+         */
         toggleWishlist: (state, action: PayloadAction<Product>) => {
-            const index = state.items.findIndex(item => item.id === action.payload.id);
-            if (index >= 0) {
-                state.items.splice(index, 1); // Remove if exists
+            const productId = action.payload.id;
+            const exists = !!state.entities[productId];
+
+            if (exists) {
+                wishlistAdapter.removeOne(state, productId);
             } else {
-                state.items.push(action.payload); // Add if new
+                wishlistAdapter.addOne(state, action.payload);
             }
         },
+        // Explicitly allow removing by ID (useful for "Remove" buttons)
+        removeFromWishlist: wishlistAdapter.removeOne,
+        clearWishlist: wishlistAdapter.removeAll,
     },
 });
 
-export const { toggleWishlist } = wishlistSlice.actions;
+export const { toggleWishlist, removeFromWishlist, clearWishlist } = wishlistSlice.actions;
 export default wishlistSlice.reducer;

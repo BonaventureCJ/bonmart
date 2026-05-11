@@ -1,39 +1,32 @@
 // src/features/theme/theme-slice.ts
+
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-// Define the available theme types.
 export type Theme = 'light' | 'dark' | 'system';
 
 export interface ThemeState {
-    theme: Theme;
+  theme: Theme;
 }
 
-const getInitialTheme = (): Theme => {
-    if (typeof window !== 'undefined') {
-        // Check localStorage first for a user's explicit choice.
-        const storedTheme = localStorage.getItem('theme');
-        if (storedTheme === 'light' || storedTheme === 'dark' || storedTheme === 'system') {
-            return storedTheme;
-        }
-    }
-    // If no explicit choice, default to the system preference.
-    return 'system';
-};
-
+/**
+ * Enterprise Tip: Always start with a predictable 'system' or 'light' 
+ * state to prevent Next.js hydration mismatches.
+ */
 const initialState: ThemeState = {
-    theme: getInitialTheme(),
+  theme: 'system',
 };
 
 export const themeSlice = createSlice({
-    name: 'theme',
-    initialState,
-    reducers: {
-        setTheme: (state, action: PayloadAction<Theme>) => {
-            state.theme = action.payload;
-        },
+  name: 'theme',
+  initialState,
+  reducers: {
+    setTheme: (state, action: PayloadAction<Theme>) => {
+      state.theme = action.payload;
+      // Side effects like localStorage.setItem are handled in 
+      // a middleware or a useEffect in the ThemeProvider.
     },
+  },
 });
 
 export const { setTheme } = themeSlice.actions;
-
 export default themeSlice.reducer;

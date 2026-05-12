@@ -16,18 +16,14 @@ interface SearchHistoryProps {
 }
 
 /**
- * Enterprise-grade Search History Dropdown.
- * Refactored with memoized selectors for referential stability.
+ * Enterprise Search History
+ * Refactored with createEntityAdapter O(1) performance and TW v4 variable shorthand.
  */
 export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisible, onClose }) => {
     const dispatch = useAppDispatch();
-
-    // Memoized Selector Integration
     const recentSearches = useAppSelector(selectRecentSearches);
-
     const [focusedIndex, setFocusedIndex] = useState(-1);
 
-    // Reset focus when visibility changes
     useEffect(() => {
         if (!isVisible) setFocusedIndex(-1);
     }, [isVisible]);
@@ -137,3 +133,4 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
         </div>
     );
 };
+

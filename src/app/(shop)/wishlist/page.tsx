@@ -10,10 +10,21 @@ import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { WishlistItem } from '@/components/wishlist/wishlist-item';
 
+/**
+ * WishlistPage Component
+ * 
+ * Displays saved items using normalized state logic.
+ * Optimized with createEntityAdapter selectors for referential stability.
+ */
 export default function WishlistPage() {
+  /**
+   * Normalized State Selection
+   * Performance: selectWishlistItems leverages the adapter's selectAll for O(1) collection access.
+   */
   const items = useAppSelector(selectWishlistItems);
   const totalCount = useAppSelector(selectWishlistCount);
 
+  // Empty State View
   if (totalCount === 0) {
     return (
       <PageContainer>
@@ -50,6 +61,7 @@ export default function WishlistPage() {
           </p>
         </header>
 
+        {/* Wishlist Items List - Maps through normalized items */}
         <section
           className="flex flex-col border-t border-(--toggle-bg)"
           role="list"

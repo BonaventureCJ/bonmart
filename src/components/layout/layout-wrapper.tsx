@@ -17,8 +17,13 @@ type LayoutWrapperProps = {
     children: ReactNode;
 };
 
+/**
+ * Layout Wrapper
+ * Handles global UI state, scroll locking, and responsive layout primitives.
+ * Integration: Uses simple state selectors for Navigation—normalization is not applicable to singletons.
+ */
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
-    // Memoized Selector
+    // Memoized Selector for UI singleton state
     const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);
     const dispatch = useAppDispatch();
 
@@ -34,7 +39,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
         return () => mediaQuery.removeEventListener('change', handler);
     }, []);
 
-    // Effect to handle body scroll lock for accessibility
+    // Effect to handle body scroll lock for accessibility (WCAG compliance)
     useEffect(() => {
         if (isMobileMenuOpen) {
             document.body.style.overflow = 'hidden';
@@ -72,7 +77,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[1fr_auto]',
-                    'pt-(--header-height)', // Standard offset from globals.css
+                    'pt-(--header-height)',
                     { 'pointer-events-none lg:pointer-events-auto': isMobileMenuOpen }
                 )}
                 aria-hidden={isMobileMenuOpen}
@@ -80,6 +85,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 <main className="page-section flex w-full flex-col overflow-x-hidden px-4 sm:px-6 lg:px-8">
                     {children}
                 </main>
+                {/* Single instance of Footer within the grid-rows structure */}
                 <Footer />
             </div>
 

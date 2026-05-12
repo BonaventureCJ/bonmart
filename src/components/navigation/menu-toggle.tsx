@@ -12,11 +12,12 @@ import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selecto
 /**
  * MenuToggle Component
  * 
- * Refactored to use memoized selectors for performance.
+ * Uses memoized selectors for performance.
  * NOTE: This component intentionally uses a native <button> element instead of the 
  * reusable <Button /> component. This is due to specific UI/UX requirements for 
  * the mobile navigation state management and to prevent layout shifts or 
  * conflicting variant styles during menu transitions.
+ * Normalization: Static singleton state—createEntityAdapter is not applicable here.
  */
 export const MenuToggle: FC = () => {
   const dispatch = useAppDispatch();

@@ -18,13 +18,17 @@ import { PaymentForm } from '@/components/checkout/payment-form';
 /**
  * CheckoutPage Component
  * Optimized with memoized selectors.
+ * Aligns with normalized state from createEntityAdapter.
  */
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // 1. Memoized State Selection
+  /**
+   * 1. Normalized State Selection
+   * Performance: selectCartItems leverages the adapter's referentially stable array.
+   */
   const items = useAppSelector(selectCartItems);
   const subtotal = useAppSelector(selectCartSubtotal);
 
@@ -44,6 +48,10 @@ export default function CheckoutPage() {
       // Simulate payment processing latency
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
+      /**
+       * Normalized logic: clearCart calls cartAdapter.removeAll
+       * ensuring O(1) state clearing.
+       */
       dispatch(clearCart());
       router.push('/checkout/status?status=success');
     } catch {

@@ -16,14 +16,22 @@ interface CartItemProps {
     className?: string;
 }
 
+/**
+ * CartItem Component
+ * 
+ * Individual item row for the cart/checkout flow.
+ * Optimized with normalized O(1) action dispatches for performant entity updates.
+ */
 export function CartItem({ item, className }: CartItemProps) {
     const { id, name, price, imageUrl, slug, quantity, isEcoFriendly } = item;
     const dispatch = useAppDispatch();
 
     // Optimized Handlers using Dispatch
+    // These interact with the Normalized Cart Slice using Entity IDs.
     const handleUpdateQuantity = (delta: number) => {
         const newQty = quantity + delta;
         if (newQty > 0) {
+            // Uses the refactored updateQuantity which calls cartAdapter.updateOne
             dispatch(updateQuantity({ id, quantity: newQty }));
         }
     };
@@ -78,11 +86,11 @@ export function CartItem({ item, className }: CartItemProps) {
 
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-col">
-                        <span className="text-sm font-bold text-(--foreground) sm:text-base">
+                        <span className="text-sm font-bold text-(--foreground) sm:text-base tabular-nums">
                             ${(price * quantity).toFixed(2)}
                         </span>
                         {quantity > 1 && (
-                            <span className="text-[10px] text-(--neutral-color) opacity-60">
+                            <span className="text-[10px] text-(--neutral-color) opacity-60 tabular-nums">
                                 ${price.toFixed(2)} each
                             </span>
                         )}
@@ -98,7 +106,7 @@ export function CartItem({ item, className }: CartItemProps) {
                             ariaLabel="Decrease quantity"
                             onClick={() => handleUpdateQuantity(-1)}
                         />
-                        <span className="min-w-6 text-center text-xs font-bold" aria-live="polite">
+                        <span className="min-w-6 text-center text-xs font-bold tabular-nums" aria-live="polite">
                             {quantity}
                         </span>
                         <Button

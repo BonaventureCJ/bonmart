@@ -16,10 +16,6 @@ interface ProductReviewCardProps {
     className?: string;
 }
 
-/**
- * Enterprise Product Review Card for Bonmart.
- * Optimized for readability, theme consistency, and accessibility.
- */
 export function ProductReviewCard({
     author,
     date,
@@ -49,7 +45,6 @@ export function ProductReviewCard({
                                 title="Verified Purchase"
                                 role="note"
                             >
-                                {/* Replaced check with leaf to unify Green initiative branding */}
                                 <Icon name="leaf" size={14} className="rounded-full bg-(--brand-color)/10 p-0.5" />
                                 <span className="text-[10px] font-bold uppercase tracking-tight">Verified</span>
                             </div>
@@ -59,14 +54,12 @@ export function ProductReviewCard({
                         {date}
                     </time>
                 </div>
-
-                {/* Dynamic Star Rating - Accessible Implementation */}
                 <div
                     className="flex items-center gap-0.5"
                     role="img"
                     aria-label={`Rated ${rating} out of 5 stars`}
                 >
-                    {[...Array(5)].map((_, index) => (
+                    {Array.from({ length: 5 }).map((_, index) => (
                         <Icon
                             key={index}
                             name="star"

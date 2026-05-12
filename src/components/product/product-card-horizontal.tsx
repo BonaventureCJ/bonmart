@@ -22,8 +22,8 @@ interface ProductCardHorizontalProps {
 }
 
 /**
- * Enterprise-grade Compact Horizontal Product Card.
- * Refactored to use memoized selectors for optimal performance.
+ * Compact Horizontal Product Card.
+ * Uses normalized O(1) selectors for optimal performance.
  */
 export function ProductCardHorizontal({
     product,
@@ -33,24 +33,37 @@ export function ProductCardHorizontal({
     const dispatch = useAppDispatch();
 
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isHeartAnimating, setIsHeartAnimating] = useState(false);
 
     /** 
      * Memoized Selectors (Parameterized)
-     * Performance: Prevents re-scanning the entire items array on every state change.
+     * Performance: Direct key lookups in the entities dictionary.
+     * Ensures high-performance list rendering by avoiding array iterations.
+     * Updated to support normalized state closure pattern.
      */
-    const isInCart = useAppSelector(selectIsItemInCart(id));
-    const isFavourite = useAppSelector(selectIsProductWishlisted(id));
+    const isInCart = useAppSelector((state) => selectIsItemInCart(id)(state));
+    const isFavourite = useAppSelector((state) => selectIsProductWishlisted(id)(state));
 
+    // Reset Add-to-Cart animation feedback
     useEffect(() => {
         if (isAnimating) {
-            const timer = setTimeout(() => setIsAnimating(false), 2000);
+            const timer = setTimeout(() => setIsAnimating(false), 700);
             return () => clearTimeout(timer);
         }
     }, [isAnimating]);
 
+    // Reset Heart animation feedback
+    useEffect(() => {
+        if (isHeartAnimating) {
+            const timer = setTimeout(() => setIsHeartAnimating(false), 200);
+            return () => clearTimeout(timer);
+        }
+    }, [isHeartAnimating]);
+
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        // Normalized logic: Cart slice handles quantity updates via updateOne internally
         dispatch(addToCart({ ...product, quantity: 1 }));
         setIsAnimating(true);
     };
@@ -59,6 +72,7 @@ export function ProductCardHorizontal({
         e.preventDefault();
         e.stopPropagation();
         dispatch(toggleWishlist(product));
+        setIsHeartAnimating(true);
     };
 
     return (
@@ -107,7 +121,8 @@ export function ProductCardHorizontal({
                                 size={16}
                                 filled={isFavourite}
                                 className={clsx(
-                                    "transition-colors",
+                                    "transition-all duration-300",
+                                    isHeartAnimating && "scale-150",
                                     isFavourite ? "text-(--brand-color)" : "text-(--neutral-color)"
                                 )}
                             />
@@ -128,7 +143,7 @@ export function ProductCardHorizontal({
                     <div className="mt-1 flex items-center gap-2 text-[10px] sm:text-xs">
                         <div className="flex items-center gap-0.5 text-(--warning)">
                             <Icon name="star" size={12} variant="warning" filled />
-                            <span className="font-bold tabular-nums">{rating.rate}</span>
+                            <span className="font-bold tabular-nums text-(--foreground)">{rating.rate}</span>
                         </div>
                         <span className="text-(--neutral-color) opacity-50 tabular-nums">({rating.count})</span>
                     </div>

@@ -12,14 +12,20 @@ import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { OrderSummaryCard } from '@/components/cart/order-summary-card';
 
+/**
+ * StatusContent Component
+ * 
+ * Logic layer for transaction results. Fetches the latest order
+ * from the normalized EntityState using the selectLatestOrder.
+ */
 function StatusContent() {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
     const isSuccess = status === 'success';
 
     /**
-     * Memoized Selector: Fetch the real order details from the store.
-     * This ensures the success page displays the actual items purchased.
+     * Memoized Selector: Fetch the latest order from normalized state.
+     * Performance: O(1) access to the latest entry in the sorted orders adapter.
      */
     const latestOrder = useAppSelector(selectLatestOrder);
 
@@ -28,8 +34,8 @@ function StatusContent() {
             <header className="mb-12 flex flex-col items-center">
                 <div
                     className={`mb-6 flex h-20 w-20 items-center justify-center rounded-full transition-colors ${isSuccess
-                            ? 'bg-(--brand-color)/10 text-(--brand-color)'
-                            : 'bg-(--error)/10 text-(--error)'
+                        ? 'bg-(--brand-color)/10 text-(--brand-color)'
+                        : 'bg-(--error)/10 text-(--error)'
                         }`}
                     role="img"
                     aria-label={isSuccess ? "Success icon" : "Error icon"}
@@ -52,7 +58,7 @@ function StatusContent() {
                 </p>
             </header>
 
-            {/* Display Order Summary only if success AND we have order data */}
+            {/* Display Order Summary only if success AND normalized order data exists */}
             {isSuccess && latestOrder ? (
                 <OrderSummaryCard
                     orderNumber={latestOrder.id}
@@ -119,6 +125,11 @@ function StatusContent() {
     );
 }
 
+/**
+ * CheckoutStatusPage
+ * 
+ * Root status view. Uses Suspense to handle useSearchParams() requirements in Next.js.
+ */
 export default function CheckoutStatusPage() {
     return (
         <PageContainer>

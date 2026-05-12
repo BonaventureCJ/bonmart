@@ -10,15 +10,9 @@ interface Badge {
     desc: string;
 }
 
-/**
- * TrustBadges Component
- * 
- * Displays brand value propositions using semantic tokens 
- * and standardized Green initiative iconography.
- */
 const badges: Badge[] = [
     {
-        icon: 'leaf', // Standardized for Carbon Neutral/Eco branding
+        icon: 'leaf',
         title: 'Carbon Neutral',
         desc: 'Offsetting every delivery'
     },

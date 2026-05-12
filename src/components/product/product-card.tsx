@@ -26,25 +26,37 @@ export function ProductCard({ product, className }: ProductCardProps) {
     const dispatch = useAppDispatch();
 
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isHeartAnimating, setIsHeartAnimating] = useState(false);
 
     /** 
      * Memoized Selectors (Parameterized)
      * Performance: These only re-evaluate if the items array in Redux changes,
      * and only trigger a re-render if the boolean result for this specific ID flips.
+     * Supports normalized state closure pattern with Create Entity Adapter.
      */
-    const isInCart = useAppSelector(selectIsItemInCart(id));
-    const isFavourite = useAppSelector(selectIsProductWishlisted(id));
+    const isInCart = useAppSelector((state) => selectIsItemInCart(id)(state));
+    const isFavourite = useAppSelector((state) => selectIsProductWishlisted(id)(state));
 
+    // Reset Add-to-Cart animation feedback
     useEffect(() => {
         if (isAnimating) {
-            const timer = setTimeout(() => setIsAnimating(false), 2000);
+            const timer = setTimeout(() => setIsAnimating(false), 700);
             return () => clearTimeout(timer);
         }
     }, [isAnimating]);
 
+    // Reset Heart animation feedback
+    useEffect(() => {
+        if (isHeartAnimating) {
+            const timer = setTimeout(() => setIsHeartAnimating(false), 200);
+            return () => clearTimeout(timer);
+        }
+    }, [isHeartAnimating]);
+
     const handleAddToCart = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
+        // Normalized logic: Cart slice handles quantity updates via updateOne internally
         dispatch(addToCart({ ...product, quantity: 1 }));
         setIsAnimating(true);
     };
@@ -53,6 +65,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         e.preventDefault();
         e.stopPropagation();
         dispatch(toggleWishlist(product));
+        setIsHeartAnimating(true);
     };
 
     return (
@@ -77,7 +90,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
                             size={18}
                             filled={isFavourite}
                             className={clsx(
-                                "transition-transform active:scale-125",
+                                "transition-all duration-300",
+                                isHeartAnimating && "scale-125",
                                 isFavourite ? "text-(--brand-color)" : "text-(--neutral-color)"
                             )}
                         />
@@ -126,8 +140,8 @@ export function ProductCard({ product, className }: ProductCardProps) {
                     </span>
                     <div className="flex items-center gap-0.5 text-[9px] font-bold text-(--warning) md:text-[10px]">
                         <Icon name="star" size={12} variant="warning" />
-                        <span>{rating.rate}</span>
-                        <span className="hidden font-normal opacity-60 xs:inline">({rating.count})</span>
+                        <span className="text-(--foreground)">{rating.rate}</span>
+                        <span className="hidden font-normal text-(--neutral-color) opacity-60 xs:inline">({rating.count})</span>
                     </div>
                 </div>
 

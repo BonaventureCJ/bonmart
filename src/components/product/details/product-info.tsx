@@ -1,10 +1,30 @@
 // src/components/product/details/product-info.tsx
 
+'use client';
+
 import { Icon } from '@/components/ui/icon/icon';
 import { Heading } from '@/components/ui/heading/heading';
+import { useAppSelector } from '@/store/hooks';
+import { selectProductById } from '@/features/products/product-selectors';
 import type { Product } from '@/data/mock-products';
 
-export function ProductInfo({ product }: { product: Product }) {
+/**
+ * ProductInfo Component
+ * 
+ * Displays core product metadata. Updated to subscribe to the normalized 
+ * store via selectProductById to ensure real-time data consistency.
+ */
+export function ProductInfo({ product: initialProduct }: { product: Product }) {
+    /**
+     * Enterprise Optimization:
+     * Subscribing to the specific entity in the normalized store ensures 
+     * this component reflects global updates (e.g. price drops or stock changes)
+     * with O(1) lookup performance.
+     */
+    const product = useAppSelector((state) =>
+        selectProductById(state, initialProduct.id)
+    ) ?? initialProduct;
+
     const { name, category, rating, price, description } = product;
 
     return (

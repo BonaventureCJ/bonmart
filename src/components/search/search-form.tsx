@@ -1,5 +1,7 @@
 // src/components/search/search-form.tsx
 
+// src/components/search/search-form.tsx
+
 'use client';
 
 import React, { useState, useEffect, type FormEvent, useCallback, useRef } from 'react';
@@ -16,6 +18,10 @@ interface SearchFormProps {
     placeholder?: string;
 }
 
+/**
+ * Enterprise Search Form
+ * Optimized with Tailwind v4 variable shorthand and Normalized state.
+ */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."

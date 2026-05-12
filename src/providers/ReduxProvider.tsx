@@ -2,7 +2,7 @@
 
 'use client';
 
-import { useLayoutEffect, useCallback } from 'react';
+import { useLayoutEffect, useEffect, useCallback, useState } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { store, persistor } from '@/store/store';
@@ -10,12 +10,14 @@ import { useAppSelector } from '@/store/hooks';
 import { selectCurrentTheme } from '@/features/theme/theme-selectors';
 
 /**
- * ThemeApplier handles the synchronization of the theme state 
- * with the DOM and localStorage using memoized selectors.
+ * Safe Layout Effect
+ * Prevents SSR warnings while ensuring theme logic runs before paint.
  */
+const useSafeLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
 const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
-  // Memoized Selector Integration
   const theme = useAppSelector(selectCurrentTheme);
+  const [mounted, setMounted] = useState(false);
 
   const applyTheme = useCallback(() => {
     if (typeof window === 'undefined') return;
@@ -24,15 +26,11 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
     const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const shouldBeDark = theme === 'dark' || (theme === 'system' && isSystemDark);
 
-    if (shouldBeDark) {
-      root.classList.add('dark');
-      root.classList.remove('light');
-    } else {
-      root.classList.remove('dark');
-      root.classList.add('light');
-    }
+    // Apply classes to prevent FOUC
+    root.classList.toggle('dark', shouldBeDark);
+    root.classList.toggle('light', !shouldBeDark);
 
-    // Sync with localStorage for the head script (prevents FOUC on next reload)
+    // Sync localStorage for the static blocking script in layout.tsx head
     if (theme === 'system') {
       localStorage.removeItem('theme');
     } else {
@@ -40,22 +38,16 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
     }
   }, [theme]);
 
-  useLayoutEffect(() => {
+  // Handle initial mount and theme changes before paint
+  useSafeLayoutEffect(() => {
+    setMounted(true);
     applyTheme();
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    // Optimized listener for system-level theme shifts
     const handleSystemChange = (e: MediaQueryListEvent) => {
       if (theme === 'system') {
-        const root = document.documentElement;
-        if (e.matches) {
-          root.classList.add('dark');
-          root.classList.remove('light');
-        } else {
-          root.classList.remove('dark');
-          root.classList.add('light');
-        }
+        document.documentElement.classList.toggle('dark', e.matches);
+        document.documentElement.classList.toggle('light', !e.matches);
       }
     };
 
@@ -63,13 +55,18 @@ const ThemeApplier = ({ children }: { children: React.ReactNode }) => {
     return () => mediaQuery.removeEventListener('change', handleSystemChange);
   }, [theme, applyTheme]);
 
+  /**
+   * Hydration Guard
+   * Return a transparent shell during hydration to allow useSafeLayoutEffect 
+   * to do its work without UI flickering.
+   */
+  if (!mounted) {
+    return <div className="opacity-0">{children}</div>;
+  }
+
   return <>{children}</>;
 };
 
-/**
- * Enterprise ReduxProvider including Persistence and Theme synchronization.
- * PersistGate delays rendering until the stored state is rehydrated.
- */
 export function ReduxProvider({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
@@ -79,4 +76,3 @@ export function ReduxProvider({ children }: { children: React.ReactNode }) {
     </Provider>
   );
 }
-

@@ -18,6 +18,10 @@ interface CartSummaryProps {
     className?: string;
 }
 
+/**
+ * Enterprise Cart Summary Component.
+ * Powered by normalized selectors for high-performance financial and eco-metric calculation.
+ */
 export function CartSummary({
     shippingFee,
     tax,
@@ -26,12 +30,15 @@ export function CartSummary({
     isProcessing = false,
     className,
 }: CartSummaryProps) {
-    // Memoized Selectors
+    /** 
+     * Normalized Selectors
+     * Performance: Utilizes memoized selectors derived from EntityState for O(1) derived data.
+     */
     const subtotal = useAppSelector(selectCartSubtotal);
     const ecoCount = useAppSelector(selectEcoFriendlyCartCount);
 
     const total = subtotal + shippingFee + tax;
-    // Enterprise check: Disable action if cart has been emptied
+    // Enterprise check: Disable action if cart has been emptied (verified via normalized total)
     const isCartEmpty = subtotal === 0;
 
     return (
@@ -71,7 +78,7 @@ export function CartSummary({
             </div>
 
             <div className="flex items-center justify-between" aria-live="polite">
-                <span className="text-lg font-bold">Total</span>
+                <span className="text-lg font-bold text-(--foreground)">Total</span>
                 <span className="text-2xl font-black text-(--foreground) tabular-nums">
                     ${total.toFixed(2)}
                 </span>
@@ -120,7 +127,7 @@ export function CartSummary({
                     {isProcessing ? "Processing..." : buttonLabel}
                 </Button>
 
-                {shippingFee > 0 && !isCartEmpty && (
+                {shippingFee > 0 && !isCartEmpty && subtotal < 200 && (
                     <p className="text-center text-[10px] font-medium text-(--neutral-color) uppercase tracking-tighter opacity-70">
                         Add ${(200 - subtotal).toFixed(2)} more for free shipping
                     </p>

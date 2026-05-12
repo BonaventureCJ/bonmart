@@ -11,6 +11,11 @@ import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
 import { mainNavLinks } from './nav-links';
 
+/**
+ * Mobile Navigation Sidebar
+ * Handles route-change synchronization and accessible focus management.
+ * Integration: Uses memoized singleton selectors—normalization is not applicable to UI state.
+ */
 export const MobileNav = () => {
   const dispatch = useAppDispatch();
   const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);

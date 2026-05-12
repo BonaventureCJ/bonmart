@@ -21,18 +21,23 @@ interface WishlistItemProps {
 /**
  * WishlistItem Component
  * 
- * Refactored to manage its own state transitions via useAppDispatch,
- * satisfying the Single Responsibility Principle and fixing prop-type errors.
+ * Supports createEntityAdapter normalization.
  */
 export function WishlistItem({ item, className }: WishlistItemProps) {
     const { name, price, imageUrl, slug, category, isEcoFriendly } = item;
     const dispatch = useAppDispatch();
 
+    /**
+     * Optimized Handlers
+     * ToggleWishlist in the normalized slice performs an O(1) check
+     * against the entities dictionary before removing/adding.
+     */
     const handleRemove = () => {
         dispatch(toggleWishlist(item));
     };
 
     const handleMoveToCart = () => {
+        // Normalization ensures Cart handles quantity merges and Wishlist handles removal
         dispatch(addToCart({ ...item, quantity: 1 }));
         dispatch(toggleWishlist(item));
     };
@@ -87,8 +92,6 @@ export function WishlistItem({ item, className }: WishlistItemProps) {
                     <span className="text-lg font-bold tabular-nums text-(--foreground)">
                         ${price.toFixed(2)}
                     </span>
-
-                    {/* Eco-Branding: Swapped globe for leaf */}
                     {isEcoFriendly && (
                         <div
                             className="flex items-center gap-1 rounded-full bg-(--brand-color)/10 px-2 py-0.5 text-[10px] font-bold text-(--brand-color)"

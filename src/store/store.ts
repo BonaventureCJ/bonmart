@@ -11,7 +11,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import storage from 'redux-persist/lib/storage';
 
 import themeReducer from '@/features/theme/theme-slice';
 import navigationReducer from '@/features/navigation/navigation-slice';
@@ -21,7 +21,12 @@ import wishlistReducer from '@/features/wishlist/wishlist-slice';
 import ordersReducer from '@/features/orders/orders-slice';
 import searchReducer from '@/features/search/search-slice';
 
-// 1. Combine all reducers
+/**
+ * 1. Combine Reducers
+ * Enterprise Tip: We keep 'products' and 'orders' out of whitelist 
+ * to ensure fresh data from the API on every session, while 
+ * 'cart' and 'wishlist' persist for user convenience.
+ */
 const rootReducer = combineReducers({
   theme: themeReducer,
   navigation: navigationReducer,
@@ -32,30 +37,35 @@ const rootReducer = combineReducers({
   search: searchReducer,
 });
 
-// 2. Configuration for redux-persist
+/**
+ * 2. Persist Configuration
+ * Normalized structures from createEntityAdapter persist seamlessly as JSON.
+ */
 const persistConfig = {
   key: 'bonmart-root',
   storage,
-  // Only these slices will be saved to localStorage
   whitelist: ['cart', 'wishlist', 'theme', 'search'],
 };
 
-// 3. Create a persisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+/**
+ * 3. Store Configuration
+ */
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        // Ignore redux-persist actions to avoid serialization errors in console
+        // Essential: Ignore non-serializable redux-persist actions
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
       },
     }),
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 export const persistor = persistStore(store);
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+// Explicitly export types for use with useAppSelector and useAppDispatch hooks
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

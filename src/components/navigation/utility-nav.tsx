@@ -11,10 +11,18 @@ import { selectCartTotalQuantity } from '@/features/cart/cart-selectors';
 import { selectWishlistCount } from '@/features/wishlist/wishlist-selectors';
 import { utilityNavLinks } from './nav-links';
 
+/**
+ * Utility Navigation.
+ * Displays persistent links (Cart, Wishlist) with dynamic notification badges.
+ * Uses normalized state selectors for high-performance badge reactivity.
+ */
 export const UtilityNav = () => {
   const pathname = usePathname();
 
-  // Memoized Selectors
+  /**
+   * Normalized State Selectors
+   * Performance: O(1) derived count calculation from normalized EntityState.
+   */
   const cartCount = useAppSelector(selectCartTotalQuantity);
   const wishlistCount = useAppSelector(selectWishlistCount);
 
@@ -26,7 +34,7 @@ export const UtilityNav = () => {
           const isCart = item.iconName === 'cart';
           const isWishlist = item.iconName === 'heart';
 
-          // Determine the appropriate count for the badge
+          // Determine the appropriate count for the badge based on normalized data
           const count = isCart ? cartCount : isWishlist ? wishlistCount : 0;
           const hasBadge = count > 0;
 
@@ -54,13 +62,18 @@ export const UtilityNav = () => {
                   )}
                 />
 
-                {/* Dynamic Notification Badge for Cart and Wishlist */}
+                {/* 
+                  Dynamic Notification Badge: 
+                  The 'key={count}' forces the element to re-mount and re-run 
+                  the 'animate-zoom-in' utility every time the value changes.
+                */}
                 {hasBadge && (
                   <span
+                    key={count}
                     className={clsx(
                       "absolute top-1 right-1 flex h-4.5 min-w-[1.125rem] items-center justify-center rounded-full px-1",
                       "bg-(--brand-color) text-(--text-on-brand) text-[9px] font-bold tabular-nums ring-2 ring-(--background)",
-                      "animate-in zoom-in duration-300"
+                      "animate-zoom-in"
                     )}
                     aria-hidden="true"
                   >

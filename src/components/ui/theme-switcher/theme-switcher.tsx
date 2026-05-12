@@ -28,13 +28,17 @@ const themeIcons: Record<Theme, IconName> = {
 /**
  * ThemeSwitcher Component
  * 
- * Optimized with memoized selectors to prevent layout-wide re-renders.
- * Implements accessible Radio Group keyboard navigation and hydration safety.
+ * Manages singleton UI state for theme preference.
+ * Optimization: Uses memoized selectors derived from a simple state object.
+ * Normalization: createEntityAdapter is not applicable for singleton value toggles.
  */
 export const ThemeSwitcher = () => {
     const dispatch = useAppDispatch();
 
-    // Memoized Selector Integration
+    /** 
+     * Memoized Selector Integration
+     * Ensures this component only re-renders when the specific theme string changes.
+     */
     const activeTheme = useAppSelector(selectCurrentTheme);
 
     const [mounted, setMounted] = useState(false);
@@ -45,6 +49,7 @@ export const ThemeSwitcher = () => {
         )
     );
 
+    // Hydration Safety: Ensures the component only renders interactive state on the client
     useEffect(() => {
         setMounted(true);
     }, []);
@@ -53,6 +58,10 @@ export const ThemeSwitcher = () => {
         dispatch(setTheme(theme));
     };
 
+    /**
+     * handleKeyDown
+     * Implements WCAG Radio Group keyboard navigation patterns.
+     */
     const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
         const themeIndex = THEMES.indexOf(activeTheme);
         let newIndex = themeIndex;
@@ -86,13 +95,13 @@ export const ThemeSwitcher = () => {
         }
     };
 
-    // Shared container classes using semantic design tokens
+    // Shared container classes using semantic design tokens and TW v4 shorthand
     const containerClasses = clsx(
         'flex rounded-full p-1',
         'bg-(--toggle-container-bg)'
     );
 
-    // Skeleton State: Prevents hydration mismatch and layout shifts
+    // Skeleton State: Prevents hydration mismatch and "flicker" on route entry
     if (!mounted) {
         return (
             <div className={containerClasses} role="presentation">

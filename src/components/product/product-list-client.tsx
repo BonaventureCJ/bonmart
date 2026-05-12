@@ -5,18 +5,18 @@
 import { useAppSelector } from '@/store/hooks';
 import { ProductCard } from '@/components/product/product-card';
 import { Heading } from '@/components/ui/heading/heading';
-import { selectFilteredProducts } from '@/features/products/product-selectors';
+import { selectAllProducts } from '@/features/products/product-selectors';
 
 export function ProductListClient() {
-    // Memoized Selector for filtered results
-    const filteredItems = useAppSelector(selectFilteredProducts);
-    const hasProducts = filteredItems.length > 0;
+    const products = useAppSelector(selectAllProducts);
+    const hasProducts = products.length > 0;
 
     if (!hasProducts) {
         return (
             <div
                 className="flex flex-col items-center justify-center py-20 text-center"
                 role="status"
+                aria-live="polite"
             >
                 <Heading level={2} weight="semibold" className="mb-4">
                     No products found
@@ -33,9 +33,13 @@ export function ProductListClient() {
             aria-label="Product list"
             className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
         >
-            {filteredItems.map((product) => (
-                <ProductCard key={product.id} product={product} />
+            {products.map((product) => (
+                <ProductCard
+                    key={product.id}
+                    product={product}
+                />
             ))}
         </section>
     );
 }
+

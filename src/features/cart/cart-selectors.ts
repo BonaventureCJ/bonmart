@@ -2,30 +2,19 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
+import { cartAdapter } from './cart-slice';
 
-/**
- * Base Selector
- */
 const selectCartState = (state: RootState) => state.cart;
 
-/**
- * Selects raw items array
- */
-export const selectCartItems = createSelector(
-    [selectCartState],
-    (cart) => cart.items
-);
+export const {
+    selectAll: selectCartItems,
+    selectTotal: selectCartUniqueItemsCount,
+    selectEntities: selectCartEntities,
+    selectById: selectCartItemById,
+} = cartAdapter.getSelectors(selectCartState);
 
 /**
- * Total count of unique products in cart
- */
-export const selectCartUniqueItemsCount = createSelector(
-    [selectCartItems],
-    (items) => items.length
-);
-
-/**
- * Total quantity of all items (for the navbar badge)
+ * Total quantity of all items (Navbar Badge)
  */
 export const selectCartTotalQuantity = createSelector(
     [selectCartItems],
@@ -33,8 +22,7 @@ export const selectCartTotalQuantity = createSelector(
 );
 
 /**
- * Financial Calculations
- * Enterprise Tip: We keep raw numbers here and format for currency in the UI
+ * Subtotal calculation
  */
 export const selectCartSubtotal = createSelector(
     [selectCartItems],
@@ -42,8 +30,7 @@ export const selectCartSubtotal = createSelector(
 );
 
 /**
- * Green Initiative Selector
- * Calculates how many items in the cart are eco-friendly
+ * Eco-Friendly Count (Bonmart Green Initiative)
  */
 export const selectEcoFriendlyCartCount = createSelector(
     [selectCartItems],
@@ -52,9 +39,8 @@ export const selectEcoFriendlyCartCount = createSelector(
 
 /**
  * Parameterized Selector
- * Check if a specific product ID is already in the cart
+ * Now uses O(1) lookup via entities dictionary instead of .some()
  */
-export const selectIsItemInCart = (productId: number | string) =>
-    createSelector([selectCartItems], (items) =>
-        items.some((item) => String(item.id) === String(productId))
-    );
+export const selectIsItemInCart = (productId: number) =>
+    createSelector([selectCartEntities], (entities) => !!entities[productId]);
+

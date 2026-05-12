@@ -19,16 +19,21 @@ import { CartSummary } from '@/components/cart/cart-summary';
 /**
  * CartPage Component
  * Uses memoized selectors for enterprise-grade performance.
+ * Uses normalized state from createEntityAdapter.
  */
 export default function CartPage() {
   const router = useRouter();
 
-  // Memoized state selection for business logic
+  /**
+   * Normalized State Selection
+   * Performance: selectCartItems returns a referentially stable array from the adapter,
+   * preventing unnecessary re-renders of the list unless entities change.
+   */
   const items = useAppSelector(selectCartItems);
   const totalItems = useAppSelector(selectCartTotalQuantity);
   const subtotal = useAppSelector(selectCartSubtotal);
 
-  // UI logic
+  // UI logic - business rules for enterprise shipping/tax
   const shippingFee = subtotal > 200 || items.length === 0 ? 0 : 15.0;
   const tax = subtotal * 0.08;
 
@@ -68,14 +73,13 @@ export default function CartPage() {
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          {/* Cart Items List */}
+          {/* Cart Items List - Maps through normalized items */}
           <section className="lg:col-span-7 xl:col-span-8">
             <div className="flex flex-col border-t border-(--toggle-bg)" role="list">
               {items.map((item) => (
                 <CartItem
                   key={item.id}
                   item={item}
-                // Internal logic for update/remove is now handled within CartItem via useAppDispatch
                 />
               ))}
             </div>

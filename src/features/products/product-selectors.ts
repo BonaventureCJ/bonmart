@@ -3,31 +3,33 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
 import { selectSearchQuery } from '@/features/search/search-selectors';
+import { productsAdapter } from './product-slice';
 
 /**
  * Base Selector
- * Isolates the product slice from the root state.
  */
 const selectProductState = (state: RootState) => state.products;
 
 /**
- * Selects the master list of all products.
+ * Built-in Adapter Selectors
+ * selectAll: returns the array of products
+ * selectEntities: returns the lookup object (dictionary)
+ * selectById: returns a specific entity
  */
-export const selectAllProducts = createSelector(
-    [selectProductState],
-    (products) => products.items
-);
+export const {
+    selectAll: selectAllProducts,
+    selectEntities: selectProductEntities,
+    selectById: selectProductById,
+} = productsAdapter.getSelectors(selectProductState);
 
 /**
  * Specialized Search Results Selector
- * Used ONLY by the Search Results page. 
- * Reactively filters products based on the global search query.
+ * Uses the normalized selectAll for high-performance filtering.
  */
 export const selectSearchResults = createSelector(
     [selectAllProducts, selectSearchQuery],
     (items, query) => {
         const trimmedQuery = query.trim().toLowerCase();
-
         if (!trimmedQuery) return items;
 
         return items.filter(
@@ -40,26 +42,13 @@ export const selectSearchResults = createSelector(
 );
 
 /**
- * General Product Feed Selector
- * Used by the main Products Page.
- * Decoupled from the search query so the shop always displays the full catalog.
- */
-export const selectFilteredProducts = createSelector(
-    [selectAllProducts],
-    (items) => items
-);
-
-/**
- * Selects loading state.
+ * UI State Selectors
  */
 export const selectProductsLoading = createSelector(
     [selectProductState],
     (products) => products.isLoading
 );
 
-/**
- * Selects error state.
- */
 export const selectProductsError = createSelector(
     [selectProductState],
     (products) => products.error
@@ -74,20 +63,10 @@ export const selectProductCategories = createSelector(
 );
 
 /**
- * Parameterized Selector: Find a specific product by ID.
- */
-export const selectProductById = (productId: string | number) =>
-    createSelector([selectAllProducts], (items) =>
-        items.find((product) => String(product.id) === String(productId))
-    );
-
-/**
  * Parameterized Selector: Get item count for a specific category.
+ * Now performs efficiently against the normalized list.
  */
 export const selectProductCountByCategory = (categoryName: string) =>
-    createSelector(
-        [selectAllProducts],
-        (items) => items.filter(
-            (p) => p.category.toLowerCase() === categoryName.toLowerCase()
-        ).length
+    createSelector([selectAllProducts], (items) =>
+        items.filter((p) => p.category.toLowerCase() === categoryName.toLowerCase()).length
     );

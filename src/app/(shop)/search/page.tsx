@@ -12,11 +12,16 @@ import { Icon } from '@/components/ui/icon/icon';
 import PageContainer from '@/components/layout/page-container';
 
 /**
- * Enterprise Search Results Page for Bonmart.
+ * Search Results Page.
  * Consumes selectSearchResults to isolate search logic from the main shop feed.
+ * Leverages normalized state selectors for high-performance filtering.
  */
 export default function SearchPage() {
-    // Memoized Selectors
+    /** 
+     * Memoized Selectors
+     * Performance: selectSearchResults filters the normalized 'selectAll' 
+     * array derived from productsAdapter for referential stability.
+     */
     const query = useAppSelector(selectSearchQuery);
     const filteredProducts = useAppSelector(selectSearchResults);
 
@@ -68,6 +73,7 @@ export default function SearchPage() {
                     <section
                         className="mt-4 flex flex-col items-center justify-center rounded-2xl bg-(--surface-muted)/20 px-6 py-12 text-center"
                         role="status"
+                        aria-live="polite"
                     >
                         <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-(--surface-muted)/50">
                             <Icon

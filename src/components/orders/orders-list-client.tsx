@@ -14,9 +14,14 @@ import { Icon } from "@/components/ui/icon/icon";
  * OrdersListClient Component
  * Consumes the memoized order history to provide a high-performance 
  * dashboard view of historical purchases.
+ * Aligns with createEntityAdapter normalization for O(1) collection access.
  */
 export function OrdersListClient() {
-    // Memoized Selector Integration
+    /** 
+     * Normalized State Selection
+     * Performance: selectOrderHistory returns a referentially stable array derived 
+     * from the ordersAdapter, sorted newest-first via sortComparer.
+     */
     const history = useAppSelector(selectOrderHistory);
 
     if (history.length === 0) {

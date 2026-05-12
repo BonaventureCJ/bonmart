@@ -5,17 +5,19 @@
 import { clsx } from 'clsx';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
-import type { CartItem } from '@/features/cart/cart-slice';
+import type { Order } from '@/features/orders/orders-slice';
 
 /**
- * Enterprise Order Summary Card for Bonmart.
+ * Order Summary Card for Bonmart.
  * Optimized for post-purchase receipts and Order History lists.
- * This component remains mostly presentational to handle historical (immutible) data.
+ * This component remains mostly presentational to handle historical (immutable) data,
+ * aligning with the Picked item structure defined in the normalized Orders slice.
  */
 export interface OrderSummaryCardProps {
     orderNumber: string;
     date: string;
-    items: Array<Pick<CartItem, 'id' | 'name' | 'quantity' | 'price'>>;
+    // Aligning with the Picked types established in our normalized Order Entity
+    items: Order['items'];
     subtotal: number;
     shipping: number;
     tax: number;
@@ -98,17 +100,15 @@ export function OrderSummaryCard({
                     </div>
                 </div>
             </div>
-
-            {/* Footer: Final Total & Impact */}
-            <footer className="mt-auto border-t border-(--toggle-bg) p-6 bg-(--surface-muted)/5">
+            <div className="mt-auto border-t border-(--toggle-bg) p-6 bg-(--surface-muted)/5">
                 <div className="mb-6 flex items-center justify-between">
-                    <span className="text-base font-bold">Total Paid</span>
+                    <span className="text-base font-bold text-(--foreground)">Total Paid</span>
                     <span className="text-3xl font-black text-(--foreground) tracking-tighter tabular-nums">
                         ${total.toFixed(2)}
                     </span>
                 </div>
 
-                {/* Brand Mission Badge - Updated to use 'leaf' icon */}
+                {/* Brand Mission Badge - Green strategy iconography */}
                 <div
                     className="flex items-center gap-3 rounded-2xl bg-(--brand-color)/10 p-4 text-(--brand-color) ring-1 ring-(--brand-color)/20"
                     role="status"
@@ -118,7 +118,7 @@ export function OrderSummaryCard({
                         Order Impact: This purchase offset <span className="underline decoration-2 underline-offset-4 font-bold">2.4kg of CO2</span> via our reforestation partners.
                     </p>
                 </div>
-            </footer>
+            </div>
         </article>
     );
 }

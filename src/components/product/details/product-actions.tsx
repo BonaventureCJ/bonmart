@@ -13,10 +13,6 @@ import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
 import { selectIsProductWishlisted } from '@/features/wishlist/wishlist-selectors';
 import type { Product } from '@/data/mock-products';
 
-/**
- * Enterprise Product Actions Component.
- * Optimized with memoized selectors to sync Cart and Wishlist states.
- */
 export function ProductActions({ product }: { product: Product }) {
     const dispatch = useAppDispatch();
 
@@ -24,17 +20,13 @@ export function ProductActions({ product }: { product: Product }) {
     const [quantity, setQuantity] = useState(1);
     const [isAnimating, setIsAnimating] = useState(false);
 
-    /** 
-     * Memoized Selectors (Parameterized)
-     * Performance: Replaces direct array scanning with referentially stable lookups.
-     */
-    const isInCart = useAppSelector(selectIsItemInCart(product.id));
-    const isFavourite = useAppSelector(selectIsProductWishlisted(product.id));
+    const isInCart = useAppSelector((state) => selectIsItemInCart(product.id)(state));
+    const isFavourite = useAppSelector((state) => selectIsProductWishlisted(product.id)(state));
 
-    // Reset animation feedback after 2 seconds
+    // Reset animation feedback
     useEffect(() => {
         if (isAnimating) {
-            const timer = setTimeout(() => setIsAnimating(false), 2000);
+            const timer = setTimeout(() => setIsAnimating(false), 700);
             return () => clearTimeout(timer);
         }
     }, [isAnimating]);
@@ -44,6 +36,7 @@ export function ProductActions({ product }: { product: Product }) {
     };
 
     const handleAddToCart = () => {
+        // Normalized logic: Cart slice handles quantity updates via updateOne internally
         dispatch(addToCart({ ...product, quantity }));
         setIsAnimating(true);
     };

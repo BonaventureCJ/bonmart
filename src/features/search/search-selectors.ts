@@ -2,11 +2,20 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
+import { searchAdapter } from './search-slice';
 
 /**
- * Base Selector
+ * Base Selectors
  */
 const selectSearchState = (state: RootState) => state.search;
+const selectRecentSearchesState = (state: RootState) => state.search.recentSearches;
+
+/**
+ * Built-in Adapter Selectors for Recent Searches
+ */
+const { selectAll: selectAllRecentSearches } = searchAdapter.getSelectors(
+    selectRecentSearchesState
+);
 
 /**
  * Current search input value
@@ -26,15 +35,16 @@ export const selectIsSearchOpen = createSelector(
 
 /**
  * Selects the list of recent search queries.
- * Memoization ensures the list doesn't trigger re-renders unless updated.
+ * We reverse it because addOne appends to the end, 
+ * ensuring the most recent is first.
  */
 export const selectRecentSearches = createSelector(
-    [selectSearchState],
-    (search) => search.recentSearches
+    [selectAllRecentSearches],
+    (searches) => [...searches].reverse()
 );
 
 /**
- * Derived Selector: Returns true if the user is currently typing (query not empty)
+ * Derived Selector: Returns true if the user is currently typing
  */
 export const selectIsSearching = createSelector(
     [selectSearchQuery],

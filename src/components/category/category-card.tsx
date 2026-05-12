@@ -1,4 +1,4 @@
-// src/components/ecommerce/category-card.tsx
+// src/components/category/category-card.tsx
 
 'use client';
 
@@ -18,8 +18,9 @@ interface CategoryCardProps {
 }
 
 /**
- * Enterprise-grade Category Card
+ * Category Card
  * Consumes a centralized memoized selector for dynamic item counting.
+ * Aligns with normalized createEntityAdapter state structure.
  */
 export function CategoryCard({
     name,
@@ -27,8 +28,12 @@ export function CategoryCard({
     imageUrl,
     className,
 }: CategoryCardProps) {
-    // Optimized: Count derived from centralized memoized selector
-    const itemCount = useAppSelector(selectProductCountByCategory(name));
+    /** 
+     * Optimized: Count derived from centralized memoized selector.
+     * Performance: Under normalization, selectProductCountByCategory filters 
+     * the referentially stable 'selectAll' array derived from the adapter.
+     */
+    const itemCount = useAppSelector((state) => selectProductCountByCategory(name)(state));
 
     return (
         <Link

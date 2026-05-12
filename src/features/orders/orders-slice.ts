@@ -3,7 +3,6 @@
 import {
     createEntityAdapter,
     createSlice,
-    PayloadAction,
     EntityState,
 } from '@reduxjs/toolkit';
 import { type CartItem } from '@/features/cart/cart-slice';
@@ -28,10 +27,7 @@ export const ordersAdapter = createEntityAdapter<Order, string>({
     sortComparer: (a, b) => b.date.localeCompare(a.date),
 });
 
-/**
- * 2. Define the State Interface
- */
-interface OrdersState extends EntityState<Order, string> { }
+type OrdersState = EntityState<Order, string>;
 
 const initialState: OrdersState = ordersAdapter.getInitialState();
 

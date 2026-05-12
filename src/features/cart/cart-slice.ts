@@ -19,7 +19,7 @@ export const cartAdapter = createEntityAdapter<CartItem, number>({
     selectId: (item) => item.id,
 });
 
-export interface CartState extends EntityState<CartItem, number> { }
+export type CartState = EntityState<CartItem, number>;
 
 const initialState: CartState = cartAdapter.getInitialState();
 

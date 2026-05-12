@@ -13,7 +13,7 @@ export const wishlistAdapter = createEntityAdapter<Product, number>({
     // We keep the order products were added (default behavior)
 });
 
-interface WishlistState extends EntityState<Product, number> { }
+type WishlistState = EntityState<Product, number>;
 
 const initialState: WishlistState = wishlistAdapter.getInitialState();
 

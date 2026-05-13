@@ -165,7 +165,7 @@ export default function GlobalError({
 
                         <button
                             onClick={() => reset()}
-                            className="rounded-xl border border-[#e5e7eb] bg-white px-8 py-3 font-semibold text-[#171717] transition-colors hover:bg-[#f3f4f6] dark:border-[#374151] dark:bg-transparent dark:text-[#ededed] dark:hover:bg-[#374151] focus-ring"
+                            className="rounded-xl border border-[#e5e7eb] bg-white px-8 py-3 font-semibold text-[#171717] hover:bg-[#f3f4f6] dark:border-[#374151] dark:bg-transparent dark:text-[#ededed] dark:hover:bg-[#374151] focus-ring"
                         >
                             Retry Render Layout
                         </button>

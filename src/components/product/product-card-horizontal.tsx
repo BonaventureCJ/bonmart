@@ -78,7 +78,7 @@ export function ProductCardHorizontal({
     return (
         <article
             className={clsx(
-                'group relative flex w-full flex-row items-center gap-3 overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) p-2 transition-all duration-(--duration-long) hover:border-(--brand-color)/30 sm:gap-6 sm:p-4',
+                'group relative flex w-full flex-row items-center gap-3 overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) p-2 hover:border-(--brand-color)/30 sm:gap-6 sm:p-4',
                 className
             )}
         >
@@ -121,7 +121,7 @@ export function ProductCardHorizontal({
                                 size={16}
                                 filled={isFavourite}
                                 className={clsx(
-                                    "transition-all duration-300",
+                                    "transition-transform duration-200",
                                     isHeartAnimating && "scale-150",
                                     isFavourite ? "text-(--brand-color)" : "text-(--neutral-color)"
                                 )}
@@ -134,7 +134,7 @@ export function ProductCardHorizontal({
                             level={3}
                             weight="semibold"
                             align="left"
-                            className="line-clamp-1 text-xs text-(--foreground) transition-colors group-hover:text-(--brand-color) sm:text-lg"
+                            className="mt-0.5 line-clamp-1 text-xs text-(--foreground) group-hover:text-(--brand-color) sm:text-lg"
                         >
                             {name}
                         </Heading>

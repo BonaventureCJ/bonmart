@@ -52,7 +52,7 @@ export default function ServicesPage() {
                     {SERVICES_DATA.map((service) => (
                         <div
                             key={service.id}
-                            className="flex flex-col items-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center transition-all duration-(--duration-long) hover:border-(--brand-color)/30 hover:shadow-sm"
+                            className="flex flex-col items-center rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center hover:border-(--brand-color)/30 hover:shadow-sm"
                         >
                             <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-(--brand-color) text-(--text-on-brand)">
                                 <Icon name={service.icon} size={28} />

@@ -63,7 +63,7 @@ const ButtonInternal = forwardRef(
 
         const baseStyles = clsx(
             'inline-flex items-center justify-center rounded-full font-medium whitespace-nowrap select-none shrink-0',
-            'transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+            'ease-(--transition-ease-in-out)',
             'cursor-pointer disabled:cursor-not-allowed',
             !disableFocusRing && 'focus-ring',
             fullWidth && 'w-full'

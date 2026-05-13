@@ -102,7 +102,7 @@ export function Hero() {
 
             {/* Live Status Feedback */}
             <div
-                className="flex items-center gap-3 rounded-lg bg-(--surface-raised) p-3 shadow-lg ring-1 ring-(--toggle-bg) transition-all"
+                className="flex items-center gap-3 rounded-lg bg-(--surface-raised) p-3 shadow-lg ring-1 ring-(--toggle-bg)"
                 role="status"
             >
                 <Icon

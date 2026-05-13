@@ -28,7 +28,7 @@ export function ProductReviewCard({
         <article
             className={clsx(
                 'flex flex-col gap-4 rounded-2xl border border-(--toggle-bg) p-5',
-                'bg-(--surface-raised) transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'bg-(--surface-raised) ease-(--transition-ease-in-out)',
                 'hover:shadow-sm',
                 className
             )}

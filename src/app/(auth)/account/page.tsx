@@ -26,7 +26,7 @@ export default function AccountPage() {
 
         {/* Dashboard Grid */}
         <div className="grid w-full max-w-4xl flex-1 grid-cols-1 gap-6 sm:grid-cols-2">
-          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
+          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6">
             <Heading level={2} weight="semibold" align="left" className="text-lg">
               Profile Information
             </Heading>
@@ -35,7 +35,7 @@ export default function AccountPage() {
             </p>
           </section>
 
-          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6 transition-colors">
+          <section className="rounded-xl border border-(--footer-border) bg-(--surface-raised) p-6">
             <Heading level={2} weight="semibold" align="left" className="text-lg">
               Security & Privacy
             </Heading>

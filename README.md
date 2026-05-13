@@ -15,6 +15,7 @@ The project currently resides in the **In Development** stage and is deployed vi
 
 ## 💻 Technologies & Stack
 
+
 | Category | Technology | Purpose |
 | :--- | :--- | :--- |
 | **Framework** | Next.js 15+ | Enterprise-grade React framework for performance and scaling. |
@@ -47,14 +48,14 @@ npm install -g pnpm
 
 ### Installation
 
-1.  Proceed to GitHub, fork, then clone the repo:
+1. Proceed to GitHub, fork, then clone the repo:
 
-2.  Clone the repository:
+2. Clone the repository:
     ```bash
     git clone https://github.com/your-username/bonmart.git
     cd bonmart
     ```
-3.  Install all dependencies:
+3. Install all dependencies:
     ```bash
     pnpm install
     ```
@@ -71,131 +72,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 The application uses **Import Aliases** (e.g., `@/src/`) configured in `tsconfig.json` for cleaner imports.
 
-## 📂 Project Structure
-
-Following enterprise Next.js best practices, the project is structured for clear separation of concerns, supporting the **Single Responsibility Principle (SRP)**. Note that the project structure may be updated during the process of development to align with best practices and to adapt to project needs.
-
-```
-bonmart/
-│
-├── src/
-│   ├── app/                               # Next.js App Router
-│   │   ├── (public)/                      # Publicly accessible routes
-│   │   │   ├── layout.tsx                 # Root layout (includes ThemeProvider, ReduxProvider)
-│   │   │   ├── page.tsx                   # Homepage
-│   │   │   └── loading.tsx                # Global loading state
-│   │   │
-│   │   ├── (shop)/                        # E-commerce-specific routes
-│   │   │   ├── products/
-│   │   │   │   ├── page.tsx               # Product listing
-│   │   │   │   └── [productId]/page.tsx   # Product details
-│   │   │   ├── cart/page.tsx              # Cart
-│   │   │   ├── checkout/page.tsx          # Checkout
-│   │   │   └── orders/page.tsx            # Order history
-│   │   │
-│   │   ├── (auth)/                        # Authentication routes
-│   │   │   ├── login/page.tsx
-│   │   │   ├── register/page.tsx
-│   │   │   └── reset-password/page.tsx
-│   │   │
-│   │   ├── api/                           # Next.js API routes
-│   │   │   ├── products/route.ts
-│   │   │   └── auth/route.ts
-│   │   │
-│   │   ├── not-found.tsx                  # 404
-│   │   └── error.tsx                      # Global error handler
-│   │
-│   ├── components/                        # Reusable UI components
-│   │   ├── common/                        # Generic, reusable building blocks
-│   │   │   ├── Button.tsx
-│   │   │   ├── Input.tsx
-│   │   │   ├── Modal.tsx
-│   │   │   └── Spinner.tsx
-│   │   │
-│   │   ├── layout/                        # Layout and navigation
-│   │   │   ├── Header.tsx
-│   │   │   ├── Footer.tsx
-│   │   │   └── Navbar.tsx
-│   │   │
-│   │   ├── product/                       # Product-related components
-│   │   │   ├── ProductCard.tsx
-│   │   │   ├── ProductGrid.tsx
-│   │   │   └── ProductDetails.tsx
-│   │   │
-│   │   └── cart/                          # Cart-related UI components
-│   │       ├── CartItem.tsx
-│   │       └── CartSummary.tsx
-│   │
-│   ├── features/                          # Redux Toolkit feature slices
-│   │   ├── cart/
-│   │   │   ├── cartSlice.ts
-│   │   │   └── cartSelectors.ts
-│   │   ├── products/
-│   │   │   ├── productsSlice.ts
-│   │   │   └── productsSelectors.ts
-│   │   └── user/
-│   │       ├── userSlice.ts
-│   │       └── userSelectors.ts
-│   │
-│   ├── hooks/                             # Reusable React hooks
-│   │   ├── useMediaQuery.ts
-│   │   ├── useDebounce.ts
-│   │   ├── useToggle.ts
-│   │   └── useClientOnly.ts
-│   │
-│   ├── lib/                               # Core libraries, singletons, and helpers
-│   │   ├── axiosClient.ts                 # Preconfigured Axios/fetch client
-│   │   ├── helpers.ts                     # Generic helper functions
-│   │   ├── constants.ts                   # Constant values
-│   │   ├── seo.config.ts                  # SEO defaults and metadata
-│   │   └── utils.ts                       # Utility functions
-│   │
-│   ├── providers/                         # Application-level providers
-│   │   ├── ThemeProvider.tsx
-│   │   ├── ReduxProvider.tsx
-│   │   └── QueryProvider.tsx              # Optional for React Query
-│   │
-│   ├── services/                          # API abstraction layer
-│   │   ├── productService.ts
-│   │   ├── userService.ts
-│   │   └── orderService.ts
-│   │
-│   ├── styles/                            # Global and shared styles
-│   │   ├── globals.css
-│   │   ├── typography.css
-│   │   ├── animations.css
-│   │   └── tailwind.css
-│   │
-│   ├── types/                             # TypeScript definitions
-│   │   ├── product.d.ts
-│   │   ├── cart.d.ts
-│   │   ├── user.d.ts
-│   │   └── index.d.ts
-│   │
-│   ├── utils/                             # Utility functions
-│   │   ├── formatCurrency.ts
-│   │   ├── getDiscountPrice.ts
-│   │   └── generateSlug.ts
-│   │
-│   └── __tests__/                         # Unit/integration tests (optional)
-│       ├── components/
-│       └── features/
-│
-├── public/                                # Static files (images, icons, etc.)
-│   ├── images/
-│   ├── icons/
-│   └── favicons/
-│
-├── .eslintrc.json                         # ESLint config
-├── .prettierrc                            # Prettier config
-├── next.config.ts
-├── tailwind.config.ts
-├── tsconfig.json
-├── postcss.config.js
-└── package.json
-
-```
-
 ## ⚙️ Configuration & Principles
 
 Adherence to high-quality code and design standards is non-negotiable.
@@ -206,11 +82,18 @@ Adherence to high-quality code and design standards is non-negotiable.
   * **Light-Dark Themes:** A comprehensive light/dark theme is implemented using the Tailwind CSS `dark:` variant and CSS variables. This ensures the design is accessible and user-friendly in all lighting conditions.
   * **Utility-First:** Styling is primarily managed through Tailwind CSS classes, reducing the need for custom CSS and promoting consistency.
 
-### State Management & Persistence
+### State Management & Performance Optimization
 
-The application employs a robust, hybrid state management architecture designed for data durability, SEO optimization, and seamless hydration in a Next.js environment.
+The application employs a robust, highly optimized hybrid state management architecture designed for enterprise scaling, state durability, SEO synchronization, and seamless hydration in Next.js.
 
-*   **Redux Toolkit (Centralized State):** Managed via the **FLUX pattern** with domain-driven **Slices** (e.g., `cart`, `wishlist`, `theme`).
+*   **State Normalization (`createEntityAdapter`):** 
+    *   To maximize data management performance, application state slices (such as products) are normalized using Redux Toolkit's `createEntityAdapter`.
+    *   This eliminates deeply nested tree structures by organizing entities into linear tables of `ids` and `entities`.
+    *   State updates and search lookups scale with $O(1)$ algorithmic runtime efficiency, substantially increasing speed when dealing with thousands of enterprise stock units (SKUs).
+*   **Memoized Selectors (`createSelector`):** 
+    *   UI performance is optimized by memoizing all data queries using `createSelector`.
+    *   The state layer leverages the high-performance, built-in selectors automatically generated via `createEntityAdapter.getSelectors()`.
+    *   This architecture caches read calculations, ensuring components only rerender when underlying slice entities change, preventing expensive overhead processing.
 *   **Enterprise Persistence Layer:**
     *   **Redux Persist:** Critical user data (Cart, Wishlist, Theme, and Search History) is whitelisted and persisted to `localStorage`, ensuring data survives page refreshes and browser sessions.
     *   **Next.js Hydration Safety:** Implements `PersistGate` within the `ReduxProvider` to prevent UI flickering and "Hydration Mismatch" errors by delaying rendering until the persisted state is fully rehydrated.
@@ -218,7 +101,6 @@ The application employs a robust, hybrid state management architecture designed 
     *   Following SEO best practices, the active **Search Query** is synchronized with URL parameters (`?q=`).
     *   This ensures search results are **shareable**, **bookmarkable**, and fully accessible via the browser's back/forward navigation.
 *   **Type-Safe Architecture:** Full TypeScript integration across the state layer, including typed hooks (`useAppSelector`, `useAppDispatch`) and exhaustive state interfaces for total maintainability.
-
 
 ### Accessibility (A11Y) & SEO
 
@@ -230,7 +112,7 @@ The application employs a robust, hybrid state management architecture designed 
 
 ### Componentization & Naming
 
-  * **Componentization:** The UI is broken down into small, reusable components (**Atomic Design** is a guiding methodology) to maintain the **Single Responsibility Principle (SRP)**.
+  * **Componentization:** The UI is broken down into small, reusable components to maintain the **Single Responsibility Principle (SRP)**.
   * **File Naming:**
       * Component file names use **kebab-case** (e.g., `mobile-nav.tsx`).
       * Component export names use **PascalCase** (e.g., `export default function MobileNav(...)`).
@@ -238,6 +120,7 @@ The application employs a robust, hybrid state management architecture designed 
 ## 📦 Scripts Reference
 
 These scripts are defined in your `package.json` and are run using `pnpm <script-name>`.
+
 
 | Script | Command | Description |
 | :--- | :--- | :--- |
@@ -262,7 +145,3 @@ Contributions are what make the open-source community an amazing place to learn,
 ## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
-
------
-
-

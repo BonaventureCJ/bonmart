@@ -29,27 +29,21 @@ export function Footer() {
           {/* Navigation Section */}
           <nav aria-label="Footer navigation">
             <ul className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm md:justify-start">
-              <li>
-                {/* 
-                  Reusable attribution containing the BonaCJIcon 
-                  and semantic external anchor tag.
-                */}
+              <li className="flex items-center">
                 <Attribution />
               </li>
-              <li>
+              <li className="flex items-center">
                 <Link
                   className={clsx(
-                    'transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
-                    'text-(--neutral-color) hover:text-(--brand-color)',
-                    'focus-ring rounded-md p-1 -m-1',
-                    'underline-offset-4 hover:underline'
+                    '-m-1 p-1 rounded-md text-(--neutral-color) underline-offset-4 transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
+                    'hover:text-(--brand-color) hover:underline',
+                    'focus-ring'
                   )}
                   href="/privacy"
                 >
                   Privacy Policy
                 </Link>
               </li>
-
             </ul>
           </nav>
 
@@ -57,9 +51,19 @@ export function Footer() {
           <div className="text-center md:text-right">
             <p className="text-sm text-(--neutral-color)">
               &copy; {currentYear}{' '}
-              <span className="font-semibold text-(--foreground)">
+              <a
+                href="https://bonaventurecj.github.io/portfolio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={clsx(
+                  '-m-0.5 inline-block rounded-xs p-0.5 font-semibold text-(--foreground) underline-offset-4 transition-colors duration-(--duration-long) ease-(--transition-ease-in-out)',
+                  'hover:text-(--brand-color) hover:underline',
+                  'focus-ring'
+                )}
+                aria-label="Visit Bonaventure C.J. Ugwu's portfolio (opens in a new tab)"
+              >
                 Bonaventure C.J. Ugwu
-              </span>
+              </a>
               . All rights reserved.
             </p>
           </div>

@@ -10,8 +10,7 @@ interface AttributionProps {
 
 /**
  * Attribution Component
- * A reusable branding element for developer credit.
- * Placed in branding to centralize author identity assets.
+ * Reusable developer credit element complying with accessibility criteria.
  */
 export const Attribution: FC<AttributionProps> = ({ className }) => {
     return (
@@ -26,7 +25,7 @@ export const Attribution: FC<AttributionProps> = ({ className }) => {
                 href="https://bonaventurecj.github.io/portfolio"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="focus-ring group flex items-center gap-1.5 font-medium transition-colors hover:text-(--brand-color) rounded-sm"
+                className="focus-ring group flex items-center gap-1.5 rounded-xs font-medium transition-colors hover:text-(--brand-color)"
                 aria-label="Visit Bonaventure CJ's portfolio (opens in a new tab)"
             >
                 <BonaCJIcon
@@ -38,4 +37,3 @@ export const Attribution: FC<AttributionProps> = ({ className }) => {
         </div>
     );
 };
-

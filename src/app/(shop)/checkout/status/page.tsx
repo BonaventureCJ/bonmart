@@ -33,7 +33,7 @@ function StatusContent() {
         <main className="mx-auto max-w-3xl py-12 md:py-20">
             <header className="mb-12 flex flex-col items-center">
                 <div
-                    className={`mb-6 flex h-20 w-20 items-center justify-center rounded-full transition-colors ${isSuccess
+                    className={`mb-6 flex h-20 w-20 items-center justify-center rounded-full ${isSuccess
                         ? 'bg-(--brand-color)/10 text-(--brand-color)'
                         : 'bg-(--error)/10 text-(--error)'
                         }`}

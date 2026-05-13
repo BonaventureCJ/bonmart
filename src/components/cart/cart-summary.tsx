@@ -45,7 +45,7 @@ export function CartSummary({
         <section
             aria-labelledby="summary-heading"
             className={clsx(
-                'flex flex-col gap-6 rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-6 shadow-sm transition-all duration-(--duration-long) sm:p-8',
+                'flex flex-col gap-6 rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-6 shadow-sm sm:p-8',
                 className
             )}
         >

@@ -39,7 +39,7 @@ export function OrderSummaryCard({
         <article
             className={clsx(
                 'flex flex-col overflow-hidden rounded-3xl border border-(--toggle-bg)',
-                'bg-(--surface-raised) shadow-sm transition-all duration-(--duration-long)',
+                'bg-(--surface-raised) shadow-sm',
                 className
             )}
         >

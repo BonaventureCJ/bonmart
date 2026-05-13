@@ -32,7 +32,7 @@ export function ImpactCard({
         <article
             className={clsx(
                 'group relative flex flex-col gap-4 overflow-hidden rounded-3xl p-6 sm:p-8',
-                'transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'ease-(--transition-ease-in-out)',
                 'border border-(--toggle-bg)',
                 isProminent
                     ? 'bg-(--brand-color) text-(--text-on-image)'

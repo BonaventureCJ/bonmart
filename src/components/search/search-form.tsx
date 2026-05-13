@@ -97,7 +97,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             <div
                 className={clsx(
                     "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
-                    "transition-all duration-(--duration-long) ease-(--transition-ease-in-out)",
+                    "ease-(--transition-ease-in-out)",
                     "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
                     "dark:bg-(--surface-muted)"
                 )}

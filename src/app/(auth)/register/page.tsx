@@ -42,7 +42,7 @@ export default function RegisterPage() {
             <span className="opacity-70">Already have an account?</span>{" "}
             <Link
               href="/login"
-              className="font-medium underline underline-offset-4 transition-colors hover:text-(--brand-color) focus-ring rounded-sm"
+              className="font-medium underline underline-offset-4 hover:text-(--brand-color) focus-ring rounded-sm"
             >
               Login
             </Link>

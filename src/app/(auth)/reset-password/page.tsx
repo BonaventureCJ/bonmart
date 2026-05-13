@@ -41,7 +41,7 @@ export default function ResetPasswordPage() {
           <p className="px-8 text-center text-sm text-(--neutral-color)">
             <Link
               href="/login"
-              className="font-medium underline underline-offset-4 transition-colors hover:text-(--brand-color) focus-ring rounded-sm"
+              className="font-medium underline underline-offset-4 hover:text-(--brand-color) focus-ring rounded-sm"
             >
               Back to Login
             </Link>

@@ -40,7 +40,7 @@ export function CategoryCard({
             href={`/category/${slug}`}
             className={clsx(
                 'group relative flex aspect-[4/5] w-full flex-col overflow-hidden rounded-3xl',
-                'bg-(--surface-muted) transition-all duration-(--duration-long) ease-(--transition-ease-in-out)',
+                'bg-(--surface-muted) ease-(--transition-ease-in-out)',
                 'focus-ring outline-offset-4',
                 className
             )}

@@ -41,7 +41,7 @@ export function CartItem({ item, className }: CartItemProps) {
     return (
         <article
             className={clsx(
-                'group flex items-center gap-4 border-b border-(--toggle-bg) bg-(--background) py-6 transition-colors duration-(--duration-long) last:border-0',
+                'group flex items-center gap-4 border-b border-(--toggle-bg) bg-(--background) py-6 duration-(--duration-long) last:border-0',
                 className
             )}
             role="listitem"
@@ -62,7 +62,7 @@ export function CartItem({ item, className }: CartItemProps) {
                         <Heading
                             level={6}
                             weight="semibold"
-                            className="line-clamp-1 text-sm transition-colors hover:text-(--brand-color) sm:text-base"
+                            className="line-clamp-1 text-sm hover:text-(--brand-color) sm:text-base"
                         >
                             {name}
                         </Heading>

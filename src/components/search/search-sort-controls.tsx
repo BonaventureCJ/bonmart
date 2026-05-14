@@ -1,9 +1,8 @@
 // src/components/search/search-sort-controls.tsx
-
 'use client';
 
 import React, { useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { type SortOption } from '@/features/products/product-selectors';
 
@@ -12,11 +11,13 @@ interface SearchSortControlsProps {
 }
 
 /**
- * Search Result Sorting Controller Panel
- * Drives multi-criteria calculations instantly via parameter manipulation structures.
+ * Universal Product Sorting Controller Panel
+ * Drives multi-criteria state calculations instantly via parameter manipulation structures.
+ * Patched with usePathname to function independently on any route without pushing to /search.
  */
 export const SearchSortControls: React.FC<SearchSortControlsProps> = ({ currentSort }) => {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const [isPending, startTransition] = useTransition();
 
@@ -25,7 +26,8 @@ export const SearchSortControls: React.FC<SearchSortControlsProps> = ({ currentS
         currentParams.set('sort', newSort);
 
         startTransition(() => {
-            router.push(`/search?${currentParams.toString()}`);
+            // Natively targets the active pathname instead of hardcoding '/search'
+            router.push(`${pathname}?${currentParams.toString()}`);
         });
     };
 

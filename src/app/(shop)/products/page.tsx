@@ -1,12 +1,18 @@
 // src/app/(shop)/products/page.tsx
 
 import { Metadata } from 'next';
+import React, { Suspense } from 'react';
 import { Heading } from '@/components/ui/heading/heading';
 import PageContainer from '@/components/layout/page-container';
 import { ProductListClient } from '@/components/product/product-list-client';
+import { type SortOption } from '@/features/products/product-selectors';
+
+interface ProductsPageProps {
+    searchParams: Promise<{ sort?: string }>;
+}
 
 /**
- * Enterprise SEO Metadata - Remains on the Server
+ * SEO Metadata - Lives on the Server
  */
 export const metadata: Metadata = {
     title: 'All Products | Bonmart',
@@ -22,16 +28,16 @@ export const metadata: Metadata = {
 /**
  * ProductsPage Component
  * Optimized for consistent vertical rhythm and semantic structure.
+ * Catches search parameters concurrently on the server.
  */
-export default function ProductsPage() {
+export default async function ProductsPage({ searchParams }: ProductsPageProps) {
+    const resolvedParams = await searchParams;
+    const sort = (resolvedParams.sort?.trim() || 'name-asc') as SortOption;
+
     return (
         <PageContainer>
             <div className="flex flex-col">
-                {/* 
-                  Header Section:
-                  - Spacing: Uses semantic border colors and consistent padding.
-                  - Typography: Leverages standardized Heading and neutral color tokens.
-                */}
+                {/* Header Section */}
                 <header className="mb-10 flex flex-col items-center gap-4 border-b border-(--toggle-bg) pb-10 text-center">
                     <div className="max-w-2xl">
                         <Heading level={1} weight="bold" className="mb-3">
@@ -49,8 +55,10 @@ export default function ProductsPage() {
                     </div>
                 </header>
 
-                {/* Main Product Feed: Client-side state managed grid */}
-                <ProductListClient />
+                {/* Main Product Feed: Client-side state managed grid wrapped in loading fallback */}
+                <Suspense fallback={<div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 h-96 animate-pulse bg-(--surface-muted)/20 rounded-2xl" />}>
+                    <ProductListClient sort={sort} />
+                </Suspense>
             </div>
         </PageContainer>
     );

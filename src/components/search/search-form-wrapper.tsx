@@ -6,7 +6,7 @@ import React, { Suspense } from 'react';
 import { SearchForm } from './search-form';
 
 /**
- * Enterprise Static Bailout Isolation Wrapper
+ * Static Bailout Isolation Wrapper
  * Prevents search client hooks from causing root-level compilation de-optimization.
  */
 export const SearchFormWrapper: React.FC = () => {

@@ -5,14 +5,12 @@ import { Metadata } from 'next';
 import { Heading } from '@/components/ui/heading/heading';
 import PageContainer from '@/components/layout/page-container';
 import { SearchResultsClient } from '@/components/search/search-results-client';
+import { type SortOption } from '@/features/products/product-selectors';
 
 interface SearchPageProps {
-    searchParams: Promise<{ q?: string }>;
+    searchParams: Promise<{ q?: string; sort?: string }>;
 }
 
-/**
- * Enterprise SEO Metadata Engine - Managed on the Server Architecture
- */
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
     const resolvedParams = await searchParams;
     const query = resolvedParams.q?.trim() || '';
@@ -26,39 +24,26 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
     };
 }
 
-/**
- * Search Results Page.
- * Converted into a high-performance Server Component to completely eliminate hydration errors.
- * Extracts parameters securely at the network boundary root before hydrating client components.
- */
 export default async function SearchPage({ searchParams }: SearchPageProps) {
     const resolvedParams = await searchParams;
     const query = resolvedParams.q?.trim() || '';
+    const sort = (resolvedParams.sort?.trim() || 'name-asc') as SortOption;
 
     return (
         <PageContainer>
-            {/* 1. Compact Page Intro */}
             <header className="mx-auto mb-6 w-full max-w-2xl space-y-1 text-center">
-                <Heading
-                    level={1}
-                    weight="bold"
-                    align="center"
-                    className="tracking-tight text-(--foreground)"
-                >
+                <Heading level={1} weight="bold" align="center" className="tracking-tight text-(--foreground)">
                     {query ? `Results for "${query}"` : 'All Products'}
                 </Heading>
                 <p className="text-xs text-(--neutral-color) md:text-sm">
-                    {query
-                        ? "Tailored eco-friendly solutions matching your request."
-                        : "Our premium eco-friendly collection."
-                    }
+                    {query ? "Tailored eco-friendly solutions matching your request." : "Our premium eco-friendly collection."}
                 </p>
             </header>
 
-            {/* 2. Isolated Hydration Suspense Boundary */}
             <Suspense fallback={<div className="h-48 w-full animate-pulse rounded-2xl bg-(--surface-muted)/20" />}>
-                <SearchResultsClient query={query} />
+                <SearchResultsClient query={query} sort={sort} />
             </Suspense>
         </PageContainer>
     );
 }
+

@@ -3,18 +3,15 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
 import { productsAdapter } from './product-slice';
+import { type Product } from '@/data/mock-products';
 
 /**
- * Base Selector
+ * Supported Sort Options Matrix Types
  */
+export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'eco-high';
+
 const selectProductState = (state: RootState) => state.products;
 
-/**
- * Built-in Adapter Selectors
- * selectAll: returns the array of products
- * selectEntities: returns the lookup object (dictionary)
- * selectById: returns a specific entity
- */
 export const {
     selectAll: selectAllProducts,
     selectEntities: selectProductEntities,
@@ -22,21 +19,72 @@ export const {
 } = productsAdapter.getSelectors(selectProductState);
 
 /**
- * Specialized Parametric Search Results Selector
- * Refactored to decouple directly from internal slice state to ensure absolute server sync referential stability.
+ * Enterprise Parametric Search Filter & Multi-Criteria Sort Selector
+ * Decoupled from internal client states to achieve absolute stability.
+ * Utilizes 'isEcoFriendly' and fallback to 'rating.rate' under schema parameters.
  */
-export const selectProductsBySearchQuery = createSelector(
-    [selectAllProducts, (_state: RootState, query: string) => query],
-    (items, query) => {
+export const selectProductsBySearchAndSort = createSelector(
+    [
+        selectAllProducts,
+        (_state: RootState, query: string) => query,
+        (_state: RootState, _query: string, sort: SortOption) => sort
+    ],
+    (items, query, sort): Product[] => {
+        // 1. First Pass: Handle text filtering operations
         const trimmedQuery = query.trim().toLowerCase();
-        if (!trimmedQuery) return items;
+        let filteredItems = items;
 
-        return items.filter(
-            (product) =>
-                product.name.toLowerCase().includes(trimmedQuery) ||
-                product.category.toLowerCase().includes(trimmedQuery) ||
-                product.description.toLowerCase().includes(trimmedQuery)
-        );
+        if (trimmedQuery) {
+            filteredItems = items.filter(
+                (product) =>
+                    product.name.toLowerCase().includes(trimmedQuery) ||
+                    product.category.toLowerCase().includes(trimmedQuery) ||
+                    product.description.toLowerCase().includes(trimmedQuery)
+            );
+        }
+
+        // 2. Second Pass: Handle multi-criteria sorting variations
+        // Array clone protects underlying Redux memory state from mutations
+        return [...filteredItems].sort((a, b) => {
+            switch (sort) {
+                case 'price-asc':
+                    return a.price - b.price;
+                case 'price-desc':
+                    return b.price - a.price;
+                case 'eco-high':
+                    // Prioritize green eco-friendly items first
+                    if (a.isEcoFriendly !== b.isEcoFriendly) {
+                        return a.isEcoFriendly ? -1 : 1;
+                    }
+                    // Secondary sorting tier fallback: customer rating score rank
+                    return b.rating.rate - a.rating.rate;
+                case 'name-desc':
+                    return b.name.localeCompare(a.name);
+                case 'name-asc':
+                default:
+                    return a.name.localeCompare(b.name);
+            }
+        });
+    }
+);
+
+/**
+ * Direct Live Suggestion Autocomplete Aggregator Selector
+ */
+export const selectAutocompleteSuggestions = createSelector(
+    [selectAllProducts, (_state: RootState, query: string) => query],
+    (items, query): string[] => {
+        const trimmed = query.trim().toLowerCase();
+        if (!trimmed || trimmed.length < 2) return [];
+
+        const suggestions = new Set<string>();
+        for (const item of items) {
+            if (item.name.toLowerCase().includes(trimmed)) {
+                suggestions.add(item.name);
+            }
+            if (suggestions.size >= 5) break; // Hard limit suggestions overlay to 5 rows max
+        }
+        return Array.from(suggestions);
     }
 );
 
@@ -63,7 +111,6 @@ export const selectProductCategories = createSelector(
 
 /**
  * Parameterized Selector: Get item count for a specific category.
- * Now performs efficiently against the normalized list.
  */
 export const selectProductCountByCategory = (categoryName: string) =>
     createSelector([selectAllProducts], (items) =>

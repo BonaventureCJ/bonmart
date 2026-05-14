@@ -100,10 +100,17 @@ export function ProductCard({ product, className }: ProductCardProps) {
 
                 {isEcoFriendly && (
                     <div
-                        className="absolute top-1.5 left-1.5 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) md:top-2 md:left-2 md:px-2 md:text-[9px] md:tracking-wider"
+                        className={clsx(
+                            "absolute top-1.5 left-1.5 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) p-1 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) animate-zoom-in",
+                            "md:top-2 md:left-2 md:px-2 md:py-0.5 md:text-[9px] md:tracking-wider"
+                        )}
                         aria-label="Eco-friendly product"
                     >
-                        <Icon name="leaf" size={10} />
+                        <Icon
+                            name="leaf"
+                            size={10}
+                            className="text-(--text-on-image) transition-transform duration-300 group-hover:rotate-12"
+                        />
                         <span>Eco Choice</span>
                     </div>
                 )}

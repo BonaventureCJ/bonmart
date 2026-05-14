@@ -1,5 +1,4 @@
 // src/components/product/product-card-horizontal.tsx
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -22,8 +21,9 @@ interface ProductCardHorizontalProps {
 }
 
 /**
- * Compact Horizontal Product Card.
+ * Compact Horizontal Product Card
  * Uses normalized O(1) selectors for optimal performance.
+ * Enhanced with premium enterprise eco-choice badging structures.
  */
 export function ProductCardHorizontal({
     product,
@@ -78,7 +78,7 @@ export function ProductCardHorizontal({
     return (
         <article
             className={clsx(
-                'group relative flex w-full flex-row items-center gap-3 overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) p-2 hover:border-(--brand-color)/30 sm:gap-6 sm:p-4',
+                'group relative flex w-full flex-row items-center gap-3 overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) p-2 transition-[box-shadow,border-color] duration-(--duration-long) ease-(--transition-ease-in-out) hover:border-(--brand-color)/30 hover:shadow-md sm:gap-6 sm:p-4',
                 className
             )}
         >
@@ -93,9 +93,19 @@ export function ProductCardHorizontal({
                 />
 
                 {isEcoFriendly && (
-                    <div className="absolute top-1 left-1 z-10 flex items-center rounded-full bg-(--brand-color) p-0.5 sm:px-2 sm:py-0.5">
-                        <Icon name="leaf" size={10} className="text-(--text-on-image)" />
-                        <span className="ml-1 hidden text-[9px] font-bold uppercase text-(--text-on-image) sm:inline">
+                    <div
+                        className={clsx(
+                            "absolute top-1 left-1 z-10 flex items-center gap-1 rounded-full bg-(--brand-color) p-1 text-[8px] font-bold uppercase tracking-tighter text-(--text-on-image) animate-zoom-in",
+                            "sm:px-2 sm:py-0.5 sm:text-[9px] sm:tracking-wider"
+                        )}
+                        aria-label="Eco-friendly choice product alternative"
+                    >
+                        <Icon
+                            name="leaf"
+                            size={10}
+                            className="text-(--text-on-image) transition-transform duration-300 group-hover:rotate-12"
+                        />
+                        <span className="hidden xs:inline sm:inline">
                             Eco Choice
                         </span>
                     </div>
@@ -134,7 +144,7 @@ export function ProductCardHorizontal({
                             level={3}
                             weight="semibold"
                             align="left"
-                            className="mt-0.5 line-clamp-1 text-xs text-(--foreground) group-hover:text-(--brand-color) sm:text-lg"
+                            className="mt-0.5 line-clamp-1 text-xs text-(--foreground) transition-colors duration-(--duration-long) group-hover:text-(--brand-color) sm:text-lg"
                         >
                             {name}
                         </Heading>

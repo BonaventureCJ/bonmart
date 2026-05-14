@@ -19,7 +19,7 @@ export const {
 } = productsAdapter.getSelectors(selectProductState);
 
 /**
- * Parametric Search Filter & Multi-Criteria Sort Selector
+ * Enterprise Parametric Search Filter & Multi-Criteria Sort Selector
  * Decoupled from internal client states to achieve absolute stability.
  * Utilizes 'isEcoFriendly' and fallback to 'rating.rate' under schema parameters.
  */
@@ -88,6 +88,9 @@ export const selectAutocompleteSuggestions = createSelector(
     }
 );
 
+/**
+ * UI State Selectors
+ */
 export const selectProductsLoading = createSelector(
     [selectProductState],
     (products) => products.isLoading
@@ -97,3 +100,19 @@ export const selectProductsError = createSelector(
     [selectProductState],
     (products) => products.error
 );
+
+/**
+ * Derived List: All unique product categories.
+ */
+export const selectProductCategories = createSelector(
+    [selectAllProducts],
+    (items) => Array.from(new Set(items.map((item) => item.category)))
+);
+
+/**
+ * Parameterized Selector: Get item count for a specific category.
+ */
+export const selectProductCountByCategory = (categoryName: string) =>
+    createSelector([selectAllProducts], (items) =>
+        items.filter((p) => p.category.toLowerCase() === categoryName.toLowerCase()).length
+    );

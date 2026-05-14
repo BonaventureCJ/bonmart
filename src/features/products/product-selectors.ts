@@ -20,7 +20,8 @@ export const {
 
 /**
  * Parametric Search Filter & Multi-Criteria Sort Selector
- * Completely decoupled from internal client slice states to achieve absolute referential stability.
+ * Decoupled from internal client states to achieve absolute stability.
+ * Utilizes 'isEcoFriendly' and fallback to 'rating.rate' under schema parameters.
  */
 export const selectProductsBySearchAndSort = createSelector(
     [
@@ -43,7 +44,7 @@ export const selectProductsBySearchAndSort = createSelector(
         }
 
         // 2. Second Pass: Handle multi-criteria sorting variations
-        // Array clone protects underlying Redux memory state from mutable mutations
+        // Array clone protects underlying Redux memory state from mutations
         return [...filteredItems].sort((a, b) => {
             switch (sort) {
                 case 'price-asc':
@@ -51,8 +52,12 @@ export const selectProductsBySearchAndSort = createSelector(
                 case 'price-desc':
                     return b.price - a.price;
                 case 'eco-high':
-                    // Prioritizes higher ecological ratings first
-                    return (b.ecoRating || 0) - (a.ecoRating || 0);
+                    // Prioritize green eco-friendly items first
+                    if (a.isEcoFriendly !== b.isEcoFriendly) {
+                        return a.isEcoFriendly ? -1 : 1;
+                    }
+                    // Secondary sorting tier fallback: customer rating score rank
+                    return b.rating.rate - a.rating.rate;
                 case 'name-desc':
                     return b.name.localeCompare(a.name);
                 case 'name-asc':

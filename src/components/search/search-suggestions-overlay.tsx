@@ -9,7 +9,6 @@ import { removeRecentSearch, clearRecentSearches } from '@/features/search/searc
 import { selectRecentSearches } from '@/features/search/search-selectors';
 import { selectAutocompleteSuggestions } from '@/features/products/product-selectors';
 import { Button } from '@/components/ui/button/button';
-import { Icon } from '@/components/ui/icon/icon';
 
 interface SearchSuggestionsOverlayProps {
     readonly query: string;

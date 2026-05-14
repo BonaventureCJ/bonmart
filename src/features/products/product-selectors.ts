@@ -5,9 +5,6 @@ import { RootState } from '@/store/store';
 import { productsAdapter } from './product-slice';
 import { type Product } from '@/data/mock-products';
 
-/**
- * Supported Sort Options Matrix Types
- */
 export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'eco-high';
 
 const selectProductState = (state: RootState) => state.products;
@@ -19,23 +16,31 @@ export const {
 } = productsAdapter.getSelectors(selectProductState);
 
 /**
- * Enterprise Parametric Search Filter & Multi-Criteria Sort Selector
- * Decoupled from internal client states to achieve absolute stability.
- * Utilizes 'isEcoFriendly' and fallback to 'rating.rate' under schema parameters.
+ * Parametric Filter & Multi-Criteria Sort Selector
+ * Combines search queries, category parameters, and sorting logic seamlessly.
  */
-export const selectProductsBySearchAndSort = createSelector(
+export const selectProductsByFiltersAndSort = createSelector(
     [
         selectAllProducts,
         (_state: RootState, query: string) => query,
-        (_state: RootState, _query: string, sort: SortOption) => sort
+        (_state: RootState, _query: string, category: string) => category,
+        (_state: RootState, _query: string, _category: string, sort: SortOption) => sort
     ],
-    (items, query, sort): Product[] => {
-        // 1. First Pass: Handle text filtering operations
-        const trimmedQuery = query.trim().toLowerCase();
+    (items, query, category, sort): Product[] => {
         let filteredItems = items;
 
+        // 1. Category Filter Pass
+        const trimmedCategory = category.trim().toLowerCase();
+        if (trimmedCategory) {
+            filteredItems = filteredItems.filter(
+                (product) => product.category.toLowerCase() === trimmedCategory
+            );
+        }
+
+        // 2. Text Query Search Pass
+        const trimmedQuery = query.trim().toLowerCase();
         if (trimmedQuery) {
-            filteredItems = items.filter(
+            filteredItems = filteredItems.filter(
                 (product) =>
                     product.name.toLowerCase().includes(trimmedQuery) ||
                     product.category.toLowerCase().includes(trimmedQuery) ||
@@ -43,8 +48,7 @@ export const selectProductsBySearchAndSort = createSelector(
             );
         }
 
-        // 2. Second Pass: Handle multi-criteria sorting variations
-        // Array clone protects underlying Redux memory state from mutations
+        // 3. Multi-Criteria Sort Pass
         return [...filteredItems].sort((a, b) => {
             switch (sort) {
                 case 'price-asc':
@@ -52,11 +56,9 @@ export const selectProductsBySearchAndSort = createSelector(
                 case 'price-desc':
                     return b.price - a.price;
                 case 'eco-high':
-                    // Prioritize green eco-friendly items first
                     if (a.isEcoFriendly !== b.isEcoFriendly) {
                         return a.isEcoFriendly ? -1 : 1;
                     }
-                    // Secondary sorting tier fallback: customer rating score rank
                     return b.rating.rate - a.rating.rate;
                 case 'name-desc':
                     return b.name.localeCompare(a.name);
@@ -68,9 +70,6 @@ export const selectProductsBySearchAndSort = createSelector(
     }
 );
 
-/**
- * Direct Live Suggestion Autocomplete Aggregator Selector
- */
 export const selectAutocompleteSuggestions = createSelector(
     [selectAllProducts, (_state: RootState, query: string) => query],
     (items, query): string[] => {
@@ -82,15 +81,12 @@ export const selectAutocompleteSuggestions = createSelector(
             if (item.name.toLowerCase().includes(trimmed)) {
                 suggestions.add(item.name);
             }
-            if (suggestions.size >= 5) break; // Hard limit suggestions overlay to 5 rows max
+            if (suggestions.size >= 5) break;
         }
         return Array.from(suggestions);
     }
 );
 
-/**
- * UI State Selectors
- */
 export const selectProductsLoading = createSelector(
     [selectProductState],
     (products) => products.isLoading
@@ -101,17 +97,11 @@ export const selectProductsError = createSelector(
     (products) => products.error
 );
 
-/**
- * Derived List: All unique product categories.
- */
 export const selectProductCategories = createSelector(
     [selectAllProducts],
     (items) => Array.from(new Set(items.map((item) => item.category)))
 );
 
-/**
- * Parameterized Selector: Get item count for a specific category.
- */
 export const selectProductCountByCategory = (categoryName: string) =>
     createSelector([selectAllProducts], (items) =>
         items.filter((p) => p.category.toLowerCase() === categoryName.toLowerCase()).length

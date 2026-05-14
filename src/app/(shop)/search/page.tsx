@@ -11,7 +11,7 @@ interface SearchPageProps {
 }
 
 /**
- * Enterprise SEO Metadata Engine - Managed on the Server Architecture
+ * SEO Metadata Engine - Managed on the Server Architecture
  */
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
     const resolvedParams = await searchParams;
@@ -28,7 +28,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
 
 /**
  * Search Results Page.
- * Converted into a high-performance Server Component to completely eliminate hydration errors.
+ * High-performance Server Component that completely eliminate hydration errors.
  * Extracts parameters securely at the network boundary root before hydrating client components.
  */
 export default async function SearchPage({ searchParams }: SearchPageProps) {

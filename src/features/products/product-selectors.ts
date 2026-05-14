@@ -23,7 +23,7 @@ export const {
 
 /**
  * Specialized Parametric Search Results Selector
- * Refactored to decouple directly from internal slice state to ensure absolute server sync referential stability.
+ * Decouples directly from internal slice state to ensure absolute server sync referential stability.
  */
 export const selectProductsBySearchQuery = createSelector(
     [selectAllProducts, (_state: RootState, query: string) => query],

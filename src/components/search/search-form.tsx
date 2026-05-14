@@ -17,9 +17,9 @@ interface SearchFormProps {
 }
 
 /**
- * Enterprise Search Form
- * Optimized with Tailwind v4 variable shorthand and Normalized state.
- * Refactored to drive URL-state as the single source of truth under React 19 concurrent transitions.
+ * Search Form
+ * Optimized with Normalized state.
+ * Drives URL-state as the single source of truth under React 19 concurrent transitions.
  */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,

@@ -1,11 +1,9 @@
 // src/components/search/search-form.tsx
 
-// src/components/search/search-form.tsx
-
 'use client';
 
-import React, { useState, useEffect, type FormEvent, useCallback, useRef } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useState, useEffect, type FormEvent, useCallback, useRef, useTransition } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
 import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
@@ -21,26 +19,32 @@ interface SearchFormProps {
 /**
  * Enterprise Search Form
  * Optimized with Tailwind v4 variable shorthand and Normalized state.
+ * Refactored to drive URL-state as the single source of truth under React 19 concurrent transitions.
  */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
 }) => {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const dispatch = useAppDispatch();
+    const [isPending, startTransition] = useTransition();
 
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
     // Local state for immediate typing feedback
-    const [inputValue, setInputValue] = useState(searchParams.get('q') || '');
+    const activeUrlQuery = searchParams.get('q') || '';
+    const [inputValue, setInputValue] = useState(activeUrlQuery);
 
-    // Sync: URL -> Local State
+    // Sync: URL -> Local State & Redux Store Slice
     useEffect(() => {
-        const queryInUrl = searchParams.get('q') || '';
-        setInputValue(queryInUrl);
-    }, [searchParams]);
+        setInputValue(activeUrlQuery);
+        if (activeUrlQuery) {
+            dispatch(setQuery(activeUrlQuery));
+        }
+    }, [activeUrlQuery, dispatch]);
 
     // Close history when clicking outside
     useEffect(() => {
@@ -57,17 +61,19 @@ export const SearchForm: React.FC<SearchFormProps> = ({
 
     const handleSearchAction = useCallback((query: string) => {
         const trimmedQuery = query.trim();
+        const currentParams = new URLSearchParams(searchParams.toString());
 
         if (trimmedQuery) {
             dispatch(setQuery(trimmedQuery));
             dispatch(addRecentSearch(trimmedQuery));
             setIsHistoryVisible(false);
 
-            const params = new URLSearchParams();
-            params.set('q', trimmedQuery);
-            router.push(`/search?${params.toString()}`);
+            currentParams.set('q', trimmedQuery);
+            startTransition(() => {
+                router.push(`/search?${currentParams.toString()}`);
+            });
         }
-    }, [dispatch, router]);
+    }, [dispatch, router, searchParams]);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -77,8 +83,12 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const handleClear = () => {
         setInputValue('');
         dispatch(clearSearch());
-        if (searchParams.has('q')) {
-            router.push('/search');
+        const currentParams = new URLSearchParams(searchParams.toString());
+        if (currentParams.has('q')) {
+            currentParams.delete('q');
+            startTransition(() => {
+                router.push(pathname === '/search' ? '/search' : pathname);
+            });
         }
     };
 
@@ -97,9 +107,10 @@ export const SearchForm: React.FC<SearchFormProps> = ({
             <div
                 className={clsx(
                     "group relative flex w-full items-center overflow-hidden rounded-full border border-(--toggle-bg) bg-(--surface-raised) p-1.5",
-                    "ease-(--transition-ease-in-out)",
+                    "transition-all duration-100 ease-(--transition-ease-in-out)",
                     "focus-within:border-(--brand-color) focus-within:ring-1 focus-within:ring-(--brand-color) focus-within:shadow-sm",
-                    "dark:bg-(--surface-muted)"
+                    "dark:bg-(--surface-muted)",
+                    isPending && "opacity-80 cursor-wait"
                 )}
             >
                 <label htmlFor="global-search-input" className="sr-only">
@@ -110,7 +121,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     <Icon
                         name={inputValue ? "leaf" : "search"}
                         size={18}
-                        className="group-focus-within:text-(--brand-color) transition-colors text-(--neutral-color)"
+                        className="group-focus-within:text-(--brand-color) transition-colors duration-100 text-(--neutral-color)"
                     />
                 </div>
 
@@ -139,7 +150,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                             icon="close"
                             onClick={handleClear}
                             ariaLabel="Clear search input"
-                            className="size-8 !p-0 rounded-full text-(--neutral-color) hover:text-(--error)"
+                            className="size-8 !p-0 rounded-full text-(--neutral-color) transition-colors hover:text-(--error)"
                             disableFocusRing
                         />
                     )}
@@ -148,10 +159,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                         type="submit"
                         variant="primary"
                         size="sm"
+                        disabled={isPending}
                         className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
                         ariaLabel="Execute search"
                     >
-                        Search
+                        {isPending ? "..." : "Search"}
                     </Button>
                 </div>
             </div>

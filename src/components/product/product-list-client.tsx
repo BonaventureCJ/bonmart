@@ -2,13 +2,26 @@
 
 "use client";
 
+import React from 'react';
 import { useAppSelector } from '@/store/hooks';
 import { ProductCard } from '@/components/product/product-card';
 import { Heading } from '@/components/ui/heading/heading';
-import { selectAllProducts } from '@/features/products/product-selectors';
+import { SearchSortControls } from '@/components/search/search-sort-controls';
+import { selectProductsBySearchAndSort, type SortOption } from '@/features/products/product-selectors';
 
-export function ProductListClient() {
-    const products = useAppSelector(selectAllProducts);
+interface ProductListClientProps {
+    readonly sort: SortOption;
+}
+
+/**
+ * Client Product Catalog Display Grid
+ * Uses specialized parameter memory selectors to sort items smoothly in real-time.
+ */
+export function ProductListClient({ sort }: ProductListClientProps) {
+    // Leverage the multi-criteria selector, leaving query empty ('') for full listing view
+    const products = useAppSelector((state) =>
+        selectProductsBySearchAndSort(state, '', sort)
+    );
     const hasProducts = products.length > 0;
 
     if (!hasProducts) {
@@ -29,17 +42,21 @@ export function ProductListClient() {
     }
 
     return (
-        <section
-            aria-label="Product list"
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
-        >
-            {products.map((product) => (
-                <ProductCard
-                    key={product.id}
-                    product={product}
-                />
-            ))}
-        </section>
+        <div className="w-full space-y-6">
+            {/* Unified sorting control toolbar embedded directly on top of product matrix grid */}
+            <SearchSortControls currentSort={sort} />
+
+            <section
+                aria-label="Product list grid feed"
+                className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
+            >
+                {products.map((product) => (
+                    <ProductCard
+                        key={product.id}
+                        product={product}
+                    />
+                ))}
+            </section>
+        </div>
     );
 }
-

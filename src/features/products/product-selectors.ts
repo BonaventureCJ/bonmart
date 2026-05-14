@@ -2,7 +2,6 @@
 
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
-import { selectSearchQuery } from '@/features/search/search-selectors';
 import { productsAdapter } from './product-slice';
 
 /**
@@ -23,11 +22,11 @@ export const {
 } = productsAdapter.getSelectors(selectProductState);
 
 /**
- * Specialized Search Results Selector
- * Uses the normalized selectAll for high-performance filtering.
+ * Specialized Parametric Search Results Selector
+ * Refactored to decouple directly from internal slice state to ensure absolute server sync referential stability.
  */
-export const selectSearchResults = createSelector(
-    [selectAllProducts, selectSearchQuery],
+export const selectProductsBySearchQuery = createSelector(
+    [selectAllProducts, (_state: RootState, query: string) => query],
     (items, query) => {
         const trimmedQuery = query.trim().toLowerCase();
         if (!trimmedQuery) return items;

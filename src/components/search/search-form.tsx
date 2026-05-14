@@ -1,5 +1,4 @@
 // src/components/search/search-form.tsx
-
 'use client';
 
 import React, { useState, useEffect, type FormEvent, useCallback, useRef, useTransition } from 'react';
@@ -9,6 +8,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
+import { useDebounce } from '@/hooks/use-debounce';
 import { SearchSuggestionsOverlay } from './search-suggestions-overlay';
 
 interface SearchFormProps {
@@ -32,24 +32,14 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const activeUrlQuery = searchParams.get('q') || '';
     const [inputValue, setInputValue] = useState(activeUrlQuery);
 
-    // Auxiliary state for secondary live debouncing overlays
-    const [debouncedValue, setDebouncedValue] = useState(inputValue);
+    // Abstraction: Debounce high-frequency value updates cleanly via custom hook utility
+    const debouncedValue = useDebounce(inputValue, 180);
 
+    // Sync: URL Parameter -> Local Input State & Redux Store Slice
     useEffect(() => {
         setInputValue(activeUrlQuery);
-        setDebouncedValue(activeUrlQuery);
-        if (activeUrlQuery) {
-            dispatch(setQuery(activeUrlQuery));
-        }
+        dispatch(setQuery(activeUrlQuery));
     }, [activeUrlQuery, dispatch]);
-
-    // Live Debouncing Loop Optimization
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedValue(inputValue);
-        }, 180); // Strict, optimized delay loop speed
-        return () => clearTimeout(timer);
-    }, [inputValue]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -86,7 +76,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
 
     const handleClear = () => {
         setInputValue('');
-        setDebouncedValue('');
         dispatch(clearSearch());
         const currentParams = new URLSearchParams(searchParams.toString());
         if (currentParams.has('q')) {
@@ -99,7 +88,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
 
     const handleOverlaySelect = (query: string) => {
         setInputValue(query);
-        setDebouncedValue(query);
         handleSearchAction(query);
     };
 

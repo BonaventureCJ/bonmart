@@ -9,18 +9,13 @@ import { useAppDispatch } from '@/store/hooks';
 import { setQuery, clearSearch, addRecentSearch } from '@/features/search/search-slice';
 import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
-import { SearchHistory } from './search-history';
+import { SearchSuggestionsOverlay } from './search-suggestions-overlay';
 
 interface SearchFormProps {
     className?: string;
     placeholder?: string;
 }
 
-/**
- * Search Form
- * Optimized with Normalized state.
- * Drives URL-state as the single source of truth under React 19 concurrent transitions.
- */
 export const SearchForm: React.FC<SearchFormProps> = ({
     className,
     placeholder = "Search eco-friendly products..."
@@ -31,33 +26,42 @@ export const SearchForm: React.FC<SearchFormProps> = ({
     const dispatch = useAppDispatch();
     const [isPending, startTransition] = useTransition();
 
-    const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const [isOverlayVisible, setIsOverlayVisible] = useState(false);
     const formRef = useRef<HTMLFormElement>(null);
 
-    // Local state for immediate typing feedback
     const activeUrlQuery = searchParams.get('q') || '';
     const [inputValue, setInputValue] = useState(activeUrlQuery);
 
-    // Sync: URL -> Local State & Redux Store Slice
+    // Auxiliary state for secondary live debouncing overlays
+    const [debouncedValue, setDebouncedValue] = useState(inputValue);
+
     useEffect(() => {
         setInputValue(activeUrlQuery);
+        setDebouncedValue(activeUrlQuery);
         if (activeUrlQuery) {
             dispatch(setQuery(activeUrlQuery));
         }
     }, [activeUrlQuery, dispatch]);
 
-    // Close history when clicking outside
+    // Live Debouncing Loop Optimization
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedValue(inputValue);
+        }, 180); // Strict, optimized delay loop speed
+        return () => clearTimeout(timer);
+    }, [inputValue]);
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (formRef.current && !formRef.current.contains(event.target as Node)) {
-                setIsHistoryVisible(false);
+                setIsOverlayVisible(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleCloseHistory = useCallback(() => setIsHistoryVisible(false), []);
+    const handleCloseOverlay = useCallback(() => setIsOverlayVisible(false), []);
 
     const handleSearchAction = useCallback((query: string) => {
         const trimmedQuery = query.trim();
@@ -66,7 +70,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         if (trimmedQuery) {
             dispatch(setQuery(trimmedQuery));
             dispatch(addRecentSearch(trimmedQuery));
-            setIsHistoryVisible(false);
+            setIsOverlayVisible(false);
 
             currentParams.set('q', trimmedQuery);
             startTransition(() => {
@@ -82,6 +86,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
 
     const handleClear = () => {
         setInputValue('');
+        setDebouncedValue('');
         dispatch(clearSearch());
         const currentParams = new URLSearchParams(searchParams.toString());
         if (currentParams.has('q')) {
@@ -92,8 +97,9 @@ export const SearchForm: React.FC<SearchFormProps> = ({
         }
     };
 
-    const handleHistorySelect = (query: string) => {
+    const handleOverlaySelect = (query: string) => {
         setInputValue(query);
+        setDebouncedValue(query);
         handleSearchAction(query);
     };
 
@@ -113,10 +119,7 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     isPending && "opacity-80 cursor-wait"
                 )}
             >
-                <label htmlFor="global-search-input" className="sr-only">
-                    Search Products
-                </label>
-
+                <label htmlFor="global-search-input" className="sr-only">Search Products</label>
                 <div className="flex shrink-0 items-center pl-3">
                     <Icon
                         name={inputValue ? "leaf" : "search"}
@@ -130,8 +133,8 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                     type="search"
                     autoComplete="off"
                     value={inputValue}
-                    onFocus={() => setIsHistoryVisible(true)}
-                    onClick={() => !inputValue && setIsHistoryVisible(true)}
+                    onFocus={() => setIsOverlayVisible(true)}
+                    onClick={() => setIsOverlayVisible(true)}
                     onChange={(e) => setInputValue(e.target.value)}
                     placeholder={placeholder}
                     className={clsx(
@@ -154,7 +157,6 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                             disableFocusRing
                         />
                     )}
-
                     <Button
                         type="submit"
                         variant="primary"
@@ -168,10 +170,11 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                 </div>
             </div>
 
-            <SearchHistory
-                isVisible={isHistoryVisible}
-                onSelect={handleHistorySelect}
-                onClose={handleCloseHistory}
+            <SearchSuggestionsOverlay
+                query={debouncedValue}
+                isVisible={isOverlayVisible}
+                onSelect={handleOverlaySelect}
+                onClose={handleCloseOverlay}
             />
         </form>
     );

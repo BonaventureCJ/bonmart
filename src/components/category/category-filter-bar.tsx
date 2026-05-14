@@ -1,4 +1,5 @@
 // src/components/category/category-filter-bar.tsx
+
 'use client';
 
 import React, { useTransition } from 'react';
@@ -52,7 +53,7 @@ export const CategoryFilterBar: React.FC<CategoryFilterBarProps> = ({
                 size="sm"
                 onClick={() => handleCategorySelect('')}
                 className={clsx(
-                    "whitespace-nowrap transition-all duration-100",
+                    "whitespace-nowrap",
                     !activeCategory ? "shadow-sm" : "text-(--neutral-color)"
                 )}
             >
@@ -69,7 +70,7 @@ export const CategoryFilterBar: React.FC<CategoryFilterBarProps> = ({
                         size="sm"
                         onClick={() => handleCategorySelect(cat)}
                         className={clsx(
-                            "whitespace-nowrap capitalize transition-all duration-100",
+                            "whitespace-nowrap capitalize",
                             isSelected ? "shadow-sm" : "text-(--neutral-color)"
                         )}
                     >

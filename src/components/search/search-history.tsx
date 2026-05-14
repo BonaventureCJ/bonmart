@@ -10,15 +10,11 @@ import { selectRecentSearches } from '@/features/search/search-selectors';
 import { Button } from '@/components/ui/button/button';
 
 interface SearchHistoryProps {
-    onSelect: (query: string) => void;
-    isVisible: boolean;
-    onClose: () => void;
+    readonly onSelect: (query: string) => void;
+    readonly isVisible: boolean;
+    readonly onClose: () => void;
 }
 
-/**
- * Enterprise Search History
- * Refactored with createEntityAdapter O(1) performance and TW v4 variable shorthand.
- */
 export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisible, onClose }) => {
     const dispatch = useAppDispatch();
     const recentSearches = useAppSelector(selectRecentSearches);
@@ -49,12 +45,16 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
             case 'Escape':
                 onClose();
                 break;
+            default:
+                break;
         }
     }, [isVisible, recentSearches, focusedIndex, onSelect, onClose]);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
     }, [handleKeyDown]);
 
     if (!isVisible || recentSearches.length === 0) return null;
@@ -124,7 +124,8 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
                             className={clsx(
                                 "size-8 !p-0 rounded-full transition-all duration-(--duration-long)",
                                 "text-(--neutral-color) hover:text-(--error) hover:!bg-(--toggle-bg)",
-                                focusedIndex === index ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                                "opacity-100 lg:opacity-0 lg:group-hover:opacity-100",
+                                focusedIndex === index && "lg:opacity-100"
                             )}
                         />
                     </li>
@@ -133,4 +134,3 @@ export const SearchHistory: React.FC<SearchHistoryProps> = ({ onSelect, isVisibl
         </div>
     );
 };
-

@@ -1,6 +1,7 @@
 // src/features/products/product-selectors.ts
 
 import { createSelector } from '@reduxjs/toolkit';
+import { shallowEqual } from 'react-redux';
 import { RootState } from '@/store/store';
 import { productsAdapter } from './product-slice';
 import { type Product } from '@/data/mock-products';
@@ -97,9 +98,19 @@ export const selectProductsError = createSelector(
     (products) => products.error
 );
 
+/**
+ * Derived List: All unique product categories.
+ * Optimized: Enforces strict shallow array reference comparison.
+ * Performance: Completely blocks downstream UI re-renders if the list of categories is un-mutated.
+ */
 export const selectProductCategories = createSelector(
     [selectAllProducts],
-    (items) => Array.from(new Set(items.map((item) => item.category)))
+    (items) => Array.from(new Set(items.map((item) => item.category))),
+    {
+        memoizeOptions: {
+            resultEqualityCheck: shallowEqual
+        }
+    }
 );
 
 export const selectProductCountByCategory = (categoryName: string) =>

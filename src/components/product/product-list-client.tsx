@@ -7,56 +7,57 @@ import { useAppSelector } from '@/store/hooks';
 import { ProductCard } from '@/components/product/product-card';
 import { Heading } from '@/components/ui/heading/heading';
 import { SearchSortControls } from '@/components/search/search-sort-controls';
-import { selectProductsBySearchAndSort, type SortOption } from '@/features/products/product-selectors';
+import { CategoryFilterBar } from '@/components/category/category-filter-bar';
+import { selectProductsByFiltersAndSort, selectProductCategories, type SortOption } from '@/features/products/product-selectors';
 
 interface ProductListClientProps {
     readonly sort: SortOption;
+    readonly category: string;
 }
 
-/**
- * Client Product Catalog Display Grid
- * Uses specialized parameter memory selectors to sort items smoothly in real-time.
- */
-export function ProductListClient({ sort }: ProductListClientProps) {
-    // Leverage the multi-criteria selector, leaving query empty ('') for full listing view
+export function ProductListClient({ sort, category }: ProductListClientProps) {
+    // 1. Gather all unique catalog categories dynamically
+    const categories = useAppSelector(selectProductCategories);
+
+    // 2. Filter normalized entities against all active parameters
     const products = useAppSelector((state) =>
-        selectProductsBySearchAndSort(state, '', sort)
+        selectProductsByFiltersAndSort(state, '', category, sort)
     );
     const hasProducts = products.length > 0;
 
-    if (!hasProducts) {
-        return (
-            <div
-                className="flex flex-col items-center justify-center py-20 text-center"
-                role="status"
-                aria-live="polite"
-            >
-                <Heading level={2} weight="semibold" className="mb-4">
-                    No products found
-                </Heading>
-                <p className="text-(--neutral-color)">
-                    We couldn&apos;t find any products matching your criteria.
-                </p>
-            </div>
-        );
-    }
-
     return (
-        <div className="w-full space-y-6">
-            {/* Unified sorting control toolbar embedded directly on top of product matrix grid */}
+        <div className="w-full space-y-4">
+            {/* Horizontal Dynamic Navigation Bar */}
+            <CategoryFilterBar categories={categories} activeCategory={category} />
+
+            {/* Sorting Toolbar Select Strip */}
             <SearchSortControls currentSort={sort} />
 
-            <section
-                aria-label="Product list grid feed"
-                className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
-            >
-                {products.map((product) => (
-                    <ProductCard
-                        key={product.id}
-                        product={product}
-                    />
-                ))}
-            </section>
+            <div className="flex justify-end pt-2">
+                <span className="text-xs font-medium tabular-nums text-(--neutral-color)">
+                    Showing {products.length} {products.length === 1 ? 'result' : 'results'}
+                </span>
+            </div>
+
+            {hasProducts ? (
+                <section
+                    aria-label="Filtered product list grid"
+                    className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4"
+                >
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </section>
+            ) : (
+                <div className="flex flex-col items-center justify-center py-16 text-center" role="status">
+                    <Heading level={2} weight="semibold" className="mb-2 text-(--foreground)">
+                        No products match your criteria
+                    </Heading>
+                    <p className="text-sm text-(--neutral-color)">
+                        Try clearing or modifying your filters.
+                    </p>
+                </div>
+            )}
         </div>
     );
 }

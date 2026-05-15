@@ -8,20 +8,18 @@ import { Icon } from '@/components/ui/icon/icon';
 import type { Order } from '@/features/orders/orders-slice';
 
 /**
- * Order Summary Card for Bonmart.
+ * Order Summary Card.
  * Optimized for post-purchase receipts and Order History lists.
- * This component remains mostly presentational to handle historical (immutable) data,
- * aligning with the Picked item structure defined in the normalized Orders slice.
  */
 export interface OrderSummaryCardProps {
     orderNumber: string;
     date: string;
-    // Aligning with the Picked types established in our normalized Order Entity
     items: Order['items'];
     subtotal: number;
     shipping: number;
     tax: number;
     total: number;
+    status: Order['status'];
     className?: string;
 }
 
@@ -33,8 +31,17 @@ export function OrderSummaryCard({
     shipping,
     tax,
     total,
+    status,
     className,
 }: OrderSummaryCardProps) {
+    const statusConfig = {
+        processing: { label: 'Processing', step: 1 },
+        shipped: { label: 'Shipped', step: 2 },
+        delivered: { label: 'Delivered', step: 3 },
+    };
+
+    const currentStep = statusConfig[status].step;
+
     return (
         <article
             className={clsx(
@@ -50,9 +57,19 @@ export function OrderSummaryCard({
                         <p className="text-[10px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-60">
                             Order Reference
                         </p>
-                        <Heading level={4} weight="bold" className="text-lg tabular-nums">
-                            #{orderNumber}
-                        </Heading>
+                        <div className="flex items-center gap-3">
+                            <Heading level={4} weight="bold" className="text-lg tabular-nums">
+                                #{orderNumber}
+                            </Heading>
+                            <span className={clsx(
+                                "rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ring-1 ring-inset",
+                                status === 'delivered'
+                                    ? "bg-(--brand-color)/10 text-(--brand-color) ring-(--brand-color)/20"
+                                    : "bg-amber-500/10 text-amber-600 ring-amber-500/20"
+                            )}>
+                                {status}
+                            </span>
+                        </div>
                     </div>
                     <div className="text-right space-y-1">
                         <p className="text-[10px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-60">
@@ -62,6 +79,30 @@ export function OrderSummaryCard({
                     </div>
                 </div>
             </header>
+
+            {/* Tracking Progress Section */}
+            <div className="px-6 pt-6">
+                <div className="relative flex w-full justify-between items-center">
+                    <div className="absolute top-1/2 left-0 h-0.5 w-full -translate-y-1/2 bg-(--toggle-bg)" />
+                    <div
+                        className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 bg-(--brand-color) transition-all duration-500"
+                        style={{ width: `${((currentStep - 1) / 2) * 100}%` }}
+                    />
+                    {[1, 2, 3].map((step) => (
+                        <div key={step} className={clsx(
+                            "relative z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors",
+                            currentStep >= step ? "border-(--brand-color) bg-(--brand-color) text-white" : "border-(--toggle-bg) bg-(--surface-raised) text-(--neutral-color)"
+                        )}>
+                            <Icon name={step === 1 ? "clock" : step === 2 ? "globe" : "check"} size={12} />
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-2 flex justify-between text-[9px] font-bold uppercase tracking-tighter text-(--neutral-color) opacity-60">
+                    <span>Confirmed</span>
+                    <span className="pl-2">In Transit</span>
+                    <span>Arrived</span>
+                </div>
+            </div>
 
             {/* Body: Item List */}
             <div className="flex flex-col gap-6 p-6">
@@ -108,7 +149,7 @@ export function OrderSummaryCard({
                     </span>
                 </div>
 
-                {/* Brand Mission Badge - Green strategy iconography */}
+                {/* Brand Mission Badge */}
                 <div
                     className="flex items-center gap-3 rounded-2xl bg-(--brand-color)/10 p-4 text-(--brand-color) ring-1 ring-(--brand-color)/20"
                     role="status"

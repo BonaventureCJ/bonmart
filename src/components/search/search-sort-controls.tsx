@@ -1,4 +1,5 @@
 // src/components/search/search-sort-controls.tsx
+
 'use client';
 
 import React, { useTransition } from 'react';

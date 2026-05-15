@@ -24,4 +24,5 @@ export const utilityNavLinks: UtilityNavItem[] = [
   { id: 1, label: 'Account', iconName: 'user', href: '/account' },
   { id: 2, label: 'Wishlist', iconName: 'heart', href: '/wishlist' },
   { id: 3, label: 'Cart', iconName: 'cart', href: '/cart' },
+  { id: 4, label: 'Orders', iconName: 'history', href: '/orders' },
 ];

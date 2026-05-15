@@ -9,11 +9,12 @@ import { Icon } from '@/components/ui/icon/icon';
 import { useAppSelector } from '@/store/hooks';
 import { selectCartTotalQuantity } from '@/features/cart/cart-selectors';
 import { selectWishlistCount } from '@/features/wishlist/wishlist-selectors';
+import { selectOrderHistory } from '@/features/orders/orders-selectors';
 import { utilityNavLinks } from './nav-links';
 
 /**
  * Utility Navigation.
- * Displays persistent links (Cart, Wishlist) with dynamic notification badges.
+ * Displays persistent links (Cart, Wishlist, Orders) with dynamic notification badges.
  * Uses normalized state selectors for high-performance badge reactivity.
  */
 export const UtilityNav = () => {
@@ -21,10 +22,13 @@ export const UtilityNav = () => {
 
   /**
    * Normalized State Selectors
-   * Performance: O(1) derived count calculation from normalized EntityState.
    */
   const cartCount = useAppSelector(selectCartTotalQuantity);
   const wishlistCount = useAppSelector(selectWishlistCount);
+
+  // High Utility: Show a badge only for active/processing orders
+  const orders = useAppSelector(selectOrderHistory);
+  const activeOrdersCount = orders.filter(o => o.status === 'processing' || o.status === 'shipped').length;
 
   return (
     <nav aria-label="Utility navigation">
@@ -33,9 +37,14 @@ export const UtilityNav = () => {
           const isActive = pathname === item.href;
           const isCart = item.iconName === 'cart';
           const isWishlist = item.iconName === 'heart';
+          const isOrders = item.iconName === 'history';
 
-          // Determine the appropriate count for the badge based on normalized data
-          const count = isCart ? cartCount : isWishlist ? wishlistCount : 0;
+          // Map the appropriate count based on the link type
+          let count = 0;
+          if (isCart) count = cartCount;
+          else if (isWishlist) count = wishlistCount;
+          else if (isOrders) count = activeOrdersCount;
+
           const hasBadge = count > 0;
 
           return (
@@ -62,11 +71,6 @@ export const UtilityNav = () => {
                   )}
                 />
 
-                {/* 
-                  Dynamic Notification Badge: 
-                  The 'key={count}' forces the element to re-mount and re-run 
-                  the 'animate-zoom-in' utility every time the value changes.
-                */}
                 {hasBadge && (
                   <span
                     key={count}

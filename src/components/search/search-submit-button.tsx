@@ -1,4 +1,5 @@
 // src/components/search/search-submit-button.tsx
+
 import React from 'react';
 import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';

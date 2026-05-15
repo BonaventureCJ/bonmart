@@ -1,4 +1,5 @@
 // src/components/search/search-form.tsx
+
 'use client';
 
 import React, { useState, useEffect, type FormEvent, useCallback, useRef, useTransition } from 'react';
@@ -10,6 +11,7 @@ import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { useDebounce } from '@/hooks/use-debounce';
 import { SearchSuggestionsOverlay } from './search-suggestions-overlay';
+import { SearchSubmitButton } from './search-submit-button';
 
 interface SearchFormProps {
     className?: string;
@@ -145,16 +147,8 @@ export const SearchForm: React.FC<SearchFormProps> = ({
                             disableFocusRing
                         />
                     )}
-                    <Button
-                        type="submit"
-                        variant="primary"
-                        size="sm"
-                        disabled={isPending}
-                        className="h-8 rounded-full px-5 text-xs font-bold transition-transform active:scale-95"
-                        ariaLabel="Execute search"
-                    >
-                        {isPending ? "..." : "Search"}
-                    </Button>
+
+                    <SearchSubmitButton isPending={isPending} />
                 </div>
             </div>
 

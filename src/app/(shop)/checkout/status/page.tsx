@@ -14,19 +14,11 @@ import { OrderSummaryCard } from '@/components/cart/order-summary-card';
 
 /**
  * StatusContent Component
- * 
- * Logic layer for transaction results. Fetches the latest order
- * from the normalized EntityState using the selectLatestOrder.
  */
 function StatusContent() {
     const searchParams = useSearchParams();
     const status = searchParams.get('status');
     const isSuccess = status === 'success';
-
-    /**
-     * Memoized Selector: Fetch the latest order from normalized state.
-     * Performance: O(1) access to the latest entry in the sorted orders adapter.
-     */
     const latestOrder = useAppSelector(selectLatestOrder);
 
     return (
@@ -58,7 +50,6 @@ function StatusContent() {
                 </p>
             </header>
 
-            {/* Display Order Summary only if success AND normalized order data exists */}
             {isSuccess && latestOrder ? (
                 <OrderSummaryCard
                     orderNumber={latestOrder.id}
@@ -68,55 +59,29 @@ function StatusContent() {
                     shipping={latestOrder.shipping}
                     tax={latestOrder.tax}
                     total={latestOrder.total}
+                    status={latestOrder.status} // Added for visual tracking
                     className="shadow-xl"
                 />
             ) : !isSuccess && (
-                <section
-                    className="rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center"
-                    aria-labelledby="failure-reasons"
-                >
-                    <Heading level={4} weight="bold" id="failure-reasons" className="mb-4">
-                        Common issues:
-                    </Heading>
+                <section className="rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-8 text-center">
+                    <Heading level={4} weight="bold" className="mb-4">Common issues:</Heading>
                     <ul className="mb-8 inline-block space-y-2 text-left text-sm text-(--neutral-color)">
-                        <li className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-(--error)" />
-                            Incorrect card number or CVC
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-(--error)" />
-                            Insufficient funds in the account
-                        </li>
-                        <li className="flex items-center gap-2">
-                            <span className="h-1.5 w-1.5 rounded-full bg-(--error)" />
-                            Bank-side transaction blocks
-                        </li>
+                        <li>• Incorrect card number or CVC</li>
+                        <li>• Insufficient funds</li>
+                        <li>• Bank-side blocks</li>
                     </ul>
                     <div className="flex justify-center">
-                        <Button href="/checkout" variant="primary" size="lg">
-                            Return to Checkout
-                        </Button>
+                        <Button href="/checkout" variant="primary" size="lg">Return to Checkout</Button>
                     </div>
                 </section>
             )}
 
             <nav className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Button
-                    href="/products"
-                    variant={isSuccess ? "secondary" : "ghost"}
-                    size="lg"
-                >
+                <Button href="/products" variant={isSuccess ? "secondary" : "ghost"} size="lg">
                     {isSuccess ? "Continue Shopping" : "Back to Shop"}
                 </Button>
-
                 {isSuccess && (
-                    <Button
-                        variant="ghost"
-                        size="lg"
-                        icon="printer"
-                        className="hidden sm:flex"
-                        onClick={() => typeof window !== 'undefined' && window.print()}
-                    >
+                    <Button variant="ghost" size="lg" icon="printer" className="hidden sm:flex" onClick={() => window.print()}>
                         Print Receipt
                     </Button>
                 )}
@@ -125,20 +90,10 @@ function StatusContent() {
     );
 }
 
-/**
- * CheckoutStatusPage
- * 
- * Root status view. Uses Suspense to handle useSearchParams() requirements in Next.js.
- */
 export default function CheckoutStatusPage() {
     return (
         <PageContainer>
-            <Suspense fallback={
-                <div className="flex py-20 items-center justify-center gap-3 text-(--neutral-color)">
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-(--brand-color) border-t-transparent" />
-                    <span>Verifying transaction...</span>
-                </div>
-            }>
+            <Suspense fallback={<div>Verifying transaction...</div>}>
                 <StatusContent />
             </Suspense>
         </PageContainer>

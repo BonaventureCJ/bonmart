@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart } from '@/features/cart/cart-slice';
 import { selectCartItems, selectCartSubtotal } from '@/features/cart/cart-selectors';
+import { addOrder } from '@/features/orders/orders-slice';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
@@ -49,9 +50,34 @@ export default function CheckoutPage() {
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
       /**
-       * Normalized logic: clearCart calls cartAdapter.removeAll
-       * ensuring O(1) state clearing.
+       * Order Tracking Integration:
+       * Generate a standardized order object to persist in normalized history.
        */
+      const newOrder = {
+        id: `BM-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
+        date: new Date().toLocaleDateString('en-GB', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric'
+        }),
+        items: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        subtotal,
+        tax,
+        shipping: shippingFee,
+        total: subtotal + tax + shippingFee,
+        status: 'processing' as const, // Start in processing state
+      };
+
+      /**
+       * Normalized logic: addOrder adds to the ordersAdapter.
+       * clearCart calls cartAdapter.removeAll ensuring O(1) state clearing.
+       */
+      dispatch(addOrder(newOrder));
       dispatch(clearCart());
       router.push('/checkout/status?status=success');
     } catch {

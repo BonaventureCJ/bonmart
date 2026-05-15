@@ -23,7 +23,7 @@ import searchReducer from '@/features/search/search-slice';
 
 /**
  * 1. Combine Reducers
- * Enterprise Tip: We keep 'products' and 'orders' out of whitelist 
+ * We keep 'products' and 'orders' out of whitelist 
  * to ensure fresh data from the API on every session, while 
  * 'cart' and 'wishlist' persist for user convenience.
  */
@@ -44,7 +44,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'bonmart-root',
   storage,
-  whitelist: ['cart', 'wishlist', 'theme', 'search'],
+  whitelist: ['cart', 'wishlist', 'theme', 'search', 'orders'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

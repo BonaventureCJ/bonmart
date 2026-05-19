@@ -22,16 +22,13 @@ const nextConfig: NextConfig = {
     return config;
   },
 
-  // 3. Experimental Turbopack configuration for SVG support
-  experimental: {
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
-    },
+    }
   },
 };
 

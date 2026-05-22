@@ -1,7 +1,5 @@
 // src/components/product/product-card-skeleton.tsx
 
-import { clsx } from 'clsx';
-
 export function ProductCardSkeleton() {
     return (
         <div className="flex flex-col overflow-hidden rounded-xl border border-(--toggle-bg) bg-(--surface-raised) animate-pulse">

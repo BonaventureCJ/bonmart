@@ -5,6 +5,7 @@
 import React, { useTransition } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
+import { Icon } from '@/components/ui/icon/icon';
 import { type SortOption } from '@/features/products/product-selectors';
 
 interface SearchSortControlsProps {
@@ -14,7 +15,7 @@ interface SearchSortControlsProps {
 /**
  * Universal Product Sorting Controller Panel
  * Drives multi-criteria state calculations instantly via parameter manipulation structures.
- * Patched with usePathname to function independently on any route without pushing to /search.
+ * Leverages usePathname to function independently on any route without pushing to /search.
  */
 export const SearchSortControls: React.FC<SearchSortControlsProps> = ({ currentSort }) => {
     const router = useRouter();
@@ -27,7 +28,6 @@ export const SearchSortControls: React.FC<SearchSortControlsProps> = ({ currentS
         currentParams.set('sort', newSort);
 
         startTransition(() => {
-            // Natively targets the active pathname instead of hardcoding '/search'
             router.push(`${pathname}?${currentParams.toString()}`);
         });
     };
@@ -37,7 +37,16 @@ export const SearchSortControls: React.FC<SearchSortControlsProps> = ({ currentS
             "mb-4 flex flex-col gap-2 border-b border-(--toggle-bg) pb-3 sm:flex-row sm:items-center sm:justify-between",
             isPending && "opacity-60 pointer-events-none"
         )}>
+            {/* 📍 Updated Hint with Icon */}
             <div className="flex items-center gap-2">
+                <Icon 
+                    name="refresh" 
+                    size={12} 
+                    className={clsx(
+                        "text-(--brand-color) opacity-50",
+                        isPending && "animate-spin" // Visual feedback during transition
+                    )} 
+                />
                 <span className="text-[11px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-70">
                     Sort Results Matrix
                 </span>

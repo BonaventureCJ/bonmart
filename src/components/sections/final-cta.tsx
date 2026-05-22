@@ -3,11 +3,6 @@
 import { Heading } from '@/components/ui/heading/heading';
 import { Button } from '@/components/ui/button/button';
 
-/**
- * FinalCTA Section
- * Uses semantic theme variables for full light/dark mode compatibility.
- * Background and text colors are derived from branding primitives in globals.css.
- */
 export function FinalCTA() {
     return (
         <section className="rounded-3xl bg-(--brand-color) p-8 text-center text-(--text-on-brand) md:p-16">
@@ -36,7 +31,7 @@ export function FinalCTA() {
                 <Button
                     href="/about"
                     variant="ghost"
-                    className="border border-(--text-on-brand)/20 text-(--text-on-brand) hover:bg-(--text-on-brand)/10"
+                    className="border border-(--text-on-brand)/20 text-(--text-on-brand) hover:bg-black/10 active:bg-black/20"
                 >
                     Our Story
                 </Button>
@@ -44,3 +39,4 @@ export function FinalCTA() {
         </section>
     );
 }
+

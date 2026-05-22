@@ -117,3 +117,24 @@ export const selectProductCountByCategory = (categoryName: string) =>
     createSelector([selectAllProducts], (items) =>
         items.filter((p) => p.category.toLowerCase() === categoryName.toLowerCase()).length
     );
+
+/**
+ * Featured Eco Products Selector
+ * Returns the top 5 products filtered by eco-friendly status 
+ * and sorted by highest rating.
+ */
+export const selectFeaturedEcoProducts = createSelector(
+    [selectAllProducts],
+    (items): Product[] => {
+        return [...items]
+            .sort((a, b) => {
+                // Priority 1: Eco-friendly status
+                if (a.isEcoFriendly !== b.isEcoFriendly) {
+                    return a.isEcoFriendly ? -1 : 1;
+                }
+                // Priority 2: Highest rating rate
+                return b.rating.rate - a.rating.rate;
+            })
+            .slice(0, 5);
+    }
+);

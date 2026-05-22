@@ -50,15 +50,14 @@ export function OrderSummaryCard({
                 className
             )}
         >
-            {/* Header: Order Metadata */}
-            <header className="border-b border-(--toggle-bg) bg-(--surface-muted)/20 p-6">
+            <header className="border-b border-(--toggle-bg) bg-(--surface-muted) p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="space-y-1">
                         <p className="text-[10px] font-bold tracking-widest text-(--neutral-color) uppercase opacity-60">
                             Order Reference
                         </p>
                         <div className="flex items-center gap-3">
-                            <Heading level={4} weight="bold" className="text-lg tabular-nums">
+                            <Heading level={4} weight="bold" className="text-lg tabular-nums text-(--foreground)">
                                 #{orderNumber}
                             </Heading>
                             <span className={clsx(
@@ -144,7 +143,7 @@ export function OrderSummaryCard({
                 </div>
             </div>
 
-            <div className="mt-auto border-t border-(--toggle-bg) bg-(--surface-muted)/30 p-6">
+            <div className="mt-auto border-t border-(--toggle-bg) bg-(--surface-muted) p-6">
                 <div className="mb-6 flex items-center justify-between">
                     <span className="text-base font-bold text-(--foreground)">Total Paid</span>
                     <span className="text-3xl font-black tracking-tighter text-(--foreground) tabular-nums">

@@ -1,13 +1,12 @@
 /* src/styles/globals.css */
 
-/* 1. Import Tailwind CSS. */
 @import "tailwindcss";
 
-/* 2. Define primitive design tokens with the @theme directive. */
+/* Define primitive design tokens with the @theme directive. */
 @theme {
   /* Layout Primitives */
   --header-height: 7.25rem;
-  /* NEW: Enterprise Spacing Scale */
+  /* Spacing Scale */
   --spacing-section-sm: 2rem;
   /* 32px */
   --spacing-section-md: 3rem;
@@ -69,10 +68,10 @@
   }
 }
 
-/* 3. Configure custom variants. */
+/* Configure custom variants. */
 @custom-variant dark (&:where(html.dark, html.dark *));
 
-/* 4. Define semantic variables. */
+/* Define semantic variables. */
 :root {
   color-scheme: light;
 
@@ -83,7 +82,7 @@
   --surface-muted: var(--color-toggle-hover-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
 
-  /* NEW: Semantic Spacing */
+  /* Semantic Spacing */
   --page-padding-y: var(--spacing-section-md);
   --section-gap: var(--spacing-section-lg);
 
@@ -151,14 +150,14 @@ html.dark {
   --warning: var(--color-warning-amber);
 }
 
-/* 5. Base Styles */
+/* Base Styles */
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-family-sans);
 }
 
-/* 6. Utility Directives */
+/* Utility Directives */
 
 /* Interactive Utilities */
 @utility focus-ring {
@@ -197,7 +196,7 @@ body {
   -webkit-line-clamp: 1;
 }
 
-/* NEW: Enterprise Layout Utility */
+/* Layout Utility */
 @utility page-section {
   padding-top: var(--page-padding-y);
   padding-bottom: var(--page-padding-y);

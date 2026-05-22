@@ -85,22 +85,27 @@ export function CartSummary({
             </div>
 
             {/* Bonmart Brand Trust Area - Dynamic Green Initiative Badge */}
-            <div className={clsx(
-                "flex items-start gap-3 rounded-2xl p-4 ring-1 transition-colors duration-500",
-                ecoCount > 0
-                    ? "bg-(--brand-color)/10 ring-(--brand-color)/20"
-                    : "bg-(--surface-muted)/30 ring-(--toggle-bg)"
-            )}>
+            <div
+                className={clsx(
+                    "flex items-start gap-3 rounded-2xl p-4 ring-1 transition-colors duration-500",
+                    ecoCount > 0
+                        ? "bg-(--brand-color)/10 ring-(--brand-color)/20"
+                        : "bg-(--surface-muted)/30 ring-(--toggle-bg)"
+                )}
+            >
                 <Icon
                     name={ecoCount > 0 ? "leaf" : "globe"}
                     size={20}
-                    className={clsx("shrink-0", ecoCount > 0 ? "text-(--brand-color)" : "text-(--neutral-color)")}
+                    className={clsx(
+                        "shrink-0",
+                        ecoCount > 0 ? "text-(--brand-color)" : "text-(--neutral-color)"
+                    )}
                 />
                 <div className="flex flex-col gap-1">
                     <p className="text-xs leading-relaxed text-(--neutral-color)">
                         {ecoCount > 0 ? (
                             <>
-                                You have <span className="font-bold text-(--brand-color)">{ecoCount} eco-friendly</span> items! Your purchase supports sustainable manufacturing.
+                                You have <span className="font-bold text-(--brand-color)">{ecoCount} eco-friendly</span> {ecoCount === 1 ? 'item' : 'items'}! Your purchase supports sustainable manufacturing.
                             </>
                         ) : (
                             <>

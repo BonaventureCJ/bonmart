@@ -5,6 +5,7 @@ import React, { Suspense } from 'react';
 import { Heading } from '@/components/ui/heading/heading';
 import PageContainer from '@/components/layout/page-container';
 import { ProductListClient } from '@/components/product/product-list-client';
+import { ProductCardSkeleton } from '@/components/product/product-card-skeleton';
 import { type SortOption } from '@/features/products/product-selectors';
 
 interface ProductsPageProps {
@@ -15,6 +16,19 @@ export const metadata: Metadata = {
     title: 'All Products | Bonmart',
     description: 'Explore our curated selection of high-quality, eco-friendly products for a sustainable lifestyle.',
 };
+
+/**
+ * Loading Skeleton Wrapper
+ * Matches the responsive grid layout of ProductListClient.
+ * Provides a high-fidelity loading state using specific card skeletons.
+ */
+const ProductsLoadingSkeleton = () => (
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4">
+        {Array.from({ length: 12 }).map((_, i) => (
+            <ProductCardSkeleton key={i} />
+        ))}
+    </div>
+);
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
     const resolvedParams = await searchParams;
@@ -35,7 +49,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                     </div>
                 </header>
 
-                <Suspense fallback={<div className="h-96 w-full animate-pulse rounded-3xl bg-(--surface-muted)/20" />}>
+                <Suspense fallback={<ProductsLoadingSkeleton />}>
                     <ProductListClient sort={sort} category={category} />
                 </Suspense>
             </div>

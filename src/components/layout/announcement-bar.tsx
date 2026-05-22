@@ -6,6 +6,10 @@ import { useState, useEffect } from 'react';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 
+/**
+ * Announcement Bar.
+ * Global notification component with persistence logic and brand alignment.
+ */
 export function AnnouncementBar() {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -29,7 +33,7 @@ export function AnnouncementBar() {
             <div className="flex items-center gap-2">
                 <Icon name="refresh" size={14} className="animate-spin" />
                 <p>
-                    BonMart is under CI/CD: Most features are ready for exploration; more are added on a rolling basis!
+                    BonMart is under CI/CD: Most features are ready for exploration; more added on a rolling basis!
                 </p>
             </div>
 
@@ -38,7 +42,7 @@ export function AnnouncementBar() {
                 size="sm"
                 ariaLabel="Dismiss announcement"
                 onClick={handleDismiss}
-                className="absolute right-2 border-none text-(--text-on-brand) hover:bg-black/15 active:bg-black/25"
+                className="absolute right-2 border-none text-(--text-on-brand) hover:bg-(--surface-dark)/15 active:bg-(--surface-dark)/25"
             >
                 <Icon name="close" size={16} aria-hidden="true" />
             </Button>

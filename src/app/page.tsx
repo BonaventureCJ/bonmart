@@ -1,7 +1,17 @@
 // src/app/page.tsx
 
-import { Hero } from "@/components/sections/hero";
+import { Metadata } from "next";
 import PageContainer from "@/components/layout/page-container";
+import { Hero } from "@/components/sections/hero";
+import { ImpactStrip } from "@/components/sections/impact-strip";
+import { FeaturedProducts } from "@/components/sections/featured-products";
+import { FeaturedServices } from "@/components/sections/featured-services";
+import { FinalCTA } from "@/components/sections/final-cta";
+
+export const metadata: Metadata = {
+  title: "BonMart | Sustainable Enterprise E-Commerce",
+  description: "Shop the future of sustainable commerce. Eco-friendly products, carbon-neutral delivery, and radical transparency.",
+};
 
 /**
  * HOME PAGE
@@ -31,9 +41,20 @@ export default async function Home() {
   }
 
   return (
-    <PageContainer>
+    <>
+      {/* High-impact entrance sections */}
       <Hero />
-    </PageContainer>
+      <ImpactStrip />
+
+      <PageContainer>
+        {/* Main content sections with standardized vertical rhythm */}
+        <div className="space-y-(--section-gap) py-(--page-padding-y)">
+          <FeaturedProducts />
+          <FeaturedServices />
+          <FinalCTA />
+        </div>
+      </PageContainer>
+    </>
   );
 }
 

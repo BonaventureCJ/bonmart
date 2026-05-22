@@ -54,7 +54,7 @@ export function OrderSummaryCard({
             <header className="border-b border-(--toggle-bg) bg-(--surface-muted)/20 p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-60">
+                        <p className="text-[10px] font-bold tracking-widest text-(--neutral-color) uppercase opacity-60">
                             Order Reference
                         </p>
                         <div className="flex items-center gap-3">
@@ -62,17 +62,17 @@ export function OrderSummaryCard({
                                 #{orderNumber}
                             </Heading>
                             <span className={clsx(
-                                "rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-widest ring-1 ring-inset",
+                                "rounded-full px-2 py-0.5 text-[9px] font-black tracking-widest ring-1 ring-inset uppercase",
                                 status === 'delivered'
                                     ? "bg-(--brand-color)/10 text-(--brand-color) ring-(--brand-color)/20"
-                                    : "bg-amber-500/10 text-amber-600 ring-amber-500/20"
+                                    : "bg-(--warning)/10 text-(--warning) ring-(--warning)/20"
                             )}>
                                 {status}
                             </span>
                         </div>
                     </div>
-                    <div className="text-right space-y-1">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-(--neutral-color) opacity-60">
+                    <div className="space-y-1 text-right">
+                        <p className="text-[10px] font-bold tracking-widest text-(--neutral-color) uppercase opacity-60">
                             Transaction Date
                         </p>
                         <p className="text-sm font-semibold text-(--foreground)">{date}</p>
@@ -82,7 +82,7 @@ export function OrderSummaryCard({
 
             {/* Tracking Progress Section */}
             <div className="px-6 pt-6">
-                <div className="relative flex w-full justify-between items-center">
+                <div className="relative flex w-full items-center justify-between">
                     <div className="absolute top-1/2 left-0 h-0.5 w-full -translate-y-1/2 bg-(--toggle-bg)" />
                     <div
                         className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 bg-(--brand-color) transition-all duration-500"
@@ -91,13 +91,15 @@ export function OrderSummaryCard({
                     {[1, 2, 3].map((step) => (
                         <div key={step} className={clsx(
                             "relative z-10 flex h-6 w-6 items-center justify-center rounded-full border-2 transition-colors",
-                            currentStep >= step ? "border-(--brand-color) bg-(--brand-color) text-white" : "border-(--toggle-bg) bg-(--surface-raised) text-(--neutral-color)"
+                            currentStep >= step
+                                ? "border-(--brand-color) bg-(--brand-color) text-(--text-on-brand)"
+                                : "border-(--toggle-bg) bg-(--surface-raised) text-(--neutral-color)"
                         )}>
                             <Icon name={step === 1 ? "clock" : step === 2 ? "globe" : "check"} size={12} />
                         </div>
                     ))}
                 </div>
-                <div className="mt-2 flex justify-between text-[9px] font-bold uppercase tracking-tighter text-(--neutral-color) opacity-60">
+                <div className="mt-2 flex justify-between text-[9px] font-bold tracking-tighter text-(--neutral-color) uppercase opacity-60">
                     <span>Confirmed</span>
                     <span className="pl-2">In Transit</span>
                     <span>Arrived</span>
@@ -109,11 +111,11 @@ export function OrderSummaryCard({
                 <section aria-label="Purchased items">
                     <div className="flex flex-col gap-4">
                         {items.map((item) => (
-                            <div key={item.id} className="flex justify-between items-start gap-4 text-sm">
-                                <p className="text-(--neutral-color) leading-tight">
+                            <div key={item.id} className="flex items-start justify-between gap-4 text-sm">
+                                <p className="leading-tight text-(--neutral-color)">
                                     <span className="font-bold text-(--foreground) tabular-nums">{item.quantity}x</span> {item.name}
                                 </p>
-                                <span className="font-semibold text-(--foreground) whitespace-nowrap tabular-nums">
+                                <span className="whitespace-nowrap font-semibold text-(--foreground) tabular-nums">
                                     ${(item.price * item.quantity).toFixed(2)}
                                 </span>
                             </div>
@@ -131,7 +133,7 @@ export function OrderSummaryCard({
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-(--neutral-color)">Eco-Neutral Shipping</span>
-                        <span className="text-(--brand-color) font-bold tracking-tight uppercase">
+                        <span className="font-bold tracking-tight text-(--brand-color) uppercase">
                             {shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)}`}
                         </span>
                     </div>
@@ -141,10 +143,11 @@ export function OrderSummaryCard({
                     </div>
                 </div>
             </div>
-            <div className="mt-auto border-t border-(--toggle-bg) p-6 bg-(--surface-muted)/5">
+
+            <div className="mt-auto border-t border-(--toggle-bg) bg-(--surface-muted)/30 p-6">
                 <div className="mb-6 flex items-center justify-between">
                     <span className="text-base font-bold text-(--foreground)">Total Paid</span>
-                    <span className="text-3xl font-black text-(--foreground) tracking-tighter tabular-nums">
+                    <span className="text-3xl font-black tracking-tighter text-(--foreground) tabular-nums">
                         ${total.toFixed(2)}
                     </span>
                 </div>
@@ -156,7 +159,7 @@ export function OrderSummaryCard({
                 >
                     <Icon name="leaf" size={20} className="shrink-0" />
                     <p className="text-[11px] font-semibold leading-relaxed">
-                        Order Impact: This purchase offset <span className="underline decoration-2 underline-offset-4 font-bold">2.4kg of CO2</span> via our reforestation partners.
+                        Order Impact: This purchase offset <span className="font-bold underline decoration-2 underline-offset-4">2.4kg of CO2</span> via our reforestation partners.
                     </p>
                 </div>
             </div>

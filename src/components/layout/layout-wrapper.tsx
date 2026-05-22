@@ -2,15 +2,18 @@
 
 'use client';
 
-import { useState, useEffect, type FC, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type FC, type ReactNode } from 'react';
 import { clsx } from 'clsx';
 import { useAppSelector, useAppDispatch } from '@/store/hooks';
 import { MobileNav } from '@/components/navigation/mobile-nav';
 import { closeMobileMenu } from '@/features/navigation/navigation-slice';
 import { selectIsMobileMenuOpen } from '@/features/navigation/navigation-selectors';
+import { selectIsAnnouncementDismissed } from '@/features/ui/ui-selectors';
 import { useMobileMenuHeight } from '@/hooks/use-mobile-menu-height';
+import { useHeaderHeight } from '@/hooks/use-header-height';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { AnnouncementBar } from '@/components/layout/announcement-bar';
 import { HeaderScrollContainer } from '@/components/layout/header-scroll-container';
 
 type LayoutWrapperProps = {
@@ -25,7 +28,12 @@ type LayoutWrapperProps = {
 export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     // Memoized Selector for UI singleton state
     const isMobileMenuOpen = useAppSelector(selectIsMobileMenuOpen);
+    const isAnnouncementDismissed = useAppSelector(selectIsAnnouncementDismissed);
     const dispatch = useAppDispatch();
+
+    // Enterprise Pattern: Ref-based measurement for dynamic layout adjustment
+    const headerRef = useRef<HTMLDivElement>(null);
+    const dynamicHeaderHeight = useHeaderHeight(headerRef);
 
     // Enterprise Pattern: Detect mobile via matchMedia to align with Tailwind breakpoints
     const [isMobile, setIsMobile] = useState(false);
@@ -56,12 +64,15 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
     };
 
     return (
-        <>
+        <div
+            style={{ '--header-height': `${dynamicHeaderHeight}px` } as React.CSSProperties}
+        >
             {/* 
                 Wrap Header in the Scroll Container. 
                 Header remains a Server Component passed as a child. 
             */}
-            <HeaderScrollContainer isMobile={isMobile}>
+            <HeaderScrollContainer isMobile={isMobile} ref={headerRef}>
+                {!isAnnouncementDismissed && <AnnouncementBar />}
                 <Header />
             </HeaderScrollContainer>
 
@@ -77,7 +88,7 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
             <div
                 className={clsx(
                     'grid min-h-screen grid-rows-[1fr_auto]',
-                    'pt-(--header-height)',
+                    'pt-(--header-height)', // Dynamically adjusted via style variable
                     { 'pointer-events-none lg:pointer-events-auto': isMobileMenuOpen }
                 )}
                 aria-hidden={isMobileMenuOpen}
@@ -90,6 +101,6 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
             </div>
 
             <MobileNav />
-        </>
+        </div>
     );
 };

@@ -20,6 +20,7 @@ import cartReducer from '@/features/cart/cart-slice';
 import wishlistReducer from '@/features/wishlist/wishlist-slice';
 import ordersReducer from '@/features/orders/orders-slice';
 import searchReducer from '@/features/search/search-slice';
+import uiReducer from '@/features/ui/ui-slice'; // Added UI reducer
 
 /**
  * 1. Combine Reducers
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   wishlist: wishlistReducer,
   orders: ordersReducer,
   search: searchReducer,
+  ui: uiReducer, 
 });
 
 /**
@@ -44,7 +46,7 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: 'bonmart-root',
   storage,
-  whitelist: ['cart', 'wishlist', 'theme', 'search', 'orders'],
+  whitelist: ['cart', 'wishlist', 'theme', 'search', 'orders', 'ui'],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

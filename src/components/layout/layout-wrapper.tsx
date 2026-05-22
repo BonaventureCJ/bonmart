@@ -72,8 +72,8 @@ export const LayoutWrapper: FC<LayoutWrapperProps> = ({ children }) => {
                 Header remains a Server Component passed as a child. 
             */}
             <HeaderScrollContainer isMobile={isMobile} ref={headerRef}>
-                {!isAnnouncementDismissed && <AnnouncementBar />}
                 <Header />
+                 {!isAnnouncementDismissed && <AnnouncementBar />}
             </HeaderScrollContainer>
 
             {/* Optimized Overlay using memoized state */}

@@ -7,15 +7,15 @@
 @theme {
   /* Layout Primitives */
   --header-height: 7.25rem;
-  /* Spacing Scale */
-  --spacing-section-sm: 2rem;
-  /* 32px */
-  --spacing-section-md: 3rem;
+  /* Spacing Scale - Tightened for enterprise-grade density */
+  --spacing-section-sm: 1rem;
+  /* 16px */
+  --spacing-section-md: 1.5rem;
+  /* 24px */
+  --spacing-section-lg: 3rem;
   /* 48px */
-  --spacing-section-lg: 5rem;
+  --spacing-section-xl: 5rem;
   /* 80px */
-  --spacing-section-xl: 8rem;
-  /* 128px */
 
   /* Brand Primitives */
   --color-brand-primary: #15803d;
@@ -83,9 +83,9 @@
   --surface-muted: var(--color-toggle-hover-light);
   --overlay-bg: rgba(0, 0, 0, 0.4);
 
-  /* Semantic Spacing */
-  --page-padding-y: var(--spacing-section-md);
-  --section-gap: var(--spacing-section-lg);
+  /* Semantic Spacing - Optimized for rhythm */
+  --page-padding-y: var(--spacing-section-sm);
+  --section-gap: var(--spacing-section-md);
 
   /* Branding & Accents */
   --brand-color: var(--color-brand-primary);
@@ -113,7 +113,8 @@
   /* Responsive Logic */
   @media (min-width: 1024px) {
     --header-height: 4rem;
-    --page-padding-y: var(--spacing-section-lg);
+    --page-padding-y: var(--spacing-section-md);
+    --section-gap: var(--spacing-section-lg);
   }
 }
 

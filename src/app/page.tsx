@@ -46,12 +46,15 @@ export default async function Home() {
 
   return (
     <>
-      {/* Full-width Entrance */}
-      <Hero />
-
+      {/* 
+          NOTE TO DEVELOPERS: 
+          Fashion sections (Mens/Womens Clothing) are temporarily disabled. 
+          The current Mock Data inventory is focused on Eco-Essentials, Electronics, and Jewelry.
+          Re-enable these components once the production API integration is complete.
+      */}
       <PageContainer>
-        {/* Main content sections with standardized vertical rhythm */}
-        <div className="space-y-(--section-gap) py-(--page-padding-y)">
+        <div className="space-y-(--section-gap)">
+          <Hero />
           <FeaturedProducts />
           <ElectronicsProducts />
           <JewelryProducts />

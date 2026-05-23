@@ -3,11 +3,13 @@
 import { Metadata } from "next";
 import PageContainer from "@/components/layout/page-container";
 import { Hero } from "@/components/sections/hero";
-import { ImpactStrip } from "@/components/sections/impact-strip";
 import { FeaturedProducts } from "@/components/sections/featured-products";
 import { ElectronicsProducts } from "@/components/sections/electronics-products";
 import { JewelryProducts } from "@/components/sections/jewelry-products";
+//import { MensClothing } from "@/components/sections/mens-clothing";
+//import { WomensClothing } from "@/components/sections/womens-clothing";
 import { FeaturedServices } from "@/components/sections/featured-services";
+import { ImpactStrip } from "@/components/sections/impact-strip";
 import { FinalCTA } from "@/components/sections/final-cta";
 
 export const metadata: Metadata = {
@@ -44,9 +46,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* High-impact entrance sections */}
+      {/* Full-width Entrance */}
       <Hero />
-      <ImpactStrip />
 
       <PageContainer>
         {/* Main content sections with standardized vertical rhythm */}
@@ -54,10 +55,14 @@ export default async function Home() {
           <FeaturedProducts />
           <ElectronicsProducts />
           <JewelryProducts />
+          {/* <MensClothing /> */}
+          {/* <WomensClothing /> */}
           <FeaturedServices />
+          <ImpactStrip />
           <FinalCTA />
         </div>
       </PageContainer>
     </>
   );
 }
+

@@ -135,6 +135,28 @@ export const selectFeaturedEcoProducts = createSelector(
                 // Priority 2: Highest rating rate
                 return b.rating.rate - a.rating.rate;
             })
-            .slice(0, 5);
+            .slice(0, 8);
     }
+);
+/** 
+ * Selects top 8 Electronics items. 
+ */
+export const selectElectronicsProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === 'electronics').slice(0, 8)
+);
+
+export const selectJewelryProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === 'jewelery').slice(0, 8)
+);
+
+export const selectMensClothingProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === "men's clothing").slice(0, 8)
+);
+
+export const selectWomensClothingProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === "women's clothing").slice(0, 8)
 );

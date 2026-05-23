@@ -146,10 +146,17 @@ export const selectElectronicsProducts = createSelector(
     (items) => items.filter(p => p.category === 'electronics').slice(0, 8)
 );
 
-/** 
- * Selects all Jewelry items. 
- */
 export const selectJewelryProducts = createSelector(
     [selectAllProducts],
     (items) => items.filter(p => p.category === 'jewelery').slice(0, 8)
+);
+
+export const selectMensClothingProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === "men's clothing").slice(0, 8)
+);
+
+export const selectWomensClothingProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === "women's clothing").slice(0, 8)
 );

@@ -138,3 +138,18 @@ export const selectFeaturedEcoProducts = createSelector(
             .slice(0, 5);
     }
 );
+/** 
+ * Selects top 8 Electronics items. 
+ */
+export const selectElectronicsProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === 'electronics').slice(0, 8)
+);
+
+/** 
+ * Selects all Jewelry items. 
+ */
+export const selectJewelryProducts = createSelector(
+    [selectAllProducts],
+    (items) => items.filter(p => p.category === 'jewelery').slice(0, 8)
+);

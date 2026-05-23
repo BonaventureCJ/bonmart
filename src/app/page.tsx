@@ -5,6 +5,8 @@ import PageContainer from "@/components/layout/page-container";
 import { Hero } from "@/components/sections/hero";
 import { ImpactStrip } from "@/components/sections/impact-strip";
 import { FeaturedProducts } from "@/components/sections/featured-products";
+import { ElectronicsProducts } from "@/components/sections/electronics-products";
+import { JewelryProducts } from "@/components/sections/jewelry-products";
 import { FeaturedServices } from "@/components/sections/featured-services";
 import { FinalCTA } from "@/components/sections/final-cta";
 
@@ -50,6 +52,8 @@ export default async function Home() {
         {/* Main content sections with standardized vertical rhythm */}
         <div className="space-y-(--section-gap) py-(--page-padding-y)">
           <FeaturedProducts />
+          <ElectronicsProducts />
+          <JewelryProducts />
           <FeaturedServices />
           <FinalCTA />
         </div>
@@ -57,4 +61,3 @@ export default async function Home() {
     </>
   );
 }
-

@@ -135,7 +135,7 @@ export const selectFeaturedEcoProducts = createSelector(
                 // Priority 2: Highest rating rate
                 return b.rating.rate - a.rating.rate;
             })
-            .slice(0, 5);
+            .slice(0, 8);
     }
 );
 /** 

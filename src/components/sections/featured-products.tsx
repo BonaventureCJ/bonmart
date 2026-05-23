@@ -9,6 +9,11 @@ import {
     selectProductsLoading
 } from '@/features/products/product-selectors';
 
+/**
+ * FeaturedProducts Section
+ * Renders the top 8 eco-prioritized products.
+ * CTA links directly to the full eco-sorted catalog.
+ */
 export function FeaturedProducts() {
     const products = useAppSelector(selectFeaturedEcoProducts);
     const isLoading = useAppSelector(selectProductsLoading);
@@ -20,7 +25,10 @@ export function FeaturedProducts() {
             tagline="Our highest-rated sustainable picks for a better future."
             products={products}
             isLoading={isLoading}
-            viewAllHref="/products"
+            // 🔗 Navigation points to the full list using the eco-high sort matrix
+            viewAllHref="/products?sort=eco-high"
+            viewAllText="View All Eco-Essentials"
         />
     );
 }
+

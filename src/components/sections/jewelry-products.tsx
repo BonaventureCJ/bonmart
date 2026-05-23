@@ -25,6 +25,7 @@ export function JewelryProducts() {
             products={products}
             isLoading={isLoading}
             viewAllHref="/products?category=jewelery"
+            viewAllText="View All Jewelry"
         />
     );
 }

@@ -25,6 +25,7 @@ export function ElectronicsProducts() {
             products={products}
             isLoading={isLoading}
             viewAllHref="/products?category=electronics"
+            viewAllText="View All Electronics"
         />
     );
 }

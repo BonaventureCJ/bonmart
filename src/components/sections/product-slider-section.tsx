@@ -16,12 +16,14 @@ interface ProductSliderSectionProps {
     products: Product[];
     isLoading?: boolean;
     viewAllHref?: string;
+    viewAllText?: string; // Customizable link text for better UX/SEO
     accentWord?: string;
 }
 
 /**
  * ProductSliderSection
  * A reusable container for horizontal product shelves.
+ * Handles header composition, smooth scroll logic, and responsive grid density.
  */
 export function ProductSliderSection({
     title,
@@ -29,10 +31,15 @@ export function ProductSliderSection({
     products,
     isLoading = false,
     viewAllHref = '/products',
+    viewAllText = 'View All', // Default fallback value
     accentWord
 }: ProductSliderSectionProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
+    /**
+     * Smooth scroll logic for navigational chevrons.
+     * Uses clientWidth to ensure a full page of products is scrolled.
+     */
     const scroll = (direction: 'left' | 'right') => {
         if (scrollRef.current) {
             const { scrollLeft, clientWidth } = scrollRef.current;
@@ -59,22 +66,25 @@ export function ProductSliderSection({
                     iconPlacement="right"
                     className="text-(--brand-color) hover:bg-(--brand-color)/5"
                 >
-                    View All
+                    {viewAllText}
                 </Button>
             </header>
 
+            {/* Slider Wrapper: 'group/slider' scoped specifically for navigation arrows */}
             <div className="group/slider relative">
                 {/* ⬅️ Navigation Left */}
                 <div className="absolute -left-2 top-1/2 z-30 -translate-y-1/2 opacity-0 transition-opacity group-hover/slider:opacity-100 sm:-left-4">
                     <Button
                         variant="secondary"
-                        className="h-10 w-10 rounded-full border border-(--toggle-bg) bg-(--surface-raised) shadow-md sm:h-12 sm:w-12"
+                        className="h-10 w-10 rounded-full border border-(--toggle-bg) bg-(--surface-raised) shadow-md hover:scale-110 active:scale-95 sm:h-12 sm:w-12"
                         onClick={() => scroll('left')}
+                        ariaLabel="Scroll products left"
                     >
                         <Icon name="chevronLeft" size={20} />
                     </Button>
                 </div>
 
+                {/* 🚀 Horizontal Scroll Track */}
                 <div
                     ref={scrollRef}
                     className="scroll-snap-x scrollbar-none -mx-4 flex gap-2 overflow-x-auto px-4 pb-4 sm:-mx-6 sm:gap-4 sm:px-6 lg:mx-0 lg:px-0"
@@ -96,13 +106,15 @@ export function ProductSliderSection({
                 <div className="absolute -right-2 top-1/2 z-30 -translate-y-1/2 opacity-0 transition-opacity group-hover/slider:opacity-100 sm:-right-4">
                     <Button
                         variant="secondary"
-                        className="h-10 w-10 rounded-full border border-(--toggle-bg) bg-(--surface-raised) shadow-md"
+                        className="h-10 w-10 rounded-full border border-(--toggle-bg) bg-(--surface-raised) shadow-md hover:scale-110 active:scale-95 sm:h-12 sm:w-12"
                         onClick={() => scroll('right')}
+                        ariaLabel="Scroll products right"
                     >
                         <Icon name="chevronRight" size={20} />
                     </Button>
                 </div>
 
+                {/* Visual Depth Hint: Right Edge Fade */}
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-(--background) to-transparent opacity-60 md:w-20" />
             </div>
         </section>

@@ -3,6 +3,7 @@
 import { Metadata } from "next";
 import PageContainer from "@/components/layout/page-container";
 import { Hero } from "@/components/sections/hero";
+import { CategoryShelf } from "@/components/sections/category-shelf";
 import { FeaturedProducts } from "@/components/sections/featured-products";
 import { ElectronicsProducts } from "@/components/sections/electronics-products";
 import { JewelryProducts } from "@/components/sections/jewelry-products";
@@ -29,7 +30,7 @@ export default async function Home() {
   // --- TEST CONTROLS (Local Development Only) ---
   const isDev = process.env.NODE_ENV === "development";
   const TRIGGER_ERROR = false; // Set to true to simulate an error, false to simulate loading (local only)
-  const SIMULATE_DELAY = 3000;
+  const SIMULATE_DELAY = 1000;
   // ----------------------------------------------
 
   if (isDev) {
@@ -55,6 +56,7 @@ export default async function Home() {
       <PageContainer>
         <div className="space-y-(--section-gap)">
           <Hero />
+          <CategoryShelf />
           <FeaturedProducts />
           <ElectronicsProducts />
           <JewelryProducts />
@@ -68,4 +70,3 @@ export default async function Home() {
     </>
   );
 }
-

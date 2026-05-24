@@ -21,7 +21,7 @@ export function JewelryProducts() {
         <ProductSliderSection
             title="Sustainable"
             accentWord="Jewelry"
-            tagline="Ethically sourced brilliance for every occasion."
+            tagline="Ethical luxury that makes you the center of attention. Get that stunning brilliance"
             products={products}
             isLoading={isLoading}
             viewAllHref="/products?category=jewelery"

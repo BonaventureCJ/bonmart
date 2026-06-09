@@ -53,10 +53,10 @@ const searchSlice = createSlice({
             // Ensure uniqueness by removing if it exists, then adding to the front
             searchAdapter.removeOne(state.recentSearches, newSearch);
 
-            // We manually manage the limit of 5 using the 'ids' array
+            // Evict from index 0 because createEntityAdapter appends new terms to the tail
             const currentIds = state.recentSearches.ids;
             if (currentIds.length >= 5) {
-                searchAdapter.removeOne(state.recentSearches, currentIds[currentIds.length - 1]);
+                searchAdapter.removeOne(state.recentSearches, currentIds[0]);
             }
 
             searchAdapter.addOne(state.recentSearches, newSearch);
@@ -84,3 +84,4 @@ export const {
 } = searchSlice.actions;
 
 export default searchSlice.reducer;
+

@@ -26,17 +26,17 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         mockObserve = vi.fn();
         resizeCallback = null;
 
-        // Build a type-safe mock class constructor for ResizeObserver
-        const MockResizeObserver = vi.fn().mockImplementation((callback) => {
-            resizeCallback = callback;
-            return {
-                observe: mockObserve,
-                unobserve: vi.fn(),
-                disconnect: mockDisconnect,
-            };
-        });
+        // FIX: Define a constructible ES6 class structure instead of a plain arrow function
+        class MockResizeObserver {
+            constructor(callback: (entries: any[]) => void) {
+                resizeCallback = callback;
+            }
+            observe = mockObserve;
+            unobserve = vi.fn();
+            disconnect = mockDisconnect;
+        }
 
-        // Inject our mock ResizeObserver constructor into global browser context
+        // Inject the constructible Mock class into global browser context
         vi.stubGlobal('ResizeObserver', MockResizeObserver);
     });
 
@@ -70,7 +70,7 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         const { result } = renderHook(() => useHeaderHeight(mockRef));
         expect(result.current).toBe(116);
 
-        // FIX: Cast element through 'any' to cleanly unlock assigning to the writable property descriptor
+        // Cast element through 'any' to cleanly unlock assigning to the writable property descriptor
         act(() => {
             (mockElement as any).offsetHeight = 64;
             if (resizeCallback) {
@@ -96,5 +96,6 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         expect(mockDisconnect).toHaveBeenCalled();
     });
 });
+
 
 

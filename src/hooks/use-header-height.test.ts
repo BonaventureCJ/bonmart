@@ -1,12 +1,13 @@
 // src/hooks/use-header-height.test.ts
 
 import { renderHook, act } from '@testing-library/react';
+import { type Mock } from 'vitest';
 import { useHeaderHeight } from './use-header-height';
 
 describe('useHeaderHeight Custom Hook Suite', () => {
-    let mockDisconnect: any;
-    let mockObserve: any;
-    let resizeCallback: ((entries: any[]) => void) | null = null;
+    let mockDisconnect: Mock;
+    let mockObserve: Mock;
+    let resizeCallback: ((entries: unknown[]) => void) | null = null;
 
     // Helper factory function to build a mock element with a configurable, dynamic offsetHeight property
     function createMockHeaderElement(initialHeight: number): HTMLDivElement {
@@ -26,9 +27,9 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         mockObserve = vi.fn();
         resizeCallback = null;
 
-        // FIX: Define a constructible ES6 class structure instead of a plain arrow function
+        // Define a constructible ES6 class structure instead of a plain arrow function
         class MockResizeObserver {
-            constructor(callback: (entries: any[]) => void) {
+            constructor(callback: (entries: unknown[]) => void) {
                 resizeCallback = callback;
             }
             observe = mockObserve;
@@ -70,9 +71,9 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         const { result } = renderHook(() => useHeaderHeight(mockRef));
         expect(result.current).toBe(116);
 
-        // Cast element through 'any' to cleanly unlock assigning to the writable property descriptor
+        // Cast element through unknown to an explicit mutation interface to bypass the read-only type blocker safely
         act(() => {
-            (mockElement as any).offsetHeight = 64;
+            (mockElement as unknown as { offsetHeight: number }).offsetHeight = 64;
             if (resizeCallback) {
                 resizeCallback([]);
             }
@@ -96,6 +97,5 @@ describe('useHeaderHeight Custom Hook Suite', () => {
         expect(mockDisconnect).toHaveBeenCalled();
     });
 });
-
 
 

@@ -1,6 +1,7 @@
 // src/app/layout.tsx (RootLayout)
+
 import type { Metadata } from 'next';
-import { ReduxProvider } from '@/providers/ReduxProvider';
+import { ReduxProvider } from '@/providers/redux-provider';
 import { LayoutWrapper } from '@/components/layout/layout-wrapper';
 import '@/styles/globals.css';
 

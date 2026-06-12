@@ -1,0 +1,101 @@
+// src/hooks/use-header-height.test.ts
+
+import { renderHook, act } from '@testing-library/react';
+import { type Mock } from 'vitest';
+import { useHeaderHeight } from './use-header-height';
+
+describe('useHeaderHeight Custom Hook Suite', () => {
+    let mockDisconnect: Mock;
+    let mockObserve: Mock;
+    let resizeCallback: ((entries: unknown[]) => void) | null = null;
+
+    // Helper factory function to build a mock element with a configurable, dynamic offsetHeight property
+    function createMockHeaderElement(initialHeight: number): HTMLDivElement {
+        const element = document.createElement('div');
+
+        Object.defineProperty(element, 'offsetHeight', {
+            value: initialHeight,
+            writable: true, // Allows us to reassign dimensions smoothly inside test blocks at runtime
+            configurable: true,
+        });
+
+        return element as HTMLDivElement;
+    }
+
+    beforeEach(() => {
+        mockDisconnect = vi.fn();
+        mockObserve = vi.fn();
+        resizeCallback = null;
+
+        // Define a constructible ES6 class structure instead of a plain arrow function
+        class MockResizeObserver {
+            constructor(callback: (entries: unknown[]) => void) {
+                resizeCallback = callback;
+            }
+            observe = mockObserve;
+            unobserve = vi.fn();
+            disconnect = mockDisconnect;
+        }
+
+        // Inject the constructible Mock class into global browser context
+        vi.stubGlobal('ResizeObserver', MockResizeObserver);
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    test('should return 0 immediately if the element layout reference is absent', () => {
+        const mockRef = { current: null };
+        const { result } = renderHook(() => useHeaderHeight(mockRef));
+
+        expect(result.current).toBe(0);
+        expect(mockObserve).not.toHaveBeenCalled();
+    });
+
+    test('should capture initial height parameters and activate the resize tracking layer', () => {
+        const mockElement = createMockHeaderElement(116);
+        const mockRef = { current: mockElement };
+
+        const { result } = renderHook(() => useHeaderHeight(mockRef));
+
+        // Confirm execution sweeps initial dimensions instantly
+        expect(result.current).toBe(116);
+        expect(mockObserve).toHaveBeenCalledWith(mockElement);
+    });
+
+    test('should modify height parameters predictably when the observation listener triggers', () => {
+        const mockElement = createMockHeaderElement(116);
+        const mockRef = { current: mockElement };
+
+        const { result } = renderHook(() => useHeaderHeight(mockRef));
+        expect(result.current).toBe(116);
+
+        // Cast element through unknown to an explicit mutation interface to bypass the read-only type blocker safely
+        act(() => {
+            (mockElement as unknown as { offsetHeight: number }).offsetHeight = 64;
+            if (resizeCallback) {
+                resizeCallback([]);
+            }
+        });
+
+        // Verification: Hook state correctly synchronizes with the updated layout boundaries
+        expect(result.current).toBe(64);
+    });
+
+    test('should call the disconnect cleanup sequence when the hosting component updates or unmounts', () => {
+        const mockElement = createMockHeaderElement(116);
+        const mockRef = { current: mockElement };
+
+        const { unmount } = renderHook(() => useHeaderHeight(mockRef));
+        expect(mockDisconnect).not.toHaveBeenCalled();
+
+        // Trigger explicit virtual unmount event
+        unmount();
+
+        // Safeguard verification: Confirm observation engine drops references cleanly to avoid memory leaks
+        expect(mockDisconnect).toHaveBeenCalled();
+    });
+});
+
+

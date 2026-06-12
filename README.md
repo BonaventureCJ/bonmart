@@ -2,6 +2,8 @@
 
 BonMart is an enterprise-grade "Green E-commerce" platform engineered for high-performance sustainability. Built with the **Next.js 15 App Router** and **React 19**, it serves as a technical showcase for scalable state management, optimized rendering pipelines, and zero-runtime-error TypeScript architectures.
 
+---
+
 ## 🏗️ Technical Architecture & Principles
 
 This project is built on the foundation of **clean code** and **advanced software engineering practices**:
@@ -11,6 +13,7 @@ This project is built on the foundation of **clean code** and **advanced softwar
 *   **Semantic HTML & A11Y**: WCAG-compliant development using appropriate ARIA roles and keyboard-accessible navigation.
 *   **Scalable Design System**: Advanced implementation of **Tailwind CSS v4** with a primitive-to-semantic token pipeline.
 *   **Mobile-First RWD**: Fluid responsive design system ensuring parity across all device classes, featuring an aesthetic, high-fidelity UI/UX for navigation and interactive elements.
+*   **File Architecture Convention**: Enforces kebab-case for component file names (e.g., `product-card.tsx`) and PascalCase for exported symbols (e.g., `export function ProductCard()`).
 
 ---
 
@@ -51,8 +54,39 @@ BonMart treats the **URL as the single source of truth** for all functional stat
 
 ---
 
-## 🛠️ Technology Stack
+## 🧪 Automated Testing Layer & Pipeline Integration
 
+BonMart deploys a highly responsive, high-density testing matrix driven by **Vitest** and **React Testing Library**. The framework targets data transformation pipelines, custom layout hooks, and state slices with zero browser overhead.
+
+### 1. Core Testing Strategies
+*   **State Isolation Architecture**: Because `redux-persist` binds to browser storage engines, it is extracted from testing environments. Tests consume a custom factory utility (`renderWithProviders`) that instantiates a raw, fresh Redux store for every test script, completely eliminating cross-test state leaks.
+*   **Global Ambient Primitives**: Configured with `globals: true`, eliminating framework imports. Tests utilize the explicit `test` primitive block over `it` to ensure clear intent and scannable code.
+*   **Temporal Chronology Isolation**: Time-sensitive workflows (such as inputs using `useDebounce`) are verified using Vitest Fake Timers (`vi.useFakeTimers()`), accelerating execution pipelines.
+
+### 2. Type-Safe Static Casts & Troubleshooting
+To maintain strict compliance with `@typescript-eslint/no-explicit-any` while mocking read-only DOM attributes (e.g., `window.innerHeight` or `HTMLElement.offsetHeight`) under **JSDOM**, the codebase enforces casting mutations through an intermediate `unknown` step rather than `any`:
+
+```typescript
+/* Correct: Writable Descriptor Casting Configuration */
+(window as unknown as { innerHeight: number }).innerHeight = 540;
+(mockElement as unknown as { offsetHeight: number }).offsetHeight = 64;
+```
+
+### 3. Execution Infrastructure Commands
+```bash
+# Run interactive test suite runner (Watch Mode)
+pnpm test
+
+# Execute test blocks exactly once and exit (CI/CD Pipelines)
+pnpm test:run
+
+# Generate comprehensive codebase test coverage reports
+pnpm test:coverage
+```
+
+---
+
+## 🛠️ Technology Stack
 
 | Category | Technology | Purpose |
 | :--- | :--- | :--- |
@@ -60,6 +94,8 @@ BonMart treats the **URL as the single source of truth** for all functional stat
 | **UI Library** | React 19 | Actions API and Concurrent Rendering primitives |
 | **State** | RTK 2.0 | Normalized Entity Adapters & Logic-driven Slices |
 | **Styling** | Tailwind v4 | CSS-first engine with native variable shorthand |
+| **Testing** | Vitest 4.1+ | Blazing-fast unit & integration test runner |
+| **DOM Engine**| JSDOM | In-memory web-standard browser environment simulation |
 | **Typing** | TypeScript 5 | Strict-mode type safety across the entire stack |
 | **Package Manager**| pnpm | Efficient, fast dependency management |
 
@@ -69,22 +105,22 @@ BonMart treats the **URL as the single source of truth** for all functional stat
 
 ### Prerequisites
 * **Node.js** (LTS version)
-* **pnpm** (Installed via `npm install -g pnpm`)
+* **pnpm** (Installed globally via `npm install -g pnpm`)
 
 ### Installation & Execution
 ```bash
-# Clone and install
+# Clone the repository and install dependencies
 git clone https://github.com/your-username/bonmart.git
 cd bonmart
 pnpm install
 
-# Run Development Server (Turbopack)
+# Run the local Development Server (Turbopack)
 pnpm dev
 
-# Build for Production
+# Code formatting and lint inspection
+pnpm lint
+
+# Compile and build for Production
 pnpm build
 pnpm start
 ```
-
----
-

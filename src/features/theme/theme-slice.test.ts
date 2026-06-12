@@ -1,6 +1,6 @@
 // src/features/theme/theme-slice.test.ts
 
-import themeReducer, { setTheme, type Theme } from './theme-slice';
+import themeReducer, { setTheme } from './theme-slice';
 
 describe('Theme Slice Suite', () => {
 
@@ -33,3 +33,4 @@ describe('Theme Slice Suite', () => {
         });
     });
 });
+

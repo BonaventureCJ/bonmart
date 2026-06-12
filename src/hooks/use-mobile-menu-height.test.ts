@@ -33,7 +33,8 @@ describe('useMobileMenuHeight Custom Hook Suite', () => {
 
         // Simulate mobile keyboard popup or screen rotation altering layout bounds
         act(() => {
-            (window as any).innerHeight = 540;
+            // Cast through unknown to an explicit object layout to bypass read-only DOM types safely
+            (window as unknown as { innerHeight: number }).innerHeight = 540;
             window.dispatchEvent(new Event('resize'));
         });
 
@@ -51,7 +52,8 @@ describe('useMobileMenuHeight Custom Hook Suite', () => {
 
         // Modify inner measurements and trigger a resize event post-unmount
         act(() => {
-            (window as any).innerHeight = 600;
+            // Cast through unknown to an explicit object layout to bypass read-only DOM types safely
+            (window as unknown as { innerHeight: number }).innerHeight = 600;
             window.dispatchEvent(new Event('resize'));
         });
 

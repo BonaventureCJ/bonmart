@@ -1,6 +1,8 @@
 // src/features/cart/cart-selectors.test.ts
 
 import { RootState } from '@/store/store';
+import { MOCK_PRODUCTS } from '@/data/mock-products';
+import { type CartItem } from './cart-slice';
 import {
     selectCartItems,
     selectCartUniqueItemsCount,
@@ -10,35 +12,26 @@ import {
     selectIsItemInCart,
 } from './cart-selectors';
 
-// Type-safe minimalist simulation of cart line items matching the schema
-const mockCartItem1 = {
-    id: 2,
-    name: 'Mens Casual Premium Slim Fit T-Shirts',
-    price: 22.3,
+// Create type-safe cart items exact MOCK_PRODUCTS domain data contract
+const mockCartItem1: CartItem = {
+    ...MOCK_PRODUCTS[1], // Mens Casual Premium Slim Fit T-Shirts (isEcoFriendly: true, price: 22.3)
     quantity: 3,
-    isEcoFriendly: true,
 };
 
-const mockCartItem2 = {
-    id: 3,
-    name: 'Mens Cotton Jacket',
-    price: 55.99,
+const mockCartItem2: CartItem = {
+    ...MOCK_PRODUCTS[2], // Mens Cotton Jacket (isEcoFriendly: false, price: 55.99)
     quantity: 1,
-    isEcoFriendly: false,
 };
 
-const mockCartItem3 = {
-    id: 10,
-    name: 'SanDisk SSD PLUS 1TB Internal SSD',
-    price: 109.00,
+const mockCartItem3: CartItem = {
+    ...MOCK_PRODUCTS[9], // SanDisk SSD PLUS 1TB Internal SSD (isEcoFriendly: true, price: 109.00)
     quantity: 2,
-    isEcoFriendly: true,
 };
 
-// Replicate createEntityAdapter layout structure for global state simulation
-const createMockCartState = (itemsList: any[] = []): RootState => {
+// Replicate createEntityAdapter layout structure using strict type definitions
+const createMockCartState = (itemsList: CartItem[] = []): RootState => {
     const ids = itemsList.map((item) => item.id);
-    const entities = itemsList.reduce<Record<number, any>>((acc, item) => {
+    const entities = itemsList.reduce<Record<number, CartItem>>((acc, item) => {
         acc[item.id] = item;
         return acc;
     }, {});
@@ -109,31 +102,34 @@ describe('Cart Selectors Suite', () => {
     describe('selectEcoFriendlyCartCount (Bonmart Green Initiative)', () => {
         test('should enumerate unique product rows that carry eco-friendly flags', () => {
             const state = createMockCartState([mockCartItem1, mockCartItem2, mockCartItem3]);
-            // Item 1 (true), Item 2 (false), Item 3 (true)
             const ecoCount = selectEcoFriendlyCartCount(state);
 
             expect(ecoCount).toBe(2);
         });
 
         test('should return zero if no eco-friendly products populate the selection basket', () => {
-            const state = createMockCartState([mockCartItem2]); // Eco friendly: false
-            expect(selectEcoFriendlyCartCount(state)).toBe(0);
+            const state = createMockCartState([mockCartItem2]);
+
+            // FIX: Declared variable identifier inline cleanly with const modifier binding
+            const ecoCount = selectEcoFriendlyCartCount(state);
+            expect(ecoCount).toBe(0);
         });
     });
 
     describe('selectIsItemInCart Parameterized Lookup', () => {
         test('should yield true if the target key is indexed within the store hashmap', () => {
             const state = createMockCartState([mockCartItem1]);
-            const isInCartSelector = selectIsItemInCart(2); // Lookup product id: 2
+            const isInCartSelector = selectIsItemInCart(2);
 
             expect(isInCartSelector(state)).toBe(true);
         });
 
         test('should yield false via fast O(1) fallback check if product is absent', () => {
             const state = createMockCartState([mockCartItem1]);
-            const isInCartSelector = selectIsItemInCart(999); // Non-existent ID
+            const isInCartSelector = selectIsItemInCart(999);
 
             expect(isInCartSelector(state)).toBe(false);
         });
     });
 });
+

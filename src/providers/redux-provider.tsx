@@ -1,4 +1,4 @@
-// src/providers/ReduxProvider.tsx
+// src/providers/redux-provider.tsx
 
 'use client';
 

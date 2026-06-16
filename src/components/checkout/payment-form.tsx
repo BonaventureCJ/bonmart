@@ -2,10 +2,20 @@
 
 'use client';
 
+import { ChangeEvent } from 'react';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
+import type { CheckoutFormData, CheckoutFormErrors } from '@/types/form';
 
-export function PaymentForm() {
+interface PaymentFormProps {
+    values: CheckoutFormData;
+    errors: CheckoutFormErrors;
+    touched: Partial<Record<keyof CheckoutFormData, boolean>>;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onBlur: (name: keyof CheckoutFormData) => void;
+}
+
+export function PaymentForm({ values, errors, touched, onChange, onBlur }: PaymentFormProps) {
     return (
         <section className="rounded-3xl border border-(--toggle-bg) bg-(--surface-raised) p-6 sm:p-8">
             <header className="mb-6 flex items-center gap-3">
@@ -18,7 +28,6 @@ export function PaymentForm() {
             </header>
 
             <div className="space-y-4">
-                {/* Secure Badge */}
                 <div className="flex items-center gap-2 rounded-xl bg-(--brand-color)/5 px-4 py-3 text-(--brand-color)">
                     <Icon name="lock" size={16} />
                     <span className="text-xs font-bold uppercase tracking-wider">
@@ -27,34 +36,84 @@ export function PaymentForm() {
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    {/* Card Number */}
                     <div className="sm:col-span-2">
-                        <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
+                        <label htmlFor="cardNumber" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             Card Number
                         </label>
                         <div className="relative">
                             <input
+                                id="cardNumber"
+                                name="cardNumber"
                                 type="text"
+                                maxLength={19}
                                 placeholder="0000 0000 0000 0000"
-                                className="checkout-input pr-12"
+                                className="checkout-input pr-12 focus-ring"
+                                value={values.cardNumber}
+                                onChange={onChange}
+                                onBlur={() => onBlur('cardNumber')}
+                                aria-invalid={touched.cardNumber && !!errors.cardNumber ? 'true' : 'false'}
+                                aria-describedby={touched.cardNumber && errors.cardNumber ? 'cardNumber-error' : undefined}
                             />
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50">
                                 <Icon name="monitor" size={20} />
                             </div>
                         </div>
+                        {touched.cardNumber && errors.cardNumber && (
+                            <p id="cardNumber-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                                {errors.cardNumber}
+                            </p>
+                        )}
                     </div>
 
+                    {/* Expiry Date */}
                     <div>
-                        <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
+                        <label htmlFor="expiryDate" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             Expiry Date
                         </label>
-                        <input type="text" placeholder="MM / YY" className="checkout-input" />
+                        <input
+                            id="expiryDate"
+                            name="expiryDate"
+                            type="text"
+                            maxLength={5}
+                            placeholder="MM / YY"
+                            className="checkout-input focus-ring"
+                            value={values.expiryDate}
+                            onChange={onChange}
+                            onBlur={() => onBlur('expiryDate')}
+                            aria-invalid={touched.expiryDate && !!errors.expiryDate ? 'true' : 'false'}
+                            aria-describedby={touched.expiryDate && errors.expiryDate ? 'expiryDate-error' : undefined}
+                        />
+                        {touched.expiryDate && errors.expiryDate && (
+                            <p id="expiryDate-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                                {errors.expiryDate}
+                            </p>
+                        )}
                     </div>
 
+                    {/* CVC */}
                     <div>
-                        <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
+                        <label htmlFor="cvc" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             CVC
                         </label>
-                        <input type="text" placeholder="123" className="checkout-input" />
+                        <input
+                            id="cvc"
+                            name="cvc"
+                            type="text"
+                            maxLength={4}
+                            placeholder="123"
+                            className="checkout-input focus-ring"
+                            value={values.cvc}
+                            onChange={onChange}
+                            onBlur={() => onBlur('cvc')}
+                            aria-invalid={touched.cvc && !!errors.cvc ? 'true' : 'false'}
+                            aria-describedby={touched.cvc && errors.cvc ? 'cvc-error' : undefined}
+                        />
+                        {touched.cvc && errors.cvc && (
+                            <p id="cvc-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                                {errors.cvc}
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

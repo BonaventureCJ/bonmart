@@ -13,10 +13,11 @@ export interface CheckoutFormData {
 export type CheckoutFormErrors = Partial<Record<keyof CheckoutFormData, string>>;
 
 export interface ContactFormData {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
-    subject: string;
     message: string;
 }
 
 export type ContactFormErrors = Partial<Record<keyof ContactFormData, string>>;
+

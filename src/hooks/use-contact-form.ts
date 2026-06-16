@@ -2,115 +2,87 @@
 
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
-import type { ContactFormData, ContactFormErrors } from '@/types/form';
+import { useState, useTransition } from 'react';
+import { sendContactEmail } from '@/actions/send-contact-email';
 
-const INITIAL_STATE: ContactFormData = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: '',
+type FormValues = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    message: string;
 };
 
+type FormErrors = Partial<Record<keyof FormValues, string>>;
+
 export function useContactForm() {
-    const [values, setValues] = useState<ContactFormData>(INITIAL_STATE);
-    const [errors, setErrors] = useState<ContactFormErrors>({});
-    const [touched, setTouched] = useState<Partial<Record<keyof ContactFormData, boolean>>>({});
+    const [isPending, startTransition] = useTransition();
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
 
-    const validateField = (name: keyof ContactFormData, value: string): string => {
-        const trimmed = value.trim();
-        switch (name) {
-            case 'firstName':
-                if (!trimmed) return 'First name is required.';
-                if (trimmed.length < 2) return 'First name must be at least 2 characters.';
-                return '';
-            case 'lastName':
-                if (!trimmed) return 'Last name is required.';
-                if (trimmed.length < 2) return 'Last name must be at least 2 characters.';
-                return '';
-            case 'email':
-                if (!trimmed) return 'Email address is required.';
-                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-                    return 'Please enter a valid email address.';
-                }
-                return '';
-            case 'message':
-                if (!trimmed) return 'Message field cannot be left blank.';
-                if (trimmed.length < 10) return 'Your message must be at least 10 characters long.';
-                return '';
-            default:
-                return '';
-        }
-    };
+    const [values, setValues] = useState<FormValues>({
+        firstName: '',
+        lastName: '',
+        email: '',
+        message: '',
+    });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const [errors, setErrors] = useState<FormErrors>({});
+    const [touched, setTouched] = useState<Partial<Record<keyof FormValues, boolean>>>({});
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setValues((prev) => ({ ...prev, [name]: value }));
 
-        if (touched[name as keyof ContactFormData]) {
-            const error = validateField(name as keyof ContactFormData, value);
-            setErrors((prev) => ({ ...prev, [name]: error }));
+        // Clear validation warnings dynamically on type
+        if (errors[name as keyof FormValues]) {
+            setErrors((prev) => ({ ...prev, [name]: undefined }));
         }
     };
 
-    const handleBlur = (name: keyof ContactFormData) => {
-        setTouched((prev) => ({ ...prev, [name]: true }));
-        const error = validateField(name, values[name]);
-        setErrors((prev) => ({ ...prev, [name]: error }));
+    const handleBlur = (field: keyof FormValues) => {
+        setTouched((prev) => ({ ...prev, [field]: true }));
     };
 
-    const executeSubmit = async (e: FormEvent, onSuccessCallback?: () => void): Promise<boolean> => {
+    const executeSubmit = async (e: React.FormEvent, callback?: () => void) => {
         e.preventDefault();
-
-        const freshErrors: ContactFormErrors = {};
-        let isValid = true;
-
-        (Object.keys(values) as Array<keyof ContactFormData>).forEach((key) => {
-            const error = validateField(key, values[key]);
-            if (error) {
-                freshErrors[key] = error;
-                isValid = false;
-            }
-        });
-
-        setErrors(freshErrors);
-        setTouched({
-            firstName: true,
-            lastName: true,
-            email: true,
-            message: true,
-        });
-
-        if (!isValid) {
-            const firstError = document.querySelector('[aria-invalid="true"]');
-            if (firstError) {
-                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                (firstError as HTMLElement).focus();
-            }
-            return false;
-        }
-
         setStatus('submitting');
-        try {
-            // Latency simulation mirroring real-world enterprise pipeline actions
-            await new Promise((resolve) => setTimeout(resolve, 2000));
+        setErrors({});
+
+        // Wrap Server Action triggers inside useTransition to keep the UI smooth and responsive
+        startTransition(async () => {
+            const response = await sendContactEmail(values);
+
+            if (!response.success) {
+                setStatus('error');
+                if (response.fieldErrors) {
+                    // Re-map Zod array field messages to string keys for your UI
+                    const formErrorState: FormErrors = {};
+                    Object.entries(response.fieldErrors).forEach(([key, val]) => {
+                        if (val) formErrorState[key as keyof FormValues] = val[0];
+                    });
+                    setErrors(formErrorState);
+                    // Mark fields with errors as touched so validations show immediately
+                    setTouched(
+                        Object.keys(response.fieldErrors).reduce((acc, currentKey) => {
+                            acc[currentKey as keyof FormValues] = true;
+                            return acc;
+                        }, {} as Record<keyof FormValues, boolean>)
+                    );
+                }
+                return;
+            }
+
             setStatus('success');
-            setValues(INITIAL_STATE);
+            setValues({ firstName: '', lastName: '', email: '', message: '' });
             setTouched({});
-            if (onSuccessCallback) onSuccessCallback();
-            return true;
-        } catch {
-            setStatus('error');
-            return false;
-        }
+            if (callback) callback();
+        });
     };
 
     return {
         values,
         errors,
         touched,
-        status,
+        status: isPending ? 'submitting' : status,
         handleChange,
         handleBlur,
         executeSubmit,

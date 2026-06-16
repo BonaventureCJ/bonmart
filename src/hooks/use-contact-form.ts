@@ -9,6 +9,7 @@ type FormValues = {
     firstName: string;
     lastName: string;
     email: string;
+    subject: string;
     message: string;
 };
 
@@ -22,6 +23,7 @@ export function useContactForm() {
         firstName: '',
         lastName: '',
         email: '',
+        subject: '',
         message: '',
     });
 
@@ -32,7 +34,6 @@ export function useContactForm() {
         const { name, value } = e.target;
         setValues((prev) => ({ ...prev, [name]: value }));
 
-        // Clear validation warnings dynamically on type
         if (errors[name as keyof FormValues]) {
             setErrors((prev) => ({ ...prev, [name]: undefined }));
         }
@@ -47,20 +48,22 @@ export function useContactForm() {
         setStatus('submitting');
         setErrors({});
 
-        // Wrap Server Action triggers inside useTransition to keep the UI smooth and responsive
         startTransition(async () => {
             const response = await sendContactEmail(values);
 
             if (!response.success) {
                 setStatus('error');
                 if (response.fieldErrors) {
-                    // Re-map Zod array field messages to string keys for your UI
                     const formErrorState: FormErrors = {};
+
                     Object.entries(response.fieldErrors).forEach(([key, val]) => {
-                        if (val) formErrorState[key as keyof FormValues] = val[0];
+                        // FIXED: Zod returns arrays (val). We extract the first error string safely.
+                        if (val && val.length > 0) {
+                            formErrorState[key as keyof FormValues] = val[0];
+                        }
                     });
+
                     setErrors(formErrorState);
-                    // Mark fields with errors as touched so validations show immediately
                     setTouched(
                         Object.keys(response.fieldErrors).reduce((acc, currentKey) => {
                             acc[currentKey as keyof FormValues] = true;
@@ -72,7 +75,7 @@ export function useContactForm() {
             }
 
             setStatus('success');
-            setValues({ firstName: '', lastName: '', email: '', message: '' });
+            setValues({ firstName: '', lastName: '', email: '', subject: '', message: '' });
             setTouched({});
             if (callback) callback();
         });

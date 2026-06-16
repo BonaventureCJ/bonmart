@@ -18,9 +18,7 @@ export function ContactForm() {
     } = useContactForm();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        await executeSubmit(e, () => {
-            // Optional: Handle telemetry tracking or RTK Query state invalidation safely here
-        });
+        await executeSubmit(e);
     };
 
     return (
@@ -47,12 +45,10 @@ export function ContactForm() {
             )}
 
             <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                {/* Names Row Container */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div className="flex flex-col gap-2 text-left">
-                        <label
-                            htmlFor="firstName"
-                            className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)"
-                        >
+                        <label htmlFor="firstName" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             First Name
                         </label>
                         <input
@@ -76,10 +72,7 @@ export function ContactForm() {
                     </div>
 
                     <div className="flex flex-col gap-2 text-left">
-                        <label
-                            htmlFor="lastName"
-                            className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)"
-                        >
+                        <label htmlFor="lastName" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             Last Name
                         </label>
                         <input
@@ -103,11 +96,9 @@ export function ContactForm() {
                     </div>
                 </div>
 
+                {/* Email Address Field Block */}
                 <div className="flex flex-col gap-2 text-left">
-                    <label
-                        htmlFor="email"
-                        className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)"
-                    >
+                    <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Email Address
                     </label>
                     <input
@@ -130,11 +121,34 @@ export function ContactForm() {
                     )}
                 </div>
 
+                {/* SUBJECT FIELD (NEW IMPLEMENTATION) */}
                 <div className="flex flex-col gap-2 text-left">
-                    <label
-                        htmlFor="message"
-                        className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)"
-                    >
+                    <label htmlFor="subject" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
+                        Inquiry Subject
+                    </label>
+                    <input
+                        id="subject"
+                        name="subject"
+                        type="text"
+                        placeholder="Order status, sustainability standards..."
+                        disabled={status === 'submitting'}
+                        className="checkout-input focus-ring disabled:opacity-50"
+                        value={values.subject}
+                        onChange={handleChange}
+                        onBlur={() => handleBlur('subject')}
+                        aria-invalid={touched.subject && !!errors.subject}
+                        aria-describedby={touched.subject && errors.subject ? 'subject-error' : undefined}
+                    />
+                    {touched.subject && errors.subject && (
+                        <p id="subject-error" className="text-xs font-semibold text-(--error)" role="status">
+                            {errors.subject}
+                        </p>
+                    )}
+                </div>
+
+                {/* Your Message Box Field Block */}
+                <div className="flex flex-col gap-2 text-left">
+                    <label htmlFor="message" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Your Message
                     </label>
                     <textarea

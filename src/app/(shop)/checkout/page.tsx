@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { clearCart } from '@/features/cart/cart-slice';
 import { selectCartItems, selectCartSubtotal } from '@/features/cart/cart-selectors';
 import { addOrder } from '@/features/orders/orders-slice';
+import { useCheckoutForm } from '@/hooks/use-checkout-form';
 import PageContainer from '@/components/layout/page-container';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
@@ -16,24 +17,17 @@ import { CartSummary } from '@/components/cart/cart-summary';
 import { CheckoutForm } from '@/components/checkout/checkout-form';
 import { PaymentForm } from '@/components/checkout/payment-form';
 
-/**
- * CheckoutPage Component
- * Optimized with memoized selectors.
- * Aligns with normalized state from createEntityAdapter.
- */
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  /**
-   * 1. Normalized State Selection
-   * Performance: selectCartItems leverages the adapter's referentially stable array.
-   */
   const items = useAppSelector(selectCartItems);
   const subtotal = useAppSelector(selectCartSubtotal);
 
-  // 2. Derived UI Logic
+  // Hook-driven Validation State
+  const { values, errors, touched, handleChange, handleBlur, validateAll } = useCheckoutForm();
+
   const shippingFee = subtotal > 200 || items.length === 0 ? 0 : 15.0;
   const tax = subtotal * 0.08;
 
@@ -43,16 +37,21 @@ export default function CheckoutPage() {
       return;
     }
 
+    // Trigger validation guard check
+    if (!validateAll()) {
+      const firstErrorElement = document.querySelector('[aria-invalid="true"]');
+      if (firstErrorElement) {
+        firstErrorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        (firstErrorElement as HTMLElement).focus();
+      }
+      return;
+    }
+
     setIsProcessing(true);
 
     try {
-      // Simulate payment processing latency
       await new Promise((resolve) => setTimeout(resolve, 2500));
 
-      /**
-       * Order Tracking Integration:
-       * Generate a standardized order object to persist in normalized history.
-       */
       const newOrder = {
         id: `BM-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
         date: new Date().toLocaleDateString('en-GB', {
@@ -70,13 +69,9 @@ export default function CheckoutPage() {
         tax,
         shipping: shippingFee,
         total: subtotal + tax + shippingFee,
-        status: 'processing' as const, // Start in processing state
+        status: 'processing' as const,
       };
 
-      /**
-       * Normalized logic: addOrder adds to the ordersAdapter.
-       * clearCart calls cartAdapter.removeAll ensuring O(1) state clearing.
-       */
       dispatch(addOrder(newOrder));
       dispatch(clearCart());
       router.push('/checkout/status?status=success');
@@ -87,7 +82,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // Empty State / Guard Clause
   if (items.length === 0 && !isProcessing) {
     return (
       <PageContainer>
@@ -123,13 +117,24 @@ export default function CheckoutPage() {
         </header>
 
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
-          {/* Form Column */}
+          {/* Form Stack Container */}
           <div className="space-y-8 lg:col-span-7 xl:col-span-8">
-            <CheckoutForm />
-            <PaymentForm />
+            <CheckoutForm
+              values={values}
+              errors={errors}
+              touched={touched}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            <PaymentForm
+              values={values}
+              errors={errors}
+              touched={touched}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
           </div>
 
-          {/* Summary Column */}
           <aside className="lg:col-span-5 xl:col-span-4">
             <div className="sticky top-24">
               <CartSummary
@@ -139,8 +144,6 @@ export default function CheckoutPage() {
                 buttonLabel="Place Order"
                 isProcessing={isProcessing}
               />
-
-              {/* Trust & Security Badge Section */}
               <div className="mt-6 flex flex-col items-center gap-3 px-2">
                 <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-(--brand-color)">
                   <Icon name="lock" size={12} />

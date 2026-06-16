@@ -3,18 +3,27 @@
 import { renderHook, act } from '@testing-library/react';
 import { useContactForm } from './use-contact-form';
 import { type ChangeEvent, type FormEvent } from 'react';
+import { expect, vi, describe, test, beforeEach, afterEach } from 'vitest';
 
-// Struct type-safe representation of your contact payload contract
-interface ContactValues {
+// 1. Mock the Next.js Server Action cleanly before execution
+vi.mock('@/actions/send-contact-email', () => ({
+    sendContactEmail: vi.fn(),
+}));
+
+// Import the mocked function reference to change resolution payloads inside specific tests
+import { sendContactEmail } from '@/actions/send-contact-email';
+
+type HookFormValues = {
     firstName: string;
     lastName: string;
     email: string;
+    subject: string;
     message: string;
-}
+};
 
 // Reusable ChangeEvent factory builder removing strict type linting warnings
 function createContactChangeEvent(
-    name: keyof ContactValues,
+    name: keyof HookFormValues,
     value: string
 ): ChangeEvent<HTMLInputElement | HTMLTextAreaElement> {
     return {
@@ -28,26 +37,19 @@ const mockFormEvent = {
 } as unknown as FormEvent;
 
 describe('useContactForm Custom Hook Suite', () => {
-
     beforeEach(() => {
-        vi.useFakeTimers();
-
-        // Stub missing jsdom DOM layout methods to validate accessibility routing
-        window.HTMLElement.prototype.scrollIntoView = vi.fn();
-    });
-
-    afterEach(() => {
-        vi.useRealTimers();
-        vi.restoreAllMocks();
+        vi.clearAllMocks();
     });
 
     test('should initialize contact fields with clean string states and idle status', () => {
         const { result } = renderHook(() => useContactForm());
 
+        // Matches the updated Zod and hook architecture exactly
         expect(result.current.values).toEqual({
             firstName: '',
             lastName: '',
             email: '',
+            subject: '',
             message: '',
         });
         expect(result.current.errors).toEqual({});
@@ -55,105 +57,97 @@ describe('useContactForm Custom Hook Suite', () => {
         expect(result.current.status).toBe('idle');
     });
 
-    describe('Field-Level Blur & Change Valuations', () => {
-        test('should append validation error strings on firstName inputs under 2 characters', () => {
-            const { result } = renderHook(() => useContactForm());
+    test('should update state value on field change actions', () => {
+        const { result } = renderHook(() => useContactForm());
 
-            act(() => {
-                result.current.handleChange(createContactChangeEvent('firstName', 'A'));
-            });
-
-            act(() => {
-                result.current.handleBlur('firstName');
-            });
-
-            expect(result.current.errors.firstName).toBe('First name must be at least 2 characters.');
+        act(() => {
+            result.current.handleChange(createContactChangeEvent('firstName', 'Eco-Builder'));
+            result.current.handleChange(createContactChangeEvent('subject', 'Partnerships'));
         });
 
-        test('should catch invalid email syntax configurations and register alert text', () => {
-            const { result } = renderHook(() => useContactForm());
-
-            act(() => {
-                result.current.handleChange(createContactChangeEvent('email', 'bonamart.eco@invalid'));
-            });
-
-            act(() => {
-                result.current.handleBlur('email');
-            });
-
-            expect(result.current.errors.email).toBe('Please enter a valid email address.');
-        });
-
-        test('should evaluate message lengths enforcing a strict 10 character text constraint ceiling', () => {
-            const { result } = renderHook(() => useContactForm());
-
-            act(() => {
-                result.current.handleChange(createContactChangeEvent('message', 'Short'));
-            });
-
-            act(() => {
-                result.current.handleBlur('message');
-            });
-
-            expect(result.current.errors.message).toBe('Your message must be at least 10 characters long.');
-        });
+        expect(result.current.values.firstName).toBe('Eco-Builder');
+        expect(result.current.values.subject).toBe('Partnerships');
     });
 
-    describe('Submit Submission Layer & Latency Timers', () => {
-        test('should handle validation failures, touch properties, and try focusing elements', async () => {
-            const { result } = renderHook(() => useContactForm());
+    test('should flag specific target fields as touched on blur events', () => {
+        const { result } = renderHook(() => useContactForm());
 
-            // Create dummy element in the DOM to mock document.querySelector logic execution paths
-            const dummyInput = document.createElement('input');
-            dummyInput.setAttribute('aria-invalid', 'true');
-            document.body.appendChild(dummyInput);
-            const focusSpy = vi.spyOn(dummyInput, 'focus');
-
-            let submissionResult = true;
-            await act(async () => {
-                submissionResult = await result.current.executeSubmit(mockFormEvent);
-            });
-
-            expect(submissionResult).toBe(false);
-            expect(result.current.status).toBe('idle');
-            expect(result.current.touched.message).toBe(true);
-            expect(focusSpy).toHaveBeenCalled();
-
-            document.body.removeChild(dummyInput);
+        act(() => {
+            result.current.handleBlur('email');
         });
 
-        test('should transition status flags and reset values cleanly on successful execution pipelines', async () => {
+        expect(result.current.touched.email).toBe(true);
+        expect(result.current.touched.firstName).toBeUndefined();
+    });
+
+    describe('Submit Submission Layer & Asynchronous Status Lifecycle', () => {
+        test('should map Zod errors back to state fields and set status to error on server validation failure', async () => {
+            const { result } = renderHook(() => useContactForm());
+
+            // Configure mock server failure response payload matching Zod's flattened output
+            vi.mocked(sendContactEmail).mockResolvedValueOnce({
+                success: false,
+                message: 'Validation failed. Please verify your entries.',
+                fieldErrors: {
+                    email: ['Please enter a valid email address.'],
+                    subject: ['Subject must be at least 4 characters.'],
+                },
+            });
+
+            // Wrap async execution within an awaited act() boundary
+            await act(async () => {
+                result.current.executeSubmit(mockFormEvent);
+            });
+
+            expect(sendContactEmail).toHaveBeenCalledWith(result.current.values);
+            expect(result.current.status).toBe('error');
+
+            // Verified that first-element array indexing strings map accurately
+            expect(result.current.errors.email).toBe('Please enter a valid email address.');
+            expect(result.current.errors.subject).toBe('Subject must be at least 4 characters.');
+
+            // Validation failure marks fields as touched automatically to reveal highlights
+            expect(result.current.touched.email).toBe(true);
+            expect(result.current.touched.subject).toBe(true);
+        });
+
+        test('should clear values, touch states, and invoke callbacks upon successful server transmission pipelines', async () => {
             const { result } = renderHook(() => useContactForm());
             const mockCallback = vi.fn();
 
+            // Populate input data fields
             act(() => {
-                result.current.handleChange(createContactChangeEvent('firstName', 'Bonaventure'));
-                result.current.handleChange(createContactChangeEvent('lastName', 'Ugwu'));
-                result.current.handleChange(createContactChangeEvent('email', 'bonacjugwu@gmail.com'));
-                result.current.handleChange(createContactChangeEvent('message', 'This is an enterprise green sustainability query.'));
+                result.current.handleChange(createContactChangeEvent('firstName', 'Jane'));
+                result.current.handleChange(createContactChangeEvent('lastName', 'Doe'));
+                result.current.handleChange(createContactChangeEvent('email', 'jane@example.com'));
+                result.current.handleChange(createContactChangeEvent('subject', 'Green Order Status'));
+                result.current.handleChange(createContactChangeEvent('message', 'This message exceeds ten characters.'));
             });
 
-            let submitPromise: Promise<boolean>;
-            act(() => {
-                submitPromise = result.current.executeSubmit(mockFormEvent, mockCallback);
+            // Mock successful server execution response
+            vi.mocked(sendContactEmail).mockResolvedValueOnce({
+                success: true,
+                message: 'Message delivered! Check your Google mailbox shortly.',
             });
 
-            // Assert instant submission buffering states prior to mock timing flushing sweeps
-            expect(result.current.status).toBe('submitting');
-
-            // Leap forward over the 2-second asynchronous backend mock loop latency window
             await act(async () => {
-                vi.advanceTimersByTime(2000);
+                result.current.executeSubmit(mockFormEvent, mockCallback);
             });
 
-            const resolvedStatus = await submitPromise!;
-            expect(resolvedStatus).toBe(true);
+            expect(sendContactEmail).toHaveBeenCalled();
             expect(result.current.status).toBe('success');
             expect(mockCallback).toHaveBeenCalled();
 
-            // State reset validations
-            expect(result.current.values.firstName).toBe('');
+            // Form values must reset to absolute empty string defaults upon server success
+            expect(result.current.values).toEqual({
+                firstName: '',
+                lastName: '',
+                email: '',
+                subject: '',
+                message: '',
+            });
             expect(result.current.touched).toEqual({});
+            expect(result.current.errors).toEqual({});
         });
     });
 });

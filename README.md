@@ -33,6 +33,14 @@ Primitive tokens are mapped to semantic variables (e.g., `--brand-color`, `--sur
 
 ---
 
+## 📋 Form Validation Framework
+
+*   **Decoupled Hook Architecture**: Isolated, custom validation engines (`useCheckoutForm` and `useContactForm`) maintain a type-safe form payload and single responsibility state separation.
+*   **Real-Time Format Masking**: Dynamic credit card formatting rules filter non-numeric characters and evaluate card dates relative to the active system calendar timeline.
+*   **WCAG 2.2 Form Compliance**: Accessible error presentation strings utilize native `aria-invalid` configurations coupled with `aria-describedby` screen reader landmarks.
+
+---
+
 ## 🚀 Engineering Excellence & Performance
 
 ### 1. High-Performance State Normalization
@@ -62,6 +70,7 @@ BonMart deploys a highly responsive, high-density testing matrix driven by **Vit
 *   **State Isolation Architecture**: Because `redux-persist` binds to browser storage engines, it is extracted from testing environments. Tests consume a custom factory utility (`renderWithProviders`) that instantiates a raw, fresh Redux store for every test script, completely eliminating cross-test state leaks.
 *   **Global Ambient Primitives**: Configured with `globals: true`, eliminating framework imports. Tests utilize the explicit `test` primitive block over `it` to ensure clear intent and scannable code.
 *   **Temporal Chronology Isolation**: Time-sensitive workflows (such as inputs using `useDebounce`) are verified using Vitest Fake Timers (`vi.useFakeTimers()`), accelerating execution pipelines.
+*   **Sequential State Verifications**: Custom hooks are verified using dedicated, sequential `act` cycles to clear asynchronous state batching and prevent stale lifecycle assertions.
 
 ### 2. Type-Safe Static Casts & Troubleshooting
 To maintain strict compliance with `@typescript-eslint/no-explicit-any` while mocking read-only DOM attributes (e.g., `window.innerHeight` or `HTMLElement.offsetHeight`) under **JSDOM**, the codebase enforces casting mutations through an intermediate `unknown` step rather than `any`:

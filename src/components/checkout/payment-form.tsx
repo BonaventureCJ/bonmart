@@ -52,7 +52,7 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                                 value={values.cardNumber}
                                 onChange={onChange}
                                 onBlur={() => onBlur('cardNumber')}
-                                aria-invalid={touched.cardNumber && !!errors.cardNumber ? 'true' : 'false'}
+                                aria-invalid={touched.cardNumber && !!errors.cardNumber}
                                 aria-describedby={touched.cardNumber && errors.cardNumber ? 'cardNumber-error' : undefined}
                             />
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-50">
@@ -60,7 +60,7 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             </div>
                         </div>
                         {touched.cardNumber && errors.cardNumber && (
-                            <p id="cardNumber-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                            <p id="cardNumber-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                                 {errors.cardNumber}
                             </p>
                         )}
@@ -81,11 +81,11 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             value={values.expiryDate}
                             onChange={onChange}
                             onBlur={() => onBlur('expiryDate')}
-                            aria-invalid={touched.expiryDate && !!errors.expiryDate ? 'true' : 'false'}
+                            aria-invalid={touched.expiryDate && !!errors.expiryDate}
                             aria-describedby={touched.expiryDate && errors.expiryDate ? 'expiryDate-error' : undefined}
                         />
                         {touched.expiryDate && errors.expiryDate && (
-                            <p id="expiryDate-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                            <p id="expiryDate-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                                 {errors.expiryDate}
                             </p>
                         )}
@@ -106,11 +106,11 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             value={values.cvc}
                             onChange={onChange}
                             onBlur={() => onBlur('cvc')}
-                            aria-invalid={touched.cvc && !!errors.cvc ? 'true' : 'false'}
+                            aria-invalid={touched.cvc && !!errors.cvc}
                             aria-describedby={touched.cvc && errors.cvc ? 'cvc-error' : undefined}
                         />
                         {touched.cvc && errors.cvc && (
-                            <p id="cvc-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                            <p id="cvc-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                                 {errors.cvc}
                             </p>
                         )}

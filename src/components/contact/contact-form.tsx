@@ -53,7 +53,7 @@ export function ContactForm() {
                             aria-describedby={touched.firstName && errors.firstName ? 'firstName-error' : undefined}
                         />
                         {touched.firstName && errors.firstName && (
-                            <p id="firstName-error" className="text-xs font-semibold text-(--error)" role="status">
+                            <p id="firstName-error" className="text-xs font-semibold text-(--error) animate-zoom-in" role="status">
                                 {errors.firstName}
                             </p>
                         )}
@@ -77,7 +77,7 @@ export function ContactForm() {
                             aria-describedby={touched.lastName && errors.lastName ? 'lastName-error' : undefined}
                         />
                         {touched.lastName && errors.lastName && (
-                            <p id="lastName-error" className="text-xs font-semibold text-(--error)" role="status">
+                            <p id="lastName-error" className="text-xs font-semibold text-(--error) animate-zoom-in" role="status">
                                 {errors.lastName}
                             </p>
                         )}
@@ -103,13 +103,13 @@ export function ContactForm() {
                         aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
                     />
                     {touched.email && errors.email && (
-                        <p id="email-error" className="text-xs font-semibold text-(--error)" role="status">
+                        <p id="email-error" className="text-xs font-semibold text-(--error) animate-zoom-in" role="status">
                             {errors.email}
                         </p>
                     )}
                 </div>
 
-                {/* Subject Field */}
+                {/* Subject Field Block */}
                 <div className="flex flex-col gap-2 text-left">
                     <label htmlFor="subject" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Inquiry Subject
@@ -128,7 +128,7 @@ export function ContactForm() {
                         aria-describedby={touched.subject && errors.subject ? 'subject-error' : undefined}
                     />
                     {touched.subject && errors.subject && (
-                        <p id="subject-error" className="text-xs font-semibold text-(--error)" role="status">
+                        <p id="subject-error" className="text-xs font-semibold text-(--error) animate-zoom-in" role="status">
                             {errors.subject}
                         </p>
                     )}
@@ -153,7 +153,7 @@ export function ContactForm() {
                         aria-describedby={touched.message && errors.message ? 'message-error' : undefined}
                     />
                     {touched.message && errors.message && (
-                        <p id="message-error" className="text-xs font-semibold text-(--error)" role="status">
+                        <p id="message-error" className="text-xs font-semibold text-(--error) animate-zoom-in" role="status">
                             {errors.message}
                         </p>
                     )}
@@ -173,10 +173,10 @@ export function ContactForm() {
                         {status === 'submitting' ? 'Sending...' : 'Send Message'}
                     </Button>
 
-                    {/* RELOCATED STATUS CHANNELS (Positioned underneath for scannability) */}
+                    {/* Dynamic Status Channels */}
                     {status === 'success' && (
                         <div role="alert" className="rounded-xl bg-(--brand-color)/10 p-4 text-sm font-semibold text-(--brand-color) animate-zoom-in text-center sm:text-left">
-                            Message received! Our green team will respond within 24 business hours.
+                            Message received! Our green team will respond usually within 24 business hours.
                         </div>
                     )}
 

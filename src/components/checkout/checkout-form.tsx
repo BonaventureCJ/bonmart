@@ -28,7 +28,7 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
             </header>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {/* Full Name */}
+                {/* Full Name Field Block */}
                 <div className="sm:col-span-2">
                     <label htmlFor="fullName" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Full Name
@@ -46,13 +46,13 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         aria-describedby={touched.fullName && errors.fullName ? 'fullName-error' : undefined}
                     />
                     {touched.fullName && errors.fullName && (
-                        <p id="fullName-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                        <p id="fullName-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                             {errors.fullName}
                         </p>
                     )}
                 </div>
 
-                {/* Street Address */}
+                {/* Street Address Field Block */}
                 <div className="sm:col-span-2">
                     <label htmlFor="streetAddress" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Street Address
@@ -70,13 +70,13 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         aria-describedby={touched.streetAddress && errors.streetAddress ? 'streetAddress-error' : undefined}
                     />
                     {touched.streetAddress && errors.streetAddress && (
-                        <p id="streetAddress-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                        <p id="streetAddress-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                             {errors.streetAddress}
                         </p>
                     )}
                 </div>
 
-                {/* City */}
+                {/* City Field Block */}
                 <div>
                     <label htmlFor="city" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         City
@@ -94,13 +94,13 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         aria-describedby={touched.city && errors.city ? 'city-error' : undefined}
                     />
                     {touched.city && errors.city && (
-                        <p id="city-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                        <p id="city-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                             {errors.city}
                         </p>
                     )}
                 </div>
 
-                {/* Postcode */}
+                {/* Postcode Field Block */}
                 <div>
                     <label htmlFor="postcode" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Postcode
@@ -119,7 +119,7 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         aria-describedby={touched.postcode && errors.postcode ? 'postcode-error' : undefined}
                     />
                     {touched.postcode && errors.postcode && (
-                        <p id="postcode-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                        <p id="postcode-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                             {errors.postcode}
                         </p>
                     )}

@@ -42,11 +42,11 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         value={values.fullName}
                         onChange={onChange}
                         onBlur={() => onBlur('fullName')}
-                        aria-invalid={touched.fullName && !!errors.fullName ? 'true' : 'false'}
+                        aria-invalid={touched.fullName && !!errors.fullName}
                         aria-describedby={touched.fullName && errors.fullName ? 'fullName-error' : undefined}
                     />
                     {touched.fullName && errors.fullName && (
-                        <p id="fullName-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                        <p id="fullName-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                             {errors.fullName}
                         </p>
                     )}
@@ -66,11 +66,11 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         value={values.streetAddress}
                         onChange={onChange}
                         onBlur={() => onBlur('streetAddress')}
-                        aria-invalid={touched.streetAddress && !!errors.streetAddress ? 'true' : 'false'}
+                        aria-invalid={touched.streetAddress && !!errors.streetAddress}
                         aria-describedby={touched.streetAddress && errors.streetAddress ? 'streetAddress-error' : undefined}
                     />
                     {touched.streetAddress && errors.streetAddress && (
-                        <p id="streetAddress-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                        <p id="streetAddress-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                             {errors.streetAddress}
                         </p>
                     )}
@@ -90,11 +90,11 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         value={values.city}
                         onChange={onChange}
                         onBlur={() => onBlur('city')}
-                        aria-invalid={touched.city && !!errors.city ? 'true' : 'false'}
+                        aria-invalid={touched.city && !!errors.city}
                         aria-describedby={touched.city && errors.city ? 'city-error' : undefined}
                     />
                     {touched.city && errors.city && (
-                        <p id="city-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                        <p id="city-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                             {errors.city}
                         </p>
                     )}
@@ -109,17 +109,17 @@ export function CheckoutForm({ values, errors, touched, onChange, onBlur }: Chec
                         id="postcode"
                         name="postcode"
                         type="text"
-                        maxLength={6}
+                        maxLength={10}
                         placeholder="100001"
                         className="checkout-input focus-ring"
                         value={values.postcode}
                         onChange={onChange}
                         onBlur={() => onBlur('postcode')}
-                        aria-invalid={touched.postcode && !!errors.postcode ? 'true' : 'false'}
+                        aria-invalid={touched.postcode && !!errors.postcode}
                         aria-describedby={touched.postcode && errors.postcode ? 'postcode-error' : undefined}
                     />
                     {touched.postcode && errors.postcode && (
-                        <p id="postcode-error" className="mt-1.5 text-xs font-semibold text-(--error)">
+                        <p id="postcode-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
                             {errors.postcode}
                         </p>
                     )}

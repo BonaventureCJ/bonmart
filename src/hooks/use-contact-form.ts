@@ -34,6 +34,11 @@ export function useContactForm() {
         const { name, value } = e.target;
         setValues((prev) => ({ ...prev, [name]: value }));
 
+        // FIXED: Clear the global success/error status banner immediately when user types
+        if (status === 'success' || status === 'error') {
+            setStatus('idle');
+        }
+
         if (errors[name as keyof FormValues]) {
             setErrors((prev) => ({ ...prev, [name]: undefined }));
         }
@@ -57,7 +62,6 @@ export function useContactForm() {
                     const formErrorState: FormErrors = {};
 
                     Object.entries(response.fieldErrors).forEach(([key, val]) => {
-                        // FIXED: Zod returns arrays (val). We extract the first error string safely.
                         if (val && val.length > 0) {
                             formErrorState[key as keyof FormValues] = val[0];
                         }

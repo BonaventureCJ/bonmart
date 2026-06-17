@@ -32,18 +32,6 @@ export function ContactForm() {
                 </p>
             </header>
 
-            {status === 'success' && (
-                <div role="alert" className="mb-6 rounded-xl bg-(--brand-color)/10 p-4 text-sm font-semibold text-(--brand-color) animate-zoom-in">
-                    Message received! Our green team will respond within 24 business hours.
-                </div>
-            )}
-
-            {status === 'error' && (
-                <div role="alert" className="mb-6 rounded-xl bg-(--error-muted) p-4 text-sm font-semibold text-(--error) animate-zoom-in">
-                    Failed to send. Please check your data connections and try again.
-                </div>
-            )}
-
             <form onSubmit={handleSubmit} noValidate className="space-y-6">
                 {/* Names Row Container */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -121,7 +109,7 @@ export function ContactForm() {
                     )}
                 </div>
 
-                {/* SUBJECT FIELD (NEW IMPLEMENTATION) */}
+                {/* Subject Field */}
                 <div className="flex flex-col gap-2 text-left">
                     <label htmlFor="subject" className="text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                         Inquiry Subject
@@ -171,17 +159,33 @@ export function ContactForm() {
                     )}
                 </div>
 
-                <Button
-                    type="submit"
-                    variant="primary"
-                    size="lg"
-                    fullWidth
-                    icon="arrowRight"
-                    iconPlacement="right"
-                    disabled={status === 'submitting'}
-                >
-                    {status === 'submitting' ? 'Sending...' : 'Send Message'}
-                </Button>
+                {/* Action Trigger Row */}
+                <div className="flex flex-col gap-4 pt-2">
+                    <Button
+                        type="submit"
+                        variant="primary"
+                        size="lg"
+                        fullWidth
+                        icon="arrowRight"
+                        iconPlacement="right"
+                        disabled={status === 'submitting'}
+                    >
+                        {status === 'submitting' ? 'Sending...' : 'Send Message'}
+                    </Button>
+
+                    {/* RELOCATED STATUS CHANNELS (Positioned underneath for scannability) */}
+                    {status === 'success' && (
+                        <div role="alert" className="rounded-xl bg-(--brand-color)/10 p-4 text-sm font-semibold text-(--brand-color) animate-zoom-in text-center sm:text-left">
+                            Message received! Our green team will respond within 24 business hours.
+                        </div>
+                    )}
+
+                    {status === 'error' && (
+                        <div role="alert" className="rounded-xl bg-(--error-muted) p-4 text-sm font-semibold text-(--error) animate-zoom-in text-center sm:text-left">
+                            Failed to send. Please check your data connections and try again.
+                        </div>
+                    )}
+                </div>
             </form>
         </section>
     );

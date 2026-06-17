@@ -2,33 +2,15 @@
 
 'use server';
 
-import { z } from 'zod';
 import { Resend } from 'resend';
+import { contactFormSchema, type ContactFormErrors } from '@/types/form';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-// Compliant with strict Zod v4 enterprise standards
-const contactFormSchema = z.object({
-    firstName: z.string().trim().min(2, { error: 'First name must be at least 2 characters.' }),
-    lastName: z.string().trim().min(2, { error: 'Last name must be at least 2 characters.' }),
-    email: z.string().trim().pipe(
-        z.email({ error: 'Please enter a valid email address.' })
-    ),
-
-    subject: z.string().trim().min(4, { error: 'Subject must be at least 4 characters.' }),
-    message: z.string().trim().min(10, { error: 'Message must be at least 10 characters.' }),
-});
 
 export type ContactActionResult = {
     success: boolean;
     message: string;
-    fieldErrors?: {
-        firstName?: string[];
-        lastName?: string[];
-        email?: string[];
-        subject?: string[];
-        message?: string[];
-    };
+    fieldErrors?: ContactFormErrors;
 };
 
 export async function sendContactEmail(payload: unknown): Promise<ContactActionResult> {
@@ -36,10 +18,17 @@ export async function sendContactEmail(payload: unknown): Promise<ContactActionR
 
     if (!validation.success) {
         const flattened = validation.error.flatten();
+        const formattedErrors: ContactFormErrors = {};
+        Object.entries(flattened.fieldErrors).forEach(([key, val]) => {
+            if (val && val.length > 0) {
+                formattedErrors[key as keyof ContactFormErrors] = val[0];
+            }
+        });
+
         return {
             success: false,
             message: 'Validation failed. Please verify your entries.',
-            fieldErrors: flattened.fieldErrors as ContactActionResult['fieldErrors'],
+            fieldErrors: formattedErrors,
         };
     }
 

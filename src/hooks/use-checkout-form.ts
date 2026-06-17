@@ -3,7 +3,7 @@
 'use client';
 
 import { useState, ChangeEvent } from 'react';
-import type { CheckoutFormData, CheckoutFormErrors } from '@/types/form';
+import { checkoutFormSchema, type CheckoutFormData, type CheckoutFormErrors } from '@/types/form';
 
 const INITIAL_STATE: CheckoutFormData = {
     fullName: '',
@@ -35,43 +35,16 @@ export function useCheckoutForm() {
     };
 
     const validateField = (name: keyof CheckoutFormData, value: string): string => {
-        const trimmed = value.trim();
-        switch (name) {
-            case 'fullName':
-                if (!trimmed) return 'Full name is required.';
-                if (trimmed.length < 3) return 'Name must be at least 3 characters.';
-                return '';
-            case 'streetAddress':
-                return !trimmed ? 'Street address is required.' : '';
-            case 'city':
-                return !trimmed ? 'City is required.' : '';
-            case 'postcode':
-                return !/^\d{5,6}$/.test(trimmed) ? 'Provide a valid zip/postcode (5-6 digits).' : '';
-            case 'cardNumber':
-                return trimmed.replace(/\s/g, '').length !== 16 ? 'Card number must be 16 digits.' : '';
-            case 'expiryDate': {
-                if (!/^(0[1-9]|1[0-2])\/\d{2}$/.test(trimmed)) {
-                    return 'Expiry must use MM/YY format.';
-                }
+        const result = checkoutFormSchema.safeParse({
+            ...values,
+            [name]: value,
+        });
 
-                const [monthStr, yearStr] = trimmed.split('/');
-                const expMonth = parseInt(monthStr, 10);
-                const expYear = parseInt(`20${yearStr}`, 10);
-
-                const now = new Date();
-                const currentMonth = now.getMonth() + 1;
-                const currentYear = now.getFullYear();
-
-                if (expYear < currentYear || (expYear === currentYear && expMonth < currentMonth)) {
-                    return 'This card has expired.';
-                }
-                return '';
-            }
-            case 'cvc':
-                return !/^\d{3,4}$/.test(trimmed) ? 'CVC must be 3 or 4 digits.' : '';
-            default:
-                return '';
+        if (!result.success) {
+            const fieldErrors = result.error.flatten().fieldErrors;
+            return fieldErrors[name]?.[0] || '';
         }
+        return '';
     };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -84,35 +57,45 @@ export function useCheckoutForm() {
 
         setValues((prev) => ({ ...prev, [name]: targetValue }));
 
+        // Instant validation feedback on input transformation if previously blurred
         if (touched[name as keyof CheckoutFormData]) {
             const error = validateField(name as keyof CheckoutFormData, targetValue);
-            setErrors((prev) => ({ ...prev, [name]: error }));
+            setErrors((prev) => ({ ...prev, [name]: error || undefined }));
         }
     };
 
     const handleBlur = (name: keyof CheckoutFormData) => {
         setTouched((prev) => ({ ...prev, [name]: true }));
         const error = validateField(name, values[name]);
-        setErrors((prev) => ({ ...prev, [name]: error }));
+        setErrors((prev) => ({ ...prev, [name]: error || undefined }));
     };
 
     const validateAll = (): boolean => {
-        const freshErrors: CheckoutFormErrors = {};
-        let isValid = true;
+        const result = checkoutFormSchema.safeParse(values);
 
-        (Object.keys(values) as Array<keyof CheckoutFormData>).forEach((key) => {
-            const error = validateField(key, values[key]);
-            if (error) {
-                freshErrors[key] = error;
-                isValid = false;
-            }
-        });
+        if (!result.success) {
+            const flattened = result.error.flatten();
+            const freshErrors: CheckoutFormErrors = {};
 
-        setErrors(freshErrors);
-        setTouched(
-            Object.keys(values).reduce((acc, key) => ({ ...acc, [key]: true }), {})
-        );
-        return isValid;
+            Object.entries(flattened.fieldErrors).forEach(([key, val]) => {
+                if (val && val.length > 0) {
+                    freshErrors[key as keyof CheckoutFormData] = val[0];
+                }
+            });
+
+            setErrors(freshErrors);
+
+            // Type-safe approach to dynamically flag all fields as touched
+            const allTouched = Object.fromEntries(
+                Object.keys(values).map((key) => [key, true])
+            ) as Record<keyof CheckoutFormData, boolean>;
+
+            setTouched(allTouched);
+            return false;
+        }
+
+        setErrors({});
+        return true;
     };
 
     return { values, errors, touched, handleChange, handleBlur, validateAll };

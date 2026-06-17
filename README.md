@@ -35,9 +35,12 @@ Primitive tokens are mapped to semantic variables (e.g., `--brand-color`, `--sur
 
 ## 📋 Form Validation Framework
 
-*   **Decoupled Hook Architecture**: Isolated, custom validation engines (`useCheckoutForm` and `useContactForm`) maintain a type-safe form payload and single responsibility state separation.
-*   **Real-Time Format Masking**: Dynamic credit card formatting rules filter non-numeric characters and evaluate card dates relative to the active system calendar timeline.
-*   **WCAG 2.2 Form Compliance**: Accessible error presentation strings utilize native `aria-invalid` configurations coupled with `aria-describedby` screen reader landmarks.
+BonMart features a unified form validation subsystem completely driven by **Zod v4** to eliminate manual validation logic:
+
+*   **Centralized Schemas**: Rules are consolidated in `src/types/form.ts` as a shared source of truth for hooks and Server Actions.
+*   **Real-Time Feedback**: Evaluation triggers **on blur** and **as the user types** to provide instant interface updates.
+*   **Dynamic Expiration Checks**: Custom refinements evaluate card validity relative to the active system timeline.
+*   **Inferred Typings**: Generates TypeScript contracts automatically via `z.infer` to eliminate structural code duplication.
 
 ---
 
@@ -102,6 +105,7 @@ pnpm test:coverage
 | **Framework** | Next.js 15.5+ | Turbopack-powered App Router & Server Components |
 | **UI Library** | React 19 | Actions API and Concurrent Rendering primitives |
 | **State** | RTK 2.0 | Normalized Entity Adapters & Logic-driven Slices |
+| **Validation**| Zod 4.4+ | Schema-first parsing with strict top-level type safety |
 | **Styling** | Tailwind v4 | CSS-first engine with native variable shorthand |
 | **Testing** | Vitest 4.1+ | Blazing-fast unit & integration test runner |
 | **DOM Engine**| JSDOM | In-memory web-standard browser environment simulation |

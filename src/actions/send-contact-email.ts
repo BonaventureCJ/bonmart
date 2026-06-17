@@ -2,40 +2,33 @@
 
 'use server';
 
-import { z } from 'zod';
 import { Resend } from 'resend';
+import { contactFormSchema, type ContactFormErrors } from '@/types/form';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const contactFormSchema = z.object({
-    firstName: z.string().trim().min(2, 'First name must be at least 2 characters.'),
-    lastName: z.string().trim().min(2, 'Last name must be at least 2 characters.'),
-    email: z.string().trim().email('Please enter a valid email address.'),
-    subject: z.string().trim().min(4, 'Subject must be at least 4 characters.'),
-    message: z.string().trim().min(10, 'Message must be at least 10 characters.'),
-});
 
 export type ContactActionResult = {
     success: boolean;
     message: string;
-    fieldErrors?: {
-        firstName?: string[];
-        lastName?: string[];
-        email?: string[];
-        subject?: string[];
-        message?: string[];
-    };
+    fieldErrors?: ContactFormErrors;
 };
 
 export async function sendContactEmail(payload: unknown): Promise<ContactActionResult> {
     const validation = contactFormSchema.safeParse(payload);
 
     if (!validation.success) {
-        const flattened = z.flattenError(validation.error);
+        const flattened = validation.error.flatten();
+        const formattedErrors: ContactFormErrors = {};
+        Object.entries(flattened.fieldErrors).forEach(([key, val]) => {
+            if (val && val.length > 0) {
+                formattedErrors[key as keyof ContactFormErrors] = val[0];
+            }
+        });
+
         return {
             success: false,
             message: 'Validation failed. Please verify your entries.',
-            fieldErrors: flattened.fieldErrors,
+            fieldErrors: formattedErrors,
         };
     }
 
@@ -55,7 +48,6 @@ export async function sendContactEmail(payload: unknown): Promise<ContactActionR
             from: 'BonMart Contact Form <onboarding@resend.dev>',
             to: [targetMailbox],
             replyTo: email,
-            // Dynamic subject line update
             subject: `[BonMart] ${subject} (From ${firstName} ${lastName})`,
             html: `
         <div style="font-family: sans-serif; padding: 24px; color: #171717; max-width: 600px; border: 1px solid #e5e7eb; border-radius: 16px;">

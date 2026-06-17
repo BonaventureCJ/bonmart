@@ -36,7 +36,7 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    {/* Card Number */}
+                    {/* Card Number Field Block */}
                     <div className="sm:col-span-2">
                         <label htmlFor="cardNumber" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             Card Number
@@ -60,13 +60,13 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             </div>
                         </div>
                         {touched.cardNumber && errors.cardNumber && (
-                            <p id="cardNumber-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                            <p id="cardNumber-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                                 {errors.cardNumber}
                             </p>
                         )}
                     </div>
 
-                    {/* Expiry Date */}
+                    {/* Expiry Date Field Block */}
                     <div>
                         <label htmlFor="expiryDate" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             Expiry Date
@@ -85,13 +85,13 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             aria-describedby={touched.expiryDate && errors.expiryDate ? 'expiryDate-error' : undefined}
                         />
                         {touched.expiryDate && errors.expiryDate && (
-                            <p id="expiryDate-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                            <p id="expiryDate-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                                 {errors.expiryDate}
                             </p>
                         )}
                     </div>
 
-                    {/* CVC */}
+                    {/* CVC Field Block */}
                     <div>
                         <label htmlFor="cvc" className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--neutral-color)">
                             CVC
@@ -110,7 +110,7 @@ export function PaymentForm({ values, errors, touched, onChange, onBlur }: Payme
                             aria-describedby={touched.cvc && errors.cvc ? 'cvc-error' : undefined}
                         />
                         {touched.cvc && errors.cvc && (
-                            <p id="cvc-error" className="mt-1.5 text-xs font-semibold text-(--error)" role="status">
+                            <p id="cvc-error" className="mt-1.5 animate-zoom-in text-xs font-semibold text-(--error)" role="status">
                                 {errors.cvc}
                             </p>
                         )}

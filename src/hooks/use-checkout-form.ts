@@ -34,9 +34,11 @@ export function useCheckoutForm() {
         return digits;
     };
 
-    const validateField = (name: keyof CheckoutFormData, value: string): string => {
+    // Safe isolated field evaluator validating ONLY the current targeted field value slice
+    const validateFieldState = (name: keyof CheckoutFormData, value: string): string => {
+        // Generate a temporary mock validation shape containing only the current targeted input value
         const result = checkoutFormSchema.safeParse({
-            ...values,
+            ...INITIAL_STATE,
             [name]: value,
         });
 
@@ -59,14 +61,14 @@ export function useCheckoutForm() {
 
         // Instant validation feedback on input transformation if previously blurred
         if (touched[name as keyof CheckoutFormData]) {
-            const error = validateField(name as keyof CheckoutFormData, targetValue);
+            const error = validateFieldState(name as keyof CheckoutFormData, targetValue);
             setErrors((prev) => ({ ...prev, [name]: error || undefined }));
         }
     };
 
     const handleBlur = (name: keyof CheckoutFormData) => {
         setTouched((prev) => ({ ...prev, [name]: true }));
-        const error = validateField(name, values[name]);
+        const error = validateFieldState(name, values[name]);
         setErrors((prev) => ({ ...prev, [name]: error || undefined }));
     };
 

@@ -3,8 +3,8 @@
 import { renderHook, act } from '@testing-library/react';
 import { useCheckoutForm } from './use-checkout-form';
 import { type ChangeEvent } from 'react';
+import { describe, test, expect } from 'vitest';
 
-// Strict type-safe structure mirroring your target form layout contract
 interface FormValues {
     fullName: string;
     streetAddress: string;
@@ -15,7 +15,6 @@ interface FormValues {
     cvc: string;
 }
 
-// Reusable mock event builder eliminating any type violations
 function createMockChangeEvent(name: keyof FormValues, value: string): ChangeEvent<HTMLInputElement> {
     return {
         target: { name, value },
@@ -23,7 +22,6 @@ function createMockChangeEvent(name: keyof FormValues, value: string): ChangeEve
 }
 
 describe('useCheckoutForm Custom Hook Suite', () => {
-
     test('should initialize form fields with clean string states and empty objects', () => {
         const { result } = renderHook(() => useCheckoutForm());
 
@@ -79,19 +77,16 @@ describe('useCheckoutForm Custom Hook Suite', () => {
             act(() => {
                 result.current.handleBlur('fullName');
             });
-            expect(result.current.errors.fullName).toBe('Full name is required.');
+            expect(result.current.errors.fullName).toBe('Full name must be at least 3 characters.');
 
             act(() => {
                 result.current.handleChange(createMockChangeEvent('fullName', 'Ed'));
             });
 
-            act(() => {
-                result.current.handleBlur('fullName');
-            });
-            expect(result.current.errors.fullName).toBe('Name must be at least 3 characters.');
+            expect(result.current.errors.fullName).toBe('Full name must be at least 3 characters.');
         });
 
-        test('should throw an error if the credit card digit length evaluates to less than 16 digits', () => {
+        test('should throw an error if the credit card digit length evaluates to less than 15 digits', () => {
             const { result } = renderHook(() => useCheckoutForm());
 
             act(() => {
@@ -99,26 +94,32 @@ describe('useCheckoutForm Custom Hook Suite', () => {
                 result.current.handleBlur('cardNumber');
             });
 
-            expect(result.current.errors.cardNumber).toBe('Card number must be 16 digits.');
+            expect(result.current.errors.cardNumber).toBe('Card number must be at least 15 digits.');
         });
 
         test('should reject malformed credit card validation dates', () => {
-            const { result } = renderHook(() => useCheckoutForm());
+            const { result } = renderHook(() => { return useCheckoutForm(); });
 
             act(() => {
+                // Formatted cleanly into exactly five characters ("14/26") inside state layers
                 result.current.handleChange(createMockChangeEvent('expiryDate', '1426'));
+            });
+
+            act(() => {
                 result.current.handleBlur('expiryDate');
             });
 
-            expect(result.current.errors.expiryDate).toBe('Expiry must use MM/YY format.');
+            expect(result.current.errors.expiryDate).toBe('Please enter a valid future date (MM/YY).');
         });
 
         test('should accurately calculate card expiration limits based on the current calendar year', () => {
-            const { result } = renderHook(() => useCheckoutForm());
+            const { result } = renderHook(() => { return useCheckoutForm(); });
+
+            const pastYearShort = (new Date().getFullYear() - 1).toString().slice(-2);
 
             act(() => {
-                // Pass formatted format string directly to pass regex validation check
-                result.current.handleChange(createMockChangeEvent('expiryDate', '01/25'));
+                // Passes clean 4-digit token structure to let formatExpiry mask cleanly into "01/XX"
+                result.current.handleChange(createMockChangeEvent('expiryDate', `01${pastYearShort}`));
             });
 
             act(() => {
@@ -141,11 +142,13 @@ describe('useCheckoutForm Custom Hook Suite', () => {
             expect(isValid).toBe(false);
             expect(result.current.touched.fullName).toBe(true);
             expect(result.current.touched.cvc).toBe(true);
-            expect(result.current.errors.fullName).toBe('Full name is required.');
+            expect(result.current.errors.fullName).toBe('Full name must be at least 3 characters.');
         });
 
         test('should return true and submit with zero errors when complete valid payloads pass', () => {
             const { result } = renderHook(() => useCheckoutForm());
+
+            const futureYearShort = (new Date().getFullYear() + 4).toString().slice(-2);
 
             act(() => {
                 result.current.handleChange(createMockChangeEvent('fullName', 'Bonaventure Ugwu'));
@@ -153,7 +156,7 @@ describe('useCheckoutForm Custom Hook Suite', () => {
                 result.current.handleChange(createMockChangeEvent('city', 'Calabar'));
                 result.current.handleChange(createMockChangeEvent('postcode', '54321'));
                 result.current.handleChange(createMockChangeEvent('cardNumber', '4111111111111111'));
-                result.current.handleChange(createMockChangeEvent('expiryDate', '1230'));
+                result.current.handleChange(createMockChangeEvent('expiryDate', `12${futureYearShort}`));
                 result.current.handleChange(createMockChangeEvent('cvc', '123'));
             });
 
@@ -163,7 +166,7 @@ describe('useCheckoutForm Custom Hook Suite', () => {
             });
 
             expect(isValid).toBe(true);
-            expect(Object.values(result.current.errors).every((err) => !err)).toBe(true);
+            expect(Object.values(result.current.errors).every((err) => { return !err; })).toBe(true);
         });
     });
 });

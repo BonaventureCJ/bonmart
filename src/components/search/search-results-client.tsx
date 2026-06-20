@@ -8,7 +8,7 @@ import { useGetProductsQuery } from '@/features/products/product-slice';
 import { selectProductsByFiltersAndSort, type SortOption } from '@/features/products/product-selectors';
 import { setQuery } from '@/features/search/search-slice';
 import { ProductCardHorizontal } from '@/components/product/product-card-horizontal';
-import { ProductCardSkeleton } from '@/components/product/product-card-skeleton';
+import { ProductCardHorizontalSkeleton } from '@/components/product/product-card-horizontal-skeleton';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
 import { SearchSortControls } from '@/components/search/search-sort-controls';
@@ -51,10 +51,10 @@ export const SearchResultsClient: React.FC<SearchResultsClientProps> = ({ query,
                 {/* Maintain structural toolbar placement even when evaluating background streams */}
                 <SearchSortControls currentSort={sort} />
 
-                {/* High-Fidelity Visual Skeletal Loading State Grid Layout */}
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 xl:gap-4">
-                    {Array.from({ length: 12 }).map((_, i) => (
-                        <ProductCardSkeleton key={i} />
+                {/* High-Fidelity Visual Horizontal Skeletal Loading State Row Layout */}
+                <div className="flex flex-col gap-4 text-left">
+                    {Array.from({ length: 6 }).map((_, i) => (
+                        <ProductCardHorizontalSkeleton key={i} />
                     ))}
                 </div>
             </div>

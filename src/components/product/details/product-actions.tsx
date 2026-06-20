@@ -89,7 +89,7 @@ export function ProductActions({ product }: { product: Product }) {
                 ariaLabel={isFavourite ? "Remove from wishlist" : "Add to wishlist"}
                 onClick={() => dispatch(toggleWishlist(product))}
                 className={clsx(
-                    "flex items-center transition-all active:scale-95 sm:min-w-[220px] sm:px-6",
+                    "flex items-center active:scale-95 sm:min-w-[220px] sm:px-6",
                     isFavourite && "bg-(--brand-color)/10"
                 )}
             >

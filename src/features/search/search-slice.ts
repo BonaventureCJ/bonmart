@@ -9,17 +9,17 @@ import {
 
 /**
  * 1. Define the Adapter for Recent Searches
- * Since searches are strings, the entity is a string and the ID is the string itself.
+ * Normalized history strings index directly off the text literal string itself.
+ * No sortComparer is attached to ensure native append order tracking.
  */
 export const searchAdapter = createEntityAdapter<string, string>({
     selectId: (search) => search,
-    // No sortComparer needed as we want to maintain "Recent" order (manual insertion)
 });
 
 interface SearchState {
     query: string;
     isSearchOpen: boolean;
-    // normalized collection of recent search strings
+    // Normalized history tracker storage configuration node
     recentSearches: EntityState<string, string>;
 }
 
@@ -44,21 +44,25 @@ const searchSlice = createSlice({
         },
         /**
          * Optimized addRecentSearch
-         * createEntityAdapter handles the "move to top" and uniqueness via addOne/removeOne logic.
+         * Manages history stacks, enforces absolute item uniqueness, and caps size limits.
          */
         addRecentSearch: (state, action: PayloadAction<string>) => {
             const newSearch = action.payload.trim();
             if (!newSearch) return;
 
-            // Ensure uniqueness by removing if it exists, then adding to the front
+            // Evict matching historic parameters to let the item migrate back to the top of the stack
             searchAdapter.removeOne(state.recentSearches, newSearch);
 
-            // Evict from index 0 because createEntityAdapter appends new terms to the tail
+            // Fetch working reference arrays to strictly evaluate maximum density rules
             const currentIds = state.recentSearches.ids;
+
+            // If the buffer hits or breaks enterprise length metrics (5 entries max), remove old elements
             if (currentIds.length >= 5) {
-                searchAdapter.removeOne(state.recentSearches, currentIds[0]);
+                const oldestId = currentIds[0];
+                searchAdapter.removeOne(state.recentSearches, oldestId);
             }
 
+            // Append item directly into the collection footprint
             searchAdapter.addOne(state.recentSearches, newSearch);
         },
         removeRecentSearch: (state, action: PayloadAction<string>) => {

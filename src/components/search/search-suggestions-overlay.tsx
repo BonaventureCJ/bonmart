@@ -5,6 +5,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { clsx } from 'clsx';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useGetProductsQuery } from '@/features/products/product-slice';
 import { removeRecentSearch, clearRecentSearches } from '@/features/search/search-slice';
 import { selectRecentSearches } from '@/features/search/search-selectors';
 import { selectAutocompleteSuggestions } from '@/features/products/product-selectors';
@@ -29,6 +30,14 @@ export const SearchSuggestionsOverlay: React.FC<SearchSuggestionsOverlayProps> =
 }) => {
     const dispatch = useAppDispatch();
     const recentSearches = useAppSelector(selectRecentSearches);
+
+    /**
+     * Enterprise Cache Prefetch Optimization:
+     * By utilizing the conditional `skip` parameter, we guarantee zero overhead on boot.
+     * The network payload triggers the millisecond a user clicks into or focuses the input bar,
+     * populating the underlying normalized adapter entities before autocomplete tokens calculate.
+     */
+    useGetProductsQuery(undefined, { skip: !isVisible });
 
     // Live catalog suggestions mapping
     const liveSuggestions = useAppSelector((state) =>

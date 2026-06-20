@@ -3,18 +3,31 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { shallowEqual } from 'react-redux';
 import { RootState } from '@/store/store';
+import { apiSlice } from '@/features/api/api-slice';
 import { productsAdapter } from './product-slice';
 import { type Product } from '@/data/mock-products';
 
 export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'eco-high';
 
-const selectProductState = (state: RootState) => state.products;
+/**
+ * 1. Select the base query result object from cache state.
+ */
+const selectProductsQueryResult = (state: RootState) =>
+    (apiSlice.endpoints as any).getProducts.select()(state);
+
+/**
+ * 2. Extract the normalized EntityState object securely with hydration protection fallbacks.
+ */
+const selectNormalizedProductState = createSelector(
+    [selectProductsQueryResult],
+    (queryResult) => queryResult.data ?? productsAdapter.getInitialState()
+);
 
 export const {
     selectAll: selectAllProducts,
     selectEntities: selectProductEntities,
     selectById: selectProductById,
-} = productsAdapter.getSelectors(selectProductState);
+} = productsAdapter.getSelectors(selectNormalizedProductState);
 
 /**
  * Parametric Filter & Multi-Criteria Sort Selector
@@ -89,13 +102,13 @@ export const selectAutocompleteSuggestions = createSelector(
 );
 
 export const selectProductsLoading = createSelector(
-    [selectProductState],
-    (products) => products.isLoading
+    [selectProductsQueryResult],
+    (queryResult) => !!queryResult.isLoading
 );
 
 export const selectProductsError = createSelector(
-    [selectProductState],
-    (products) => products.error
+    [selectProductsQueryResult],
+    (queryResult) => queryResult.isError ? 'Failed to resolve remote catalogue records.' : null
 );
 
 /**
@@ -120,7 +133,7 @@ export const selectProductCountByCategory = (categoryName: string) =>
 
 /**
  * Featured Eco Products Selector
- * Returns the top 5 products filtered by eco-friendly status 
+ * Returns the top 8 products filtered by eco-friendly status 
  * and sorted by highest rating.
  */
 export const selectFeaturedEcoProducts = createSelector(
@@ -138,6 +151,7 @@ export const selectFeaturedEcoProducts = createSelector(
             .slice(0, 8);
     }
 );
+
 /** 
  * Selects top 8 Electronics items. 
  */

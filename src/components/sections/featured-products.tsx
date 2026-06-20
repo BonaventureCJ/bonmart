@@ -2,12 +2,11 @@
 
 'use client';
 
+import React from 'react';
 import { useAppSelector } from '@/store/hooks';
+import { useGetProductsQuery } from '@/features/products/product-slice';
 import { ProductSliderSection } from './product-slider-section';
-import {
-    selectFeaturedEcoProducts,
-    selectProductsLoading
-} from '@/features/products/product-selectors';
+import { selectFeaturedEcoProducts } from '@/features/products/product-selectors';
 
 /**
  * FeaturedProducts Section
@@ -15,8 +14,8 @@ import {
  * CTA links directly to the full eco-sorted catalog.
  */
 export function FeaturedProducts() {
+    const { isLoading } = useGetProductsQuery();
     const products = useAppSelector(selectFeaturedEcoProducts);
-    const isLoading = useAppSelector(selectProductsLoading);
 
     return (
         <ProductSliderSection

@@ -3,7 +3,7 @@
 'use client';
 
 import React from 'react';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 import { useGetProductsQuery } from '@/features/products/product-slice';
 import { ProductGallery } from './details/product-gallery';
 import { ProductInfo } from './details/product-info';

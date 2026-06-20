@@ -8,7 +8,7 @@ import { clsx } from 'clsx';
 import { Icon } from '@/components/ui/icon/icon';
 import { Button } from '@/components/ui/button/button';
 import { Heading } from '@/components/ui/heading/heading';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 import { useProductActions } from './card/use-product-actions';
 import { CardBadge } from './card/card-badge';
 import { CardRating } from './card/card-rating';

@@ -1,6 +1,7 @@
 // src/data/cart-data.ts
 
-import { MOCK_PRODUCTS, type Product } from './mock-products';
+import { MOCK_PRODUCTS } from './mock-products';
+import type { Product } from '@/types/product';
 
 export interface CartItem extends Product {
   quantity: number;

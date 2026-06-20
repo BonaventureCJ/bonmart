@@ -6,7 +6,7 @@ import {
     PayloadAction,
     EntityState
 } from '@reduxjs/toolkit';
-import { type Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export interface CartItem extends Product {
     quantity: number;

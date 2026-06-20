@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { clsx } from 'clsx';
 import { Heading } from '@/components/ui/heading/heading';
 import { Icon } from '@/components/ui/icon/icon';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export function ProductCardMini({ product, className }: { product: Product; className?: string }) {
     const { name, price, imageUrl, slug, rating, isEcoFriendly } = product;

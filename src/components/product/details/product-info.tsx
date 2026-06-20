@@ -6,7 +6,7 @@ import { Icon } from '@/components/ui/icon/icon';
 import { Heading } from '@/components/ui/heading/heading';
 import { useAppSelector } from '@/store/hooks';
 import { selectProductById } from '@/features/products/product-selectors';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 /**
  * ProductInfo Component

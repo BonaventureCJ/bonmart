@@ -6,7 +6,8 @@ import productReducer, {
     setLoading,
     setError,
 } from './product-slice';
-import { MOCK_PRODUCTS, type Product } from '@/data/mock-products';
+import { MOCK_PRODUCTS } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 describe('Product Slice Suite', () => {
 

@@ -5,7 +5,7 @@ import { shallowEqual } from 'react-redux';
 import { RootState } from '@/store/store';
 import { apiSlice } from '@/features/api/api-slice';
 import { productsAdapter } from './product-slice';
-import { type Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'eco-high';
 

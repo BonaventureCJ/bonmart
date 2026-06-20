@@ -4,6 +4,9 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
 import { cartAdapter } from './cart-slice';
 
+/**
+ * Base state accessor mapping to root layout slice
+ */
 const selectCartState = (state: RootState) => state.cart;
 
 export const {
@@ -15,6 +18,7 @@ export const {
 
 /**
  * Total quantity of all items (Navbar Badge)
+ * Performance: Re-calculates strictly if collection references mutate.
  */
 export const selectCartTotalQuantity = createSelector(
     [selectCartItems],
@@ -23,6 +27,7 @@ export const selectCartTotalQuantity = createSelector(
 
 /**
  * Subtotal calculation
+ * Performance: Multiplies running values smoothly within the caching layer.
  */
 export const selectCartSubtotal = createSelector(
     [selectCartItems],
@@ -31,6 +36,7 @@ export const selectCartSubtotal = createSelector(
 
 /**
  * Eco-Friendly Count (Bonmart Green Initiative)
+ * Filters active products against green tags for environmental visualization markers.
  */
 export const selectEcoFriendlyCartCount = createSelector(
     [selectCartItems],
@@ -39,8 +45,12 @@ export const selectEcoFriendlyCartCount = createSelector(
 
 /**
  * Parameterized Selector
- * Now uses O(1) lookup via entities dictionary instead of .some()
+ * Enforces true O(1) dictionary checks instead of expensive array traversals.
  */
 export const selectIsItemInCart = (productId: number) =>
-    createSelector([selectCartEntities], (entities) => !!entities[productId]);
+    createSelector(
+        [selectCartEntities],
+        (entities) => !!entities[productId]
+    );
+
 

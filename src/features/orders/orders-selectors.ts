@@ -4,6 +4,9 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
 import { ordersAdapter } from './orders-slice';
 
+/**
+ * Accesses local orders slice from the global persistent state tree
+ */
 const selectOrdersState = (state: RootState) => state.orders;
 
 export const {
@@ -13,8 +16,8 @@ export const {
 } = ordersAdapter.getSelectors(selectOrdersState);
 
 /**
- * Selects the most recent order.
- * Since sortComparer handles date sorting, index 0 is always the latest.
+ * Selects the most recent order record.
+ * Since sortComparer automatically organizes dates descending, index 0 is always the latest order.
  */
 export const selectLatestOrder = createSelector(
     [selectOrderHistory],
@@ -22,16 +25,18 @@ export const selectLatestOrder = createSelector(
 );
 
 /**
- * Selects orders by status.
- * Memoized to prevent re-filtering on every re-render.
+ * Selects orders filtered by a specific status string descriptor.
+ * Memoized to prevent heavy array filtering on every component evaluation sweep.
  */
 export const selectOrdersByStatus = (status: 'processing' | 'shipped' | 'delivered') =>
-    createSelector([selectOrderHistory], (history) =>
-        history.filter((order) => order.status === status)
+    createSelector(
+        [selectOrderHistory], 
+        (history) => history.filter((order) => order.status === status)
     );
 
 /**
- * Enterprise Metric: Lifetime Value (LTV)
+ * Enterprise Metric Selector: Customer Lifetime Value (LTV)
+ * Aggregates all orders history expenditure totals smoothly.
  */
 export const selectOrdersTotalSpent = createSelector(
     [selectOrderHistory],

@@ -20,7 +20,8 @@ export interface Order {
 
 /**
  * 1. Define the Adapter
- * We sort by date descending so the newest orders always appear first.
+ * Sorts by date descending so newer mock orders appear first in the customer dashboard.
+ * Provides O(1) mutations for high-density local layout loops.
  */
 export const ordersAdapter = createEntityAdapter<Order, string>({
     selectId: (order) => order.id,
@@ -36,12 +37,11 @@ const ordersSlice = createSlice({
     initialState,
     reducers: {
         /**
-         * addOne handles normalization automatically.
-         * sortComparer ensures it is placed correctly in the list.
+         * Appends a newly formed checkout record to the local persistent store
          */
         addOrder: ordersAdapter.addOne,
         /**
-         * upsertOne can be used for real-time status updates (e.g., webhook from shipping)
+         * Simulates webhook shipping update pushes or order status manipulation controls
          */
         updateOrderStatus: ordersAdapter.updateOne,
     },

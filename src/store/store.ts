@@ -19,7 +19,7 @@ import cartReducer from '@/features/cart/cart-slice';
 import wishlistReducer from '@/features/wishlist/wishlist-slice';
 import ordersReducer from '@/features/orders/orders-slice';
 import searchReducer from '@/features/search/search-slice';
-import uiReducer from '@/features/ui/ui-slice'; // Added UI reducer
+import uiReducer from '@/features/ui/ui-slice';
 import { apiSlice } from '@/features/api/api-slice';
 
 /**

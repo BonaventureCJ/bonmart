@@ -24,9 +24,11 @@ import { apiSlice } from '@/features/api/api-slice';
 
 /**
  * 1. Combine Reducers
- * We keep 'api' cache and 'orders' out of whitelist 
- * to ensure fresh data from the API on every session, while 
- * 'cart' and 'wishlist' persist for user convenience.
+ * We keep 'api' cache out of the whitelist to ensure fresh catalog data from 
+ * the network on every session. 'cart', 'wishlist', and 'theme' are persisted 
+ * for user convenience. 'orders' is explicitly whitelisted to create a local 
+ * database simulation, preserving transaction records across refreshes since 
+ * we lack write access to the third-party public API.
  */
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,

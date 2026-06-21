@@ -1,104 +1,133 @@
 // src/features/products/product-slice.test.ts
 
-import productReducer, {
-    setProducts,
-    updateProduct,
-    setLoading,
-    setError,
-} from './product-slice';
-import { MOCK_PRODUCTS, type Product } from '@/data/mock-products';
+import { describe, test, expect } from 'vitest';
+import { productsAdapter, transformRawApiProducts } from './product-slice';
 
-describe('Product Slice Suite', () => {
+/**
+ * Enterprise Schema Matching Definition for Mocking Raw API Responses
+ */
+interface ApiProduct {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+    rating: {
+        rate: number;
+        count: number;
+    };
+}
 
-    test('should initialize with populated mock products sorted alphabetically', () => {
-        // Passing undefined state forces Redux to run the slice initialization logic
-        const state = productReducer(undefined, { type: '@@INIT' });
+describe('Product RTK Query Boundary & Slice Suite', () => {
 
-        expect(state.isLoading).toBe(false);
-        expect(state.error).toBeNull();
-        expect(state.ids).toHaveLength(MOCK_PRODUCTS.length);
+    describe('transformRawApiProducts Data Transformer', () => {
 
-        // Verify the sortComparer is enforcing alphabetical order on start
-        const firstProduct = state.entities[state.ids[0]];
-        const secondProduct = state.entities[state.ids[1]];
+        test('should translate raw external API keys into strict local Product interface declarations', () => {
+            const rawApiInput: ApiProduct[] = [
+                {
+                    id: 1,
+                    title: 'Fjallraven Backpack',
+                    price: 109.95,
+                    description: 'Padded laptop storage sleeve.',
+                    category: "men's clothing",
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 3.9, count: 120 }
+                }
+            ];
 
-        expect(firstProduct?.name.localeCompare(secondProduct?.name ?? '')).toBeLessThanOrEqual(0);
+            const transformedResult = transformRawApiProducts(rawApiInput);
+            expect(transformedResult).toHaveLength(1);
+
+            const transformedEntity = transformedResult[0];
+            // Verify that structural field translations have mapped successfully
+            expect(transformedEntity.name).toBe('Fjallraven Backpack');
+            expect(transformedEntity.imageUrl).toBe('https://fakestoreapi.com');
+            expect(transformedEntity.slug).toBe('fjallraven-backpack');
+        });
+
+        test('should apply deterministic green brand initiative parameters during translation passes', () => {
+            const rawApiInput: ApiProduct[] = [
+                {
+                    id: 1,
+                    title: 'Non-Eco Clothing Item',
+                    price: 20.00,
+                    description: 'Standard cotton t-shirt.',
+                    category: "men's clothing",
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 4.0, count: 50 }
+                },
+                {
+                    id: 2,
+                    title: 'Eco Friendly Matching ID Item',
+                    price: 25.00,
+                    description: 'Recycled blend textile item.',
+                    category: "men's clothing",
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 4.2, count: 80 }
+                },
+                {
+                    id: 3,
+                    title: 'Eco Friendly Jewelery Category Item',
+                    price: 150.00,
+                    description: 'Sustainable conflict-free accessory item.',
+                    category: 'jewelery',
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 4.8, count: 200 }
+                }
+            ];
+
+            const transformedResult = transformRawApiProducts(rawApiInput);
+
+            expect(transformedResult[0].isEcoFriendly).toBe(false); // ID 1, Category clothing -> Non-eco
+            expect(transformedResult[1].isEcoFriendly).toBe(true);  // ID 2 -> Even ID fallback rule met
+            expect(transformedResult[2].isEcoFriendly).toBe(true);  // ID 3 -> Jewelry category rule met
+        });
     });
 
-    test('should handle setProducts payload insertion and enforce alphabetical sorting', () => {
-        const freshUnsortedItems: Product[] = [
-            {
-                id: 99,
-                slug: 'zebra-item',
-                name: 'Zebra Sustainable Eco Bag',
-                price: 15.00,
-                description: 'Eco friendly canvas bag.',
-                category: 'bags',
-                imageUrl: '/img/bag.jpg',
-                rating: { rate: 4.5, count: 10 },
-                isEcoFriendly: true,
-            },
-            {
-                id: 88,
-                slug: 'alpha-item',
-                name: 'Alpha Recycled Notebook',
-                price: 5.00,
-                description: 'Notebook made from recycled stock.',
-                category: 'stationery',
-                imageUrl: '/img/notebook.jpg',
-                rating: { rate: 4.8, count: 12 },
-                isEcoFriendly: true,
-            },
-        ];
+    describe('transformResponse Cache Normalization Engine', () => {
 
-        // Trigger state override passing our fresh unsorted items payload
-        const state = productReducer(undefined, setProducts(freshUnsortedItems));
+        test('should convert transformed raw arrays into a normalized EntityState sorted alphabetically by name', () => {
+            const rawApiInput: ApiProduct[] = [
+                {
+                    id: 99,
+                    title: 'Zebra Canvas Shopping Sack',
+                    price: 15.00,
+                    description: 'Reusable grocery transport alternative.',
+                    category: 'bags',
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 4.5, count: 10 }
+                },
+                {
+                    id: 88,
+                    title: 'Alpha Recycled Notebook Binder',
+                    price: 5.00,
+                    description: 'Zero-waste post-consumer paper bundle.',
+                    category: 'stationery',
+                    image: 'https://fakestoreapi.com',
+                    rating: { rate: 4.8, count: 12 }
+                }
+            ];
 
-        expect(state.ids).toHaveLength(2);
-        // Alpha must come before Zebra due to the sortComparer, forcing layout order invariance
-        expect(state.ids[0]).toBe(88);
-        expect(state.ids[1]).toBe(99);
-    });
+            /**
+             * Type-Safe Enterprise Normalization Test Strategy:
+             * We feed the raw data directly through the shared transformation utility node,
+             * then inject the output directly into the productsAdapter engine. This replicates 
+             * the exact operational sequence executed inside the RTK Query fetch engine.
+             */
+            const transformedProducts = transformRawApiProducts(rawApiInput);
+            const baseInitialState = productsAdapter.getInitialState();
+            const normalizedState = productsAdapter.setAll(baseInitialState, transformedProducts);
 
-    test('should handle updateProduct to insert new elements or patch existing records via upsert', () => {
-        const stateWithInit = productReducer(undefined, { type: '@@INIT' });
+            // Assert standard EntityState shape mapping configurations
+            expect(normalizedState.ids).toHaveLength(2);
 
-        const updatedProductPatch: Product = {
-            id: 2, // Overriding default entry id: 2 ('Mens Casual Premium Slim Fit T-Shirts ')
-            slug: 'patched-premium-tee',
-            name: 'Patched Premium Bio Tee',
-            price: 24.99, // Altered price parameter
-            description: 'Modified eco description details.',
-            category: "men's clothing",
-            imageUrl: '/img/patched.jpg',
-            rating: { rate: 4.9, count: 300 },
-            isEcoFriendly: true,
-        };
+            // Alpha must appear first inside the ID index due to alphabetical sortComparer logic
+            expect(normalizedState.ids[0]).toBe(88);
+            expect(normalizedState.ids[1]).toBe(99);
 
-        const nextState = productReducer(stateWithInit, updateProduct(updatedProductPatch));
-
-        expect(nextState.entities[2]?.name).toBe('Patched Premium Bio Tee');
-        expect(nextState.entities[2]?.price).toBe(24.99);
-        expect(nextState.ids).toHaveLength(MOCK_PRODUCTS.length); // Total count remains un-mutated
-    });
-
-    test('should toggle isLoading state flags predictably', () => {
-        const initialState = productReducer(undefined, { type: '@@INIT' });
-
-        const loadingState = productReducer(initialState, setLoading(true));
-        expect(loadingState.isLoading).toBe(true);
-
-        const completeState = productReducer(loadingState, setLoading(false));
-        expect(completeState.isLoading).toBe(false);
-    });
-
-    test('should capture and assign explicit string error messages', () => {
-        const initialState = productReducer(undefined, { type: '@@INIT' });
-
-        const errorState = productReducer(initialState, setError('CRITICAL_API_TIMEOUT'));
-        expect(errorState.error).toBe('CRITICAL_API_TIMEOUT');
-
-        const recoveredState = productReducer(errorState, setError(null));
-        expect(recoveredState.error).toBeNull();
+            expect(normalizedState.entities[88]?.name).toBe('Alpha Recycled Notebook Binder');
+            expect(normalizedState.entities[99]?.name).toBe('Zebra Canvas Shopping Sack');
+        });
     });
 });

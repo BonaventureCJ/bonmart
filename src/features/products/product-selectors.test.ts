@@ -1,7 +1,10 @@
 // src/features/products/product-selectors.test.ts
 
+import { describe, test, expect } from 'vitest';
 import { RootState } from '@/store/store';
 import { MOCK_PRODUCTS } from '@/data/mock-products';
+import { apiSlice } from '@/features/api/api-slice';
+import { productsAdapter } from './product-slice';
 import {
     selectProductsByFiltersAndSort,
     selectAutocompleteSuggestions,
@@ -15,21 +18,43 @@ import {
     selectMensClothingProducts,
 } from './product-selectors';
 
-// Replicate createEntityAdapter structural format using the actual MOCK_PRODUCTS array
+/**
+ * High-Fidelity Enterprise State Fabricator
+ * Replicates the exact underlying RTK Query cache tree parameters generated 
+ * when network communication states transition to completed or loading status.
+ */
 const createMockState = (overrides = {}): RootState => {
-    const ids = MOCK_PRODUCTS.map((p) => p.id);
-    const entities = MOCK_PRODUCTS.reduce<Record<number, typeof MOCK_PRODUCTS[0]>>((acc, p) => {
-        acc[p.id] = p;
-        return acc;
-    }, {});
+    // Construct a normalized adapter structure from our source MOCK_PRODUCTS array
+    const baseInitialState = productsAdapter.getInitialState();
+    const normalizedData = productsAdapter.setAll(baseInitialState, MOCK_PRODUCTS);
+
+    // Default configuration for a successful, fulfilled query resolution pass
+    const defaultQueryState = {
+        status: 'fulfilled',
+        data: normalizedData,
+        isLoading: false,
+        isError: false,
+        error: undefined,
+        ...overrides,
+    };
 
     return {
-        products: {
-            ids,
-            entities,
-            isLoading: false,
-            error: null,
-            ...overrides,
+        // Wire values directly into the centralized core API slice reducer state footprint
+        [apiSlice.reducerPath]: {
+            queries: {
+                // RTK Query serializes undefined query parameters into this exact cache mapping string
+                'getProducts(undefined)': defaultQueryState,
+            },
+            mutations: {},
+            provided: {},
+            config: {
+                online: true,
+                focused: true,
+                middlewareRegistered: true,
+                refetchOnFocus: false,
+                refetchOnReconnect: false,
+                refetchOnUrlChange: true,
+            },
         },
     } as unknown as RootState;
 };
@@ -66,7 +91,7 @@ describe('Product Selectors Suite', () => {
         test('should sort items by eco-friendly priority first then tier sub-sort by highest rating rates', () => {
             const result = selectProductsByFiltersAndSort(state, '', '', 'eco-high');
 
-            // Verification based on real MOCK_PRODUCTS:
+            // Verification based on real MOCK_PRODUCTS transformations:
             // Eco-friendly items: ID 2 (4.1), 4 (2.1), 6 (3.9), 8 (1.9), 10 (2.9)
             // Sorted by rate: ID 2 (4.1) -> ID 6 (3.9) -> ID 10 (2.9) -> ID 4 (2.1) -> ID 8 (1.9)
             expect(result[0].id).toBe(2);
@@ -93,7 +118,6 @@ describe('Product Selectors Suite', () => {
 
         test('should return matched items up to a maximum capped size of 5 elements', () => {
             const result = selectAutocompleteSuggestions(state, 'shirt');
-            // Matches 'Mens Casual Premium Slim Fit T-Shirts '
             expect(result.length).toBeLessThanOrEqual(5);
         });
     });
@@ -141,13 +165,14 @@ describe('Product Selectors Suite', () => {
 
     describe('Status Flags Extractions', () => {
         test('should parse loading conditional states from store parameters', () => {
-            const state = createMockState({ isLoading: true });
+            const state = createMockState({ status: 'pending', isLoading: true });
             expect(selectProductsLoading(state)).toBe(true);
         });
 
         test('should cleanly pull error message state descriptions', () => {
-            const state = createMockState({ error: 'Failed to stream product data' });
-            expect(selectProductsError(state)).toBe('Failed to stream product data');
+            const state = createMockState({ status: 'rejected', isError: true, error: 'Network Error' });
+            // Maps exactly to the string returned by our updated selectProductsError selector matrix
+            expect(selectProductsError(state)).toBe('Failed to resolve remote catalogue records.');
         });
     });
 

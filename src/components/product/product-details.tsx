@@ -2,7 +2,9 @@
 
 'use client';
 
-import type { Product } from '@/data/mock-products';
+import React from 'react';
+import type { Product } from '@/types/product';
+import { useGetProductsQuery } from '@/features/products/product-slice';
 import { ProductGallery } from './details/product-gallery';
 import { ProductInfo } from './details/product-info';
 import { ProductActions } from './details/product-actions';
@@ -18,8 +20,17 @@ interface ProductDetailsProps { product: Product; }
  * state tracking (Wishlist/Cart/Real-time updates).
  */
 export function ProductDetails({ product }: ProductDetailsProps) {
+    /**
+     * Enterprise Cache Synchronization Strategy:
+     * We mount the query hook here to subscribe this client tree to the global catalog.
+     * If the user deep-links directly to this page, this silently populates the client-side
+     * RTK Query cache in the background, allowing children like <ProductInfo /> to smoothly
+     * execute O(1) selectors without state disconnects.
+     */
+    useGetProductsQuery();
+
     return (
-        <section className="mx-auto max-w-7xl px-4 py-8 lg:py-12">
+        <section className="mx-auto max-w-7xl px-4 py-8 lg:py-12" aria-label={`Details for ${product.name}`}>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
                 {/* Visual Presentation */}
                 <ProductGallery product={product} />

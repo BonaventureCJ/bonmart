@@ -4,6 +4,9 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '@/store/store';
 import { wishlistAdapter } from './wishlist-slice';
 
+/**
+ * Base State Sub-Tree Extractor
+ */
 const selectWishlistState = (state: RootState) => state.wishlist;
 
 export const {
@@ -14,13 +17,18 @@ export const {
 
 /**
  * Parameterized Selector
- * O(1) performance—ideal for many Product Cards on one page.
+ * Guarantees O(1) dictionary evaluation performance—crucial when rendering 
+ * massive density product card lists on a single page view.
  */
 export const selectIsProductWishlisted = (productId: number) =>
-    createSelector([selectWishlistEntities], (entities) => !!entities[productId]);
+    createSelector(
+        [selectWishlistEntities], 
+        (entities) => !!entities[productId]
+    );
 
 /**
  * Green Initiative Selector
+ * Derives the exact count of sustainable selections inside the active wishlist.
  */
 export const selectEcoFriendlyWishlistCount = createSelector(
     [selectWishlistItems],

@@ -6,7 +6,7 @@ import {
     PayloadAction,
     EntityState
 } from '@reduxjs/toolkit';
-import { type Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export interface CartItem extends Product {
     quantity: number;
@@ -14,6 +14,7 @@ export interface CartItem extends Product {
 
 /**
  * Define the Adapter with explicit number ID typing
+ * Manages O(1) mutations for high-performance cart scaling.
  */
 export const cartAdapter = createEntityAdapter<CartItem, number>({
     selectId: (item) => item.id,
@@ -27,6 +28,10 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
+        /**
+         * Adds an item to the shopping cart or increments quantity safely
+         * utilizing lookup dictionaries rather than array iterations.
+         */
         addToCart: (state, action: PayloadAction<CartItem>) => {
             const existing = state.entities[action.payload.id];
             if (existing) {
@@ -39,6 +44,9 @@ const cartSlice = createSlice({
             }
         },
         removeFromCart: cartAdapter.removeOne,
+        /**
+         * Granular quantity controls providing structural verification boundaries.
+         */
         updateQuantity: (state, action: PayloadAction<{ id: number; quantity: number }>) => {
             if (action.payload.quantity > 0) {
                 cartAdapter.updateOne(state, {

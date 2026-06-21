@@ -8,7 +8,7 @@ import { addToCart } from '@/features/cart/cart-slice';
 import { selectIsItemInCart } from '@/features/cart/cart-selectors';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
 import { selectIsProductWishlisted } from '@/features/wishlist/wishlist-selectors';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export function useProductActions(product: Product) {
     const dispatch = useAppDispatch();

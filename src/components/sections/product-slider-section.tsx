@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button/button';
 import { Icon } from '@/components/ui/icon/icon';
 import { ProductCardMini } from '@/components/product/product-card-mini';
 import { ProductCardSkeleton } from '@/components/product/product-card-skeleton';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 interface ProductSliderSectionProps {
     title: string;

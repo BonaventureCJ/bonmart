@@ -1,19 +1,6 @@
 //src/data/mock-products.ts
 
-export interface Product {
-  id: number;
-  slug: string;
-  name: string;
-  price: number;
-  description: string;
-  category: string;
-  imageUrl: string;
-  rating: {
-    rate: number;
-    count: number;
-  };
-  isEcoFriendly: boolean;
-}
+import type { Product } from '@/types/product';
 
 export const MOCK_PRODUCTS: Product[] = [
   {

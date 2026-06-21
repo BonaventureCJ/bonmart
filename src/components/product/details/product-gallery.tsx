@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { Icon } from '@/components/ui/icon/icon';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 export function ProductGallery({ product }: { product: Product }) {
     return (

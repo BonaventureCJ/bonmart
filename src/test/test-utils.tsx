@@ -8,18 +8,18 @@ import { Provider } from 'react-redux';
 // Import your raw, slice-level reducers directly to bypass redux-persist
 import themeReducer from '@/features/theme/theme-slice';
 import navigationReducer from '@/features/navigation/navigation-slice';
-import productReducer from '@/features/products/product-slice';
 import cartReducer from '@/features/cart/cart-slice';
 import wishlistReducer from '@/features/wishlist/wishlist-slice';
 import ordersReducer from '@/features/orders/orders-slice';
 import searchReducer from '@/features/search/search-slice';
 import uiReducer from '@/features/ui/ui-slice';
+import { apiSlice } from '@/features/api/api-slice';
 
 // Reconstruct clean root reducer for testing state isolation
 const testRootReducer = combineReducers({
+    [apiSlice.reducerPath]: apiSlice.reducer, // Appended global API cache reducer path node
     theme: themeReducer,
     navigation: navigationReducer,
-    products: productReducer,
     cart: cartReducer,
     wishlist: wishlistReducer,
     orders: ordersReducer,
@@ -39,6 +39,11 @@ export function setupTestStore(preloadedState?: Partial<TestRootState>) {
     return configureStore({
         reducer: testRootReducer,
         preloadedState,
+        // Injects live API middleware to handle RTK Query background lifecycles smoothly during specs
+        middleware: (getDefaultMiddleware) =>
+            getDefaultMiddleware({
+                serializableCheck: false, // Turn off serialization checks to streamline testing snapshots
+            }).concat(apiSlice.middleware),
     });
 }
 

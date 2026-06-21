@@ -5,7 +5,7 @@ import { RootState } from '@/store/store';
 import { searchAdapter } from './search-slice';
 
 /**
- * Base Selectors
+ * Base State Tree Extractors
  */
 const selectSearchState = (state: RootState) => state.search;
 const selectRecentSearchesState = (state: RootState) => state.search.recentSearches;
@@ -36,11 +36,11 @@ export const selectIsSearchOpen = createSelector(
 /**
  * Selects the list of recent search queries.
  * We reverse it because addOne appends to the end, 
- * ensuring the most recent is first.
+ * ensuring the most recent item is presented first.
  */
 export const selectRecentSearches = createSelector(
     [selectAllRecentSearches],
-    (searches) => [...searches].reverse()
+    (searches): string[] => [...searches].reverse()
 );
 
 /**

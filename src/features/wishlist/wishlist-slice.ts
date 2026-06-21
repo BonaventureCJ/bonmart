@@ -6,11 +6,15 @@ import {
     PayloadAction,
     EntityState
 } from '@reduxjs/toolkit';
-import { type Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
+/**
+ * Define the Adapter for Customer Wishlists
+ * Normalizes item listings by referencing their structural number IDs.
+ * Maintains chronological append order natively to track user curation history.
+ */
 export const wishlistAdapter = createEntityAdapter<Product, number>({
     selectId: (product) => product.id,
-    // We keep the order products were added (default behavior)
 });
 
 type WishlistState = EntityState<Product, number>;
@@ -23,7 +27,7 @@ const wishlistSlice = createSlice({
     reducers: {
         /**
          * Optimized Toggle Logic
-         * Uses O(1) lookup to decide whether to add or remove.
+         * Performs rapid O(1) dictionary lookups to seamlessly append or evict items.
          */
         toggleWishlist: (state, action: PayloadAction<Product>) => {
             const productId = action.payload.id;
@@ -35,7 +39,7 @@ const wishlistSlice = createSlice({
                 wishlistAdapter.addOne(state, action.payload);
             }
         },
-        // Explicitly allow removing by ID (useful for "Remove" buttons)
+        // Explicitly allow removing by ID (useful for high-performance dashboard "Remove" controls)
         removeFromWishlist: wishlistAdapter.removeOne,
         clearWishlist: wishlistAdapter.removeAll,
     },

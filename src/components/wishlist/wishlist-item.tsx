@@ -11,7 +11,7 @@ import { Heading } from '@/components/ui/heading/heading';
 import { useAppDispatch } from '@/store/hooks';
 import { toggleWishlist } from '@/features/wishlist/wishlist-slice';
 import { addToCart } from '@/features/cart/cart-slice';
-import type { Product } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 
 interface WishlistItemProps {
     item: Product;

@@ -1,7 +1,8 @@
 // src/features/wishlist/wishlist-selectors.test.ts
 
 import { RootState } from '@/store/store';
-import { MOCK_PRODUCTS, type Product } from '@/data/mock-products';
+import { MOCK_PRODUCTS } from '@/data/mock-products';
+import type { Product } from '@/types/product';
 import {
     selectWishlistItems,
     selectWishlistCount,

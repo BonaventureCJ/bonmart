@@ -3,8 +3,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { shallowEqual } from 'react-redux';
 import { RootState } from '@/store/store';
-import { apiSlice } from '@/features/api/api-slice';
-import { productsAdapter } from './product-slice';
+import { productSlice, productsAdapter } from './product-slice'; // Imported productSlice directly for absolute type safety
 import type { Product } from '@/types/product';
 
 export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' | 'eco-high';
@@ -12,8 +11,7 @@ export type SortOption = 'name-asc' | 'name-desc' | 'price-asc' | 'price-desc' |
 /**
  * 1. Select the base query result object from cache state.
  */
-const selectProductsQueryResult = (state: RootState) =>
-    (apiSlice.endpoints as any).getProducts.select()(state);
+const selectProductsQueryResult = productSlice.endpoints.getProducts.select();
 
 /**
  * 2. Extract the normalized EntityState object securely with hydration protection fallbacks.

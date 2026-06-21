@@ -2,7 +2,8 @@
 
 import { apiSlice } from '@/features/api/api-slice';
 import { createEntityAdapter, type EntityState } from '@reduxjs/toolkit';
-import type { Product } from '@/types/product'
+import { generateSlug } from '@/utils/string';
+import type { Product } from '@/types/product';
 
 interface ApiProduct {
     id: number;
@@ -21,15 +22,6 @@ export const productsAdapter = createEntityAdapter<Product, number>({
     selectId: (product) => product.id,
     sortComparer: (a, b) => a.name.localeCompare(b.name),
 });
-
-/**
- * Helper to generate URL-safe SEO slugs deterministically
- */
-const generateSlug = (text: string): string =>
-    text
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/(^-|-$)+/g, '');
 
 /**
  * Enterprise Schema Transformation Utility
